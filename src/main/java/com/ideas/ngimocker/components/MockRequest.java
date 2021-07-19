@@ -21,6 +21,15 @@ public class MockRequest {
     private List<String> queryParam;
     private List<String> pathParam;
     private Map<String, String> requestPathParams;
+    private boolean onlyOK=false;
+
+    public boolean isOnlyOK() {
+        return onlyOK;
+    }
+
+    public void setOnlyOK(boolean onlyOK) {
+        this.onlyOK = onlyOK;
+    }
 
     public Map<String, String> getRequestPathParams() {
         return requestPathParams;
@@ -156,7 +165,7 @@ public class MockRequest {
         if(requestPathParams.containsKey("propertyCode")){
             return requestPathParams.get("propertyCode");
         }
-        logger.warn("No propertyCode Id Found in request ");
+        //logger.warn("No propertyCode Id Found in request ");
         return "";
     }
     public String getClientCode() {
@@ -166,7 +175,7 @@ public class MockRequest {
         if(requestPathParams.containsKey("clientCode")){
             return requestPathParams.get("clientCode");
         }
-        logger.warn("No propertyCode Id Found in request ");
+        // logger.warn("No clientCode Id Found in request ");
         return "";
     }
 

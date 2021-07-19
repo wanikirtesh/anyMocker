@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,8 @@ public class RequestMatcherService {
        pathList.get().forEach(mockRequest -> mapExpectations.put(mockRequest.getLabel(), mockRequest));
     }
 
-    public MockRequest match(String url, Map<String, String> queryParams) {
+    public MockRequest match(HttpServletRequest req, Map<String, String> queryParams,Object body) {
+        String url =  req.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         for (String labels : mapExpectations.keySet()) {
             MockRequest mockRequest1 = mapExpectations.get(labels);
             String pattern = mockRequest1.getUrl();
@@ -42,10 +45,12 @@ public class RequestMatcherService {
                 mockRequest.setLabel(mockRequest1.getLabel());
                 mockRequest.setPages(mockRequest1.isPages());
                 mockRequest.setRequestQueryParams(queryParams);
+                mockRequest.setOnlyOK(mockRequest1.isOnlyOK());
+                mockRequest.setG3CallBack(mockRequest1.getG3CallBack());
                 return mockRequest;
             }
         }
-        logger.warn("No Request matched to url " + url + " query:" +queryParams);
+        logger.warn("No Request matched to url " + url + " query:" +queryParams + " method:" + req.getMethod() + " body:"+(body!=null?body.toString():"") );
         return null;
     }
 }

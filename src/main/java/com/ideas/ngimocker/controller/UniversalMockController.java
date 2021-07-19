@@ -34,13 +34,12 @@ public class UniversalMockController {
         return new ResponseEntity<>("Server will restart after Downloading fixture",HttpStatus.OK);
     }
 
-    @GetMapping(path = "/**",produces ="application/json")
-    public ResponseEntity<String> defaultRequest(HttpServletRequest req,@RequestParam Map<String,String> queryParams) throws Exception {
+    @RequestMapping(path = "/**",produces ="application/json")
+    public ResponseEntity<String> defaultRequest(HttpServletRequest req,@RequestParam Map<String,String> queryParams,@RequestBody(required = false) Object body) throws Exception {
         if(Files.exists(Path.of("./downloadingFixtures"))){
             return new ResponseEntity<>("Server is downloading Fixtures.... ",HttpStatus.OK);
         }else {
-            String reqPath = req.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-            return mockService.processRequest(requestMatcherService.match(reqPath, queryParams));
+            return mockService.processRequest(requestMatcherService.match(req,queryParams,body),body);
         }
 
     }
