@@ -1,14 +1,10 @@
 package com.ideas.ngimocker.components;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Map;
 
 
 public class MockRequest {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private String label;
     private String url;
     private String method;
@@ -165,9 +161,9 @@ public class MockRequest {
         if(requestPathParams.containsKey("propertyCode")){
             return requestPathParams.get("propertyCode");
         }
-        //logger.warn("No propertyCode Id Found in request ");
         return "";
     }
+
     public String getClientCode() {
         if(requestQueryParams.containsKey("clientCode")){
             return requestQueryParams.get("clientCode");
@@ -175,9 +171,6 @@ public class MockRequest {
         if(requestPathParams.containsKey("clientCode")){
             return requestPathParams.get("clientCode");
         }
-        // logger.warn("No clientCode Id Found in request ");
         return "";
     }
-
-
 }

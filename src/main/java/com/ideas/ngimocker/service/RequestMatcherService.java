@@ -1,6 +1,5 @@
 package com.ideas.ngimocker.service;
 
-import com.ideas.ngimocker.components.PathList;
 import com.ideas.ngimocker.components.MockRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,14 +22,14 @@ public class RequestMatcherService {
     AntPathMatcher matcher;
 
     @Autowired
-    PathList pathList;
+    MockRequestService mockRequestService;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<String, MockRequest> mapExpectations = new HashMap<>();
 
     @PostConstruct
-    public void init() throws IOException {
-       pathList.get().forEach(mockRequest -> mapExpectations.put(mockRequest.getLabel(), mockRequest));
+    public void init() {
+       mockRequestService.getRequestList().forEach(mockRequest -> mapExpectations.put(mockRequest.getLabel(), mockRequest));
     }
 
     public MockRequest match(HttpServletRequest req, Map<String, String> queryParams,Object body) {
@@ -39,6 +38,7 @@ public class RequestMatcherService {
             MockRequest mockRequest1 = mapExpectations.get(labels);
             String pattern = mockRequest1.getUrl();
             if(matcher.match(pattern,url) && queryParams.keySet().containsAll(mockRequest1.getQueryParam())){
+                logger.info("Request "+req.getMethod()+" Matched "+url+"?"+queryParams.keySet().stream().reduce("",(c,k)->"&"+k+"="+queryParams.get(k))+" with label:"+mockRequest1.getLabel()+" body:"+(body!=null?body.toString():"") );
                 MockRequest mockRequest = new MockRequest();
                 mockRequest.setRequestPathParams(matcher.extractUriTemplateVariables(pattern,url));
                 mockRequest.setUrl(url);

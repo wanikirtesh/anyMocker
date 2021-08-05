@@ -137,21 +137,7 @@
     "store": false,
     "g3CallBack": "callBack1"
   },
-  {
-    "label": "mockAnalyticalMarketServiceRemapReservationAndOccupancy",
-    "url":  "/analyticalMarketService/remapReservationAndOccupancy",
-    "method": "POST",
-    "queryParam": [],
-    "pathParam": [],
-    "body": "",
-    "pages": false,
-    "size": 500,
-    "correlation": false,
-    "store": false,
-    "g3CallBack": "callBack1",
-    "onlyOK":true
-  },
-  {
+    {
     "label": "/analyticalMarketService/deleteByProperty",
     "url": "/analyticalMarketService/deleteByProperty",
     "method": "DELETE",

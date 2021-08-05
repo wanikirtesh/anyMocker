@@ -1,9 +1,9 @@
-package com.ideas.ngimocker.components;
+package com.ideas.ngimocker.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ideas.ngimocker.components.MockRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-public class PathList {
+public class MockRequestService {
 
     private List<MockRequest> mockRequests;
 
@@ -26,16 +26,7 @@ public class PathList {
         });
     }
 
-   /* public static PathList getPathList() throws IOException {
-       if(pathList!=null){
-           return pathList;
-       }
-       return new PathList();
-    }
-
-    */
-
-    public List<MockRequest> get() {
+    public List<MockRequest> getRequestList() {
         return this.mockRequests;
     }
 }

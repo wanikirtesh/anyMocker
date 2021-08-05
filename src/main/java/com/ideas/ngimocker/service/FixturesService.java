@@ -1,7 +1,6 @@
 package com.ideas.ngimocker.service;
 
 import com.ideas.ngimocker.components.MockRequest;
-import com.ideas.ngimocker.components.PathList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +20,10 @@ public class FixturesService {
     String fixturePath;
 
     @Autowired
-    FileStoreService fileStoreService;
+    FileService fileService;
 
     @Autowired
-    PathList pathList;
+    MockRequestService mockRequestService;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<String, Map<String,String>> fixturesMap = new HashMap<>();
@@ -33,12 +32,12 @@ public class FixturesService {
     @PostConstruct
     public void init()  {
         logger.info("reading fixtures from \"" + fixturePath + "\"");
-        pathList.get().forEach(key-> {
+        mockRequestService.getRequestList().forEach(key-> {
             if(key.isStore()) {
                 if (key.isPages()) {
-                    pagedFixtureMap.put(key.getLabel(), fileStoreService.collectNestedFiles(Path.of(fixturePath, key.getLabel())));
+                    pagedFixtureMap.put(key.getLabel(), fileService.collectNestedFiles(Path.of(fixturePath, key.getLabel())));
                 } else {
-                    fixturesMap.put(key.getLabel(), fileStoreService.collectFiles(Path.of(fixturePath, key.getLabel())));
+                    fixturesMap.put(key.getLabel(), fileService.collectFiles(Path.of(fixturePath, key.getLabel())));
                 }
             }
         });

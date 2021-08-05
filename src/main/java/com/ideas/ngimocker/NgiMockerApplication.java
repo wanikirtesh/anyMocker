@@ -10,25 +10,23 @@ import org.springframework.util.AntPathMatcher;
 
 @SpringBootApplication
 @EnableAsync
-public class NgimockerApplication {
+public class NgiMockerApplication {
 
 	private static ConfigurableApplicationContext  context;
-
 	public static void main(String[] args) {
-		context = SpringApplication.run(NgimockerApplication.class, args);
+		context = SpringApplication.run(NgiMockerApplication.class, args);
 	}
 
 	@Bean
 	public AntPathMatcher antPathMatcher() {
 		return new AntPathMatcher();
 	}
-
 	public static void restart() {
 		ApplicationArguments args = context.getBean(ApplicationArguments.class);
 
 		Thread thread = new Thread(() -> {
 			context.close();
-			context = SpringApplication.run(NgimockerApplication.class, args.getSourceArgs());
+			context = SpringApplication.run(NgiMockerApplication.class, args.getSourceArgs());
 		});
 
 		thread.setDaemon(false);

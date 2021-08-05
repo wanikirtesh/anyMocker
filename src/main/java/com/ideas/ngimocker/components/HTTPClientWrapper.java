@@ -15,7 +15,7 @@ import static java.net.http.HttpRequest.newBuilder;
 @Component
 public class HTTPClientWrapper {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    private HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public String makeGetRequest(String uri) {
         return makeRequest(uri, "GET", HttpRequest.BodyPublishers.noBody());

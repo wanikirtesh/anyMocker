@@ -16,7 +16,7 @@ import static java.nio.file.Files.readString;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 @Component
-public class FileStoreService {
+public class FileService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
    @Value("${fixture.path}")

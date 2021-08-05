@@ -14,14 +14,12 @@ import java.util.stream.Collectors;
 @Component
 public class NGIClient {
 
-    private final String STAT_CORRELATION = "/statisticsCorrelation/";
-
-    @Autowired
+     @Autowired
     HTTPClientWrapper httpClientWrapper;
-    private Map<String ,String > extParam = new HashMap<>();
+    private final Map<String ,String > extParam = new HashMap<>();
 
     public List<String> getCorrelationId(NGIProps ngiProps) throws JsonProcessingException {
-        var content = httpClientWrapper.makeGetRequest(ngiProps.getHost()+STAT_CORRELATION+ ngiProps.getClientCode() + "/"
+        var content = httpClientWrapper.makeGetRequest(ngiProps.getHost()+"/statisticsCorrelation/"+ ngiProps.getClientCode() + "/"
                 + ngiProps.getPropertyCode() + "/" + ngiProps.getCorrelationID());
         ObjectMapper mapper = new ObjectMapper();
         var stats = mapper.readValue(content, JsonNode.class);
@@ -45,14 +43,11 @@ public class NGIClient {
         String url = request.getUrl();
         List<String> pathParams =  request.getPathParam();
         List<String> queryParams = request.getQueryParam();
-        for(int i=0;i<pathParams.size();i++){
-            url = url.replace("{" + pathParams.get(i) + "}", params.get(pathParams.get(i)));
+        for (String pathParam : pathParams) {
+            url = url.replace("{" + pathParam + "}", params.get(pathParam));
         }
-        String queryStr = "";
-        for(int i=0;i<queryParams.size();i++){
-            queryStr += ("&"+queryParams.get(i) + "=" + params.get(queryParams.get(i)));
-        }
-        queryStr = queryStr.length()>0?("?"+queryStr.substring(1)):"";
+        String queryStr = queryParams.stream().reduce("",(c,k)-> c+= ("&"+k+"="+params.get(k)));
+        queryStr = queryStr.length() > 0 ? ("?" + queryStr.substring(1)) : "";
         return url+queryStr;
     }
 
