@@ -1,40 +1,15 @@
 package com.ideas.ngimocker.components;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class NGIProps {
+    @Getter @Setter
     private String host;
+    @Getter @Setter
     private String propertyCode;
+    @Getter @Setter
     private String clientCode;
+    @Getter @Setter
     private String correlationID;
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getPropertyCode() {
-        return propertyCode;
-    }
-
-    public void setPropertyCode(String propertyCode) {
-        this.propertyCode = propertyCode;
-    }
-
-    public String getClientCode() {
-        return clientCode;
-    }
-
-    public void setClientCode(String clientCode) {
-        this.clientCode = clientCode;
-    }
-
-    public String getCorrelationID() {
-        return correlationID;
-    }
-
-    public void setCorrelationID(String correlationID) {
-        this.correlationID = correlationID;
-    }
 }

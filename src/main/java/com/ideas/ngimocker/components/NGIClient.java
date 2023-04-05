@@ -35,7 +35,9 @@ public class NGIClient {
     }
 
     private String generalize(String content,NGIProps props) {
-        return content.replace("\"clientCode\" : \""+props.getClientCode()+"\"","\"clientCode\" : \"{clientCode}\"").replace("\"propertyCode\" : \""+props.getClientCode()+"\"","\"propertyCode\" : \"{propertyCode}\"").replace(props.getHost(),"http://mockeserver:9191");
+
+
+        return content.replaceAll("\"clientCode\" *: *\""+props.getClientCode()+"\"","\"clientCode\" : \"{clientCode}\"").replaceAll("\"propertyCode\" *: *\""+props.getPropertyCode()+"\"","\"propertyCode\" : \"{propertyCode}\"").replace(props.getHost(),"http://mockeserver:9191");
     }
 
     private String generateURL(MockRequest request, Map<String, String> params) {

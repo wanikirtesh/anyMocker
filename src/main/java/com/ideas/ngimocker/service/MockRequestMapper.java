@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-public class MockRequestService {
+public class MockRequestMapper {
 
     private List<MockRequest> mockRequests;
 

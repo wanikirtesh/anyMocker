@@ -1,29 +1,44 @@
 package com.ideas.ngimocker.service;
 
 import com.ideas.ngimocker.components.MockRequest;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
+@Log
 public class MockerService {
 
     @Autowired
-    FixturesService fixturesService;
+    FixtureRequestService fixturesService;
+
+    @Autowired
+    HTNGDecisionRequestService htngDecisionService;
 
     @Autowired
     G3CallbackService g3CallbackService;
 
-    public ResponseEntity<String> processRequest(MockRequest match, Object body) throws Exception {
+    private final Map<String, RequestProcessor> processorMap = new HashMap<>();
+    @PostConstruct
+    private void loadProcessMap(){
+        processorMap.put("htng", htngDecisionService);
+        processorMap.put("fixture",fixturesService);
+    }
+
+    public ResponseEntity<String> processRequest(MockRequest match, String body, HttpServletRequest req) throws Exception {
         if(match != null){
-            if(match.getG3CallBack()!=null)
+            if(match.getG3CallBack()!=null){
                 g3CallbackService.callBack1(body);
-            if(match.isOnlyOK())
-                return new ResponseEntity<>(HttpStatus.OK);
-            String str = fixturesService.getFixtures(match);
-            return new ResponseEntity<>(str, HttpStatus.OK);
+            }
+            return match.getStore().processRequest(match,body,processorMap,req);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

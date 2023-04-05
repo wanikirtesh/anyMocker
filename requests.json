@@ -1,5 +1,14 @@
 [
   {
+    "label": "statisticsCorrelation",
+    "url":  "/statisticsCorrelation/{clientCode}/{propertyCode}/{statisticsCorrelationId}",
+    "method": "GET",
+    "queryParam": [],
+    "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
+    "body": "",
+    "pages": false
+  },
+  {
     "label": "activitiesHotel",
     "url": "/api/v1/activities/hotel/{clientCode}/{propertyCode}/{correlationId}",
     "method": "GET",
@@ -30,15 +39,7 @@
     "body": "",
     "pages": false
   },
-  {
-    "label": "nucleusStatistics",
-    "url":  "/statisticsCorrelation/{clientCode}/{propertyCode}/{statisticsCorrelationId}",
-    "method": "GET",
-    "queryParam": [],
-    "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "body": "",
-    "pages": false
-  },
+
   {
     "label": "nucleusStatisticsCorrelations",
     "url":  "/nucleusStatisticsCorrelations/{statisticsCorrelationId}",
@@ -57,7 +58,7 @@
     "body": "",
     "pages": true,
     "size": 100,
-    "store": false
+    "store": "NONE"
   },
   {
     "label": "roomTypeCodes",
@@ -134,7 +135,7 @@
     "pages": false,
     "size": 500,
     "correlation": false,
-    "store": false,
+    "store": "OK_ONLY",
     "g3CallBack": "callBack1"
   },
     {
@@ -143,8 +144,7 @@
     "method": "DELETE",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode"],
-    "store": false,
-    "onlyOK": true
+    "store": "OK_ONLY"
   },
   {
     "label": "/analyticalMarketService/populate",
@@ -152,8 +152,13 @@
     "method": "POST",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode"],
-    "store": false,
-    "onlyOK": true,
+    "store": "OK_ONLY",
     "g3CallBack": "callG3"
+  },
+  {
+    "label": "htngClient",
+    "url": "/htngClient",
+    "method": "POST",
+    "store": "HTNG"
   }
 ]

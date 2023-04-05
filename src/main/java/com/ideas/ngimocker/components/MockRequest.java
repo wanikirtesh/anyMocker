@@ -1,137 +1,56 @@
 package com.ideas.ngimocker.components;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class MockRequest {
+    @Getter @Setter
     private String label;
+    @Getter @Setter
     private String url;
+    @Getter @Setter
     private String method;
+    @Getter @Setter
     private String body;
+    @Getter @Setter
     private boolean pages;
+    @Getter @Setter
     private boolean correlation;
+    @Getter @Setter
     private int size;
-    private boolean store=true;
+    @Getter @Setter
+    private RequestHandler store = RequestHandler.FIXTURE;
+    @Getter @Setter
     private String g3CallBack;
-    private List<String> queryParam;
-    private List<String> pathParam;
-    private Map<String, String> requestPathParams;
-    private boolean onlyOK=false;
-
-    public boolean isOnlyOK() {
-        return onlyOK;
-    }
-
-    public void setOnlyOK(boolean onlyOK) {
-        this.onlyOK = onlyOK;
-    }
-
-    public Map<String, String> getRequestPathParams() {
-        return requestPathParams;
-    }
-
-    public Map<String, String> getRequestQueryParams() {
-        return requestQueryParams;
-    }
-
-    private Map<String, String> requestQueryParams;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public boolean isPages() {
-        return pages;
-    }
-
-    public void setPages(boolean pages) {
-        this.pages = pages;
-    }
-
-    public boolean isCorrelation() {
-        return correlation;
-    }
-
-    public void setCorrelation(boolean correlation) {
-        this.correlation = correlation;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public boolean isStore() {
-        return this.store;
-    }
-
-    public void setStore(boolean store) {
-        this.store = store;
-    }
-
-    public String getG3CallBack() {
-        return g3CallBack;
-    }
-
-    public void setG3CallBack(String g3CallBack) {
-        this.g3CallBack = g3CallBack;
-    }
-
-    public List<String> getQueryParam() {
-        return queryParam;
-    }
+    @Getter
+    private final List<String> queryParam = new ArrayList<>();
+    @Getter
+    private final List<String> pathParam = new ArrayList<>();
+    @Getter
+    private final Map<String, String> requestPathParams = new HashMap<>();
+    @Getter
+    private final Map<String, String> requestQueryParams = new HashMap<>();
 
     public void setQueryParam(List<String> queryParam) {
-        this.queryParam = queryParam;
-    }
-
-    public List<String> getPathParam() {
-        return pathParam;
+        this.queryParam.addAll(queryParam);
     }
 
     public void setPathParam(List<String> pathParam) {
-        this.pathParam = pathParam;
+        this.pathParam.addAll(pathParam);
     }
 
     public void setRequestPathParams(Map<String, String> requestPathParams) {
-
-        this.requestPathParams = requestPathParams;
+        this.requestPathParams.putAll(requestPathParams);
     }
 
     public void setRequestQueryParams(Map<String, String> requestQueryParams) {
-        this.requestQueryParams = requestQueryParams;
+        this.requestQueryParams.putAll(requestQueryParams);
     }
 
     public String getPage(){
@@ -172,5 +91,8 @@ public class MockRequest {
             return requestPathParams.get("clientCode");
         }
         return "";
+    }
+    public boolean isFixture() {
+        return store==RequestHandler.FIXTURE;
     }
 }

@@ -16,7 +16,7 @@ import static java.nio.file.Files.readString;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 @Component
-public class FileService {
+public class FixtureFileService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
    @Value("${fixture.path}")
@@ -38,12 +38,12 @@ public class FileService {
         Files.write(filePath, content.getBytes(), WRITE);
     }
 
-    public Map<String, String> collectFiles(Path path) {
+    public Map<String, Path> collectFiles(Path path) {
         try {
             return Files.list(path)
                     .collect(Collectors.toMap(
                             this::readFileName,
-                            this::readFile)
+                            this::readFullFileName)
                     );
         } catch (IOException e) {
             logger.error("No Fixtures available at Path:" + path);
@@ -54,7 +54,11 @@ public class FileService {
         return filePath.getFileName().toString().replaceAll(".json", "");
     }
 
-    public Map<String, Map<String, String>> collectNestedFiles(Path path) {
+    private Path readFullFileName(Path filePath){
+       return filePath;
+    }
+
+    public Map<String, Map<String, Path>> collectNestedFiles(Path path) {
         try {
             return Files.list(path)
                     .collect(Collectors.toMap(
