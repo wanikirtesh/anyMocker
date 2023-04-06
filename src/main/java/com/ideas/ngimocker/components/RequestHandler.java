@@ -16,13 +16,13 @@ public enum RequestHandler {
         @Override
         public ResponseEntity<String> processRequest(MockRequest match, String body, Map<String, RequestProcessor> processorMap, HttpServletRequest req) {
             log.info("getting matching fixtures");
-            return processorMap.get("fixture").process(match,body,req);
+            return processorMap.get(this.name()).process(match,body,req);
 
         }
     }, HTNG {
         @Override
         public ResponseEntity<String> processRequest(MockRequest match, String body, Map<String, RequestProcessor> processorMap, HttpServletRequest req) {
-            return processorMap.get("htng").process(match,body,req);
+            return processorMap.get(this.name()).process(match,body,req);
         }
     },NONE {
         @Override
@@ -33,6 +33,16 @@ public enum RequestHandler {
         @Override
         public ResponseEntity<String> processRequest(MockRequest match, String body, Map<String, RequestProcessor> processorMap, HttpServletRequest req) {
             return new ResponseEntity<>(HttpStatus.OK);
+        }
+    },OXI {
+        @Override
+        public ResponseEntity<String> processRequest(MockRequest match, String body, Map<String, RequestProcessor> processorMap, HttpServletRequest req) throws Exception {
+            return processorMap.get(this.name()).process(match,body,req);
+        }
+    },HILTON_TOKEN {
+        @Override
+        public ResponseEntity<String> processRequest(MockRequest match, String body, Map<String, RequestProcessor> processorMap, HttpServletRequest req) throws Exception {
+            return processorMap.get(this.name()).process(match,body,req);
         }
     };
 

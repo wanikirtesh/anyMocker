@@ -160,5 +160,17 @@
     "url": "/htngClient",
     "method": "POST",
     "store": "HTNG"
+  },
+  {
+    "label": "oxiClient",
+    "url": "/oxiClient",
+    "method": "POST",
+    "store": "OXI"
+  },
+  {
+    "label": "HiltonToken",
+    "url": "/HILTON/BASE",
+    "method": "GET",
+    "store" : "HILTON_TOKEN"
   }
 ]

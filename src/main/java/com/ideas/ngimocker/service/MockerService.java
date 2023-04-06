@@ -24,12 +24,18 @@ public class MockerService {
 
     @Autowired
     G3CallbackService g3CallbackService;
+    @Autowired
+    OXIDecisionRequestProcessor oxi;
+    @Autowired
+    HILTONTokenRequestProcessor hiltonTokenRequestProcessor;
 
     private final Map<String, RequestProcessor> processorMap = new HashMap<>();
     @PostConstruct
     private void loadProcessMap(){
-        processorMap.put("htng", htngDecisionService);
-        processorMap.put("fixture",fixturesService);
+        processorMap.put("HTNG", htngDecisionService);
+        processorMap.put("FIXTURE",fixturesService);
+        processorMap.put("OXI",oxi);
+        processorMap.put("HILTON_TOKEN",hiltonTokenRequestProcessor);
     }
 
     public ResponseEntity<String> processRequest(MockRequest match, String body, HttpServletRequest req) throws Exception {
@@ -39,6 +45,6 @@ public class MockerService {
             }
             return match.getStore().processRequest(match,body,processorMap,req);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("success",HttpStatus.OK);
     }
 }
