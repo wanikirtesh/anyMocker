@@ -2,8 +2,7 @@ package com.ideas.ngimocker.service;
 
 import com.ideas.ngimocker.components.MockRequest;
 import com.ideas.ngimocker.components.RequestHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -19,9 +18,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Log
 @Service
-public class FixtureRequestService implements RequestProcessor {
+public class FixtureRequestProcessor implements RequestProcessor {
 
     @Value("${fixture.path}")
     String fixturePath;
@@ -32,13 +31,12 @@ public class FixtureRequestService implements RequestProcessor {
     @Autowired
     MockRequestMapper mockRequestMapper;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Map<String, Map<String, Path>> fixturesMap = new HashMap<>();
-    private final Map<String, Map<String, Map<String, Path>>> pagedFixtureMap = new HashMap<String, Map<String, Map<String, Path>>>();
+    private static final Map<String, Map<String, Path>> fixturesMap = new HashMap<>();
+    private static final Map<String, Map<String, Map<String, Path>>> pagedFixtureMap = new HashMap<String, Map<String, Map<String, Path>>>();
 
     @PostConstruct
     public void init()  {
-        logger.info("reading fixtures from \"" + fixturePath + "\"");
+        log.info("reading fixtures from \"" + fixturePath + "\"");
         mockRequestMapper.getRequestList().forEach(key-> {
             if(key.getStore()== RequestHandler.FIXTURE) {
                 if (key.isPages()) {

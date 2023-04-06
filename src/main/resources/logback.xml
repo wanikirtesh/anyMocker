@@ -28,5 +28,6 @@
     </logger>
     <root level="error">
         <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

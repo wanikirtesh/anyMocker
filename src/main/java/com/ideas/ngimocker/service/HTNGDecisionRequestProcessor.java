@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Service
 @Log
-public class HTNGDecisionRequestService implements RequestProcessor {
+public class HTNGDecisionRequestProcessor implements RequestProcessor {
 
     @Override
     public ResponseEntity<String> process(MockRequest match, String body, HttpServletRequest req) {
@@ -29,16 +29,17 @@ public class HTNGDecisionRequestService implements RequestProcessor {
     }
 
     private String processMessage(String body, HttpServletRequest req){
+        String wsaMessageId ="";
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(new InputSource(new StringReader(body)));
-            String wsaAddress  = document.getElementsByTagName("wsa:MessageID").item(0).getTextContent();
-            log.info(wsaAddress);
+            wsaMessageId  = document.getElementsByTagName("wsa:MessageID").item(0).getTextContent();
+            log.info(wsaMessageId);
         } catch (Exception e) {
             log.severe(e.getMessage());
             throw new RuntimeException(e);
         }
-        return "<s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:a=\"http://www.w3.org/2005/08/addressing\"><s:Header><a:Action s:mustUnderstand=\"1\">http://htng.org/PWSWG/2010/12/RatePlan_SubmitRequestResponse</a:Action><h:TimeStamp xmlns:h=\"http://htng.org/1.3/Header/\" xmlns=\"http://htng.org/1.3/Header/\">"+new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date())+"</h:TimeStamp><a:RelatesTo>${arrData[0]}</a:RelatesTo><a:MessageID>${arrData[0]}</a:MessageID></s:Header><s:Body xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"/></s:Envelope>";
+        return "<s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:a=\"http://www.w3.org/2005/08/addressing\"><s:Header><a:Action s:mustUnderstand=\"1\">http://htng.org/PWSWG/2010/12/RatePlan_SubmitRequestResponse</a:Action><h:TimeStamp xmlns:h=\"http://htng.org/1.3/Header/\" xmlns=\"http://htng.org/1.3/Header/\">"+new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date())+"</h:TimeStamp><a:RelatesTo>"+wsaMessageId+"</a:RelatesTo><a:MessageID>"+wsaMessageId+"</a:MessageID></s:Header><s:Body xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"/></s:Envelope>";
     }
 
 }

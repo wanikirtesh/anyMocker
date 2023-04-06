@@ -17,10 +17,10 @@ import java.util.Map;
 public class MockerService {
 
     @Autowired
-    FixtureRequestService fixturesService;
+    FixtureRequestProcessor fixturesService;
 
     @Autowired
-    HTNGDecisionRequestService htngDecisionService;
+    HTNGDecisionRequestProcessor htngDecisionService;
 
     @Autowired
     G3CallbackService g3CallbackService;
