@@ -1,176 +1,192 @@
 [
   {
-    "label": "statisticsCorrelation",
+    "name": "statisticsCorrelation",
     "url":  "/statisticsCorrelation/{clientCode}/{propertyCode}/{statisticsCorrelationId}",
     "method": "GET",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "body": "",
-    "pages": false
+    "pages": false,
+    "processor": "NGI",
+    "download": true
   },
   {
-    "label": "activitiesHotel",
+    "name": "activitiesHotel",
     "url": "/api/v1/activities/hotel/{clientCode}/{propertyCode}/{correlationId}",
     "method": "GET",
     "queryParam": ["size","page"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "body": "",
     "pages": true,
     "correlation": true,
-    "size": 500
+    "size": 500,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label": "groups",
+    "name": "groups",
     "url": "/api/v1/groups/{clientCode}/{propertyCode}/correlated/{statisticsCorrelationId}",
     "method": "GET",
     "queryParam": ["size","page"],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "body": "",
     "pages": true,
-    "size": 100
+    "size": 100,
+    "processor": "NGI",
+    "download":true
   },
 
   {
-    "label": "marketSegmentAndRateCodeAndAMSByClientCodeAndPropertyCode",
+    "name": "marketSegmentAndRateCodeAndAMSByClientCodeAndPropertyCode",
     "url":  "/nucleusOccupancySummaryAMS/findMarketSegmentAndRateCodeAndAMSByClientCodeAndPropertyCode",
     "method": "GET",
     "queryParam": ["clientCode","propertyCode","correlationId","format"],
     "pathParam": [],
-    "body": "",
-    "pages": false
+    "pages": false,
+    "processor": "NGI",
+    "download":true
   },
 
   {
-    "label": "nucleusStatisticsCorrelations",
+    "name": "nucleusStatisticsCorrelations",
     "url":  "/nucleusStatisticsCorrelations/{statisticsCorrelationId}",
     "method": "GET",
     "queryParam": [],
     "pathParam": ["statisticsCorrelationId"],
-    "body": "",
-    "pages": false
+    "pages": false,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label": "reservations",
+    "name": "reservations",
     "url":  "/getReservations",
     "method": "GET",
     "queryParam": ["clientCode","propertyCode","statisticsCorrelationId","size","page"],
     "pathParam": [],
-    "body": "",
     "pages": true,
     "size": 100,
-    "store": "NONE"
+    "processor": "OK_ONLY"
   },
   {
-    "label": "roomTypeCodes",
+    "name": "roomTypeCodes",
     "url":  "/api/v1/activities/roomtype/{clientCode}/{propertyCode}/{statisticsCorrelationId}/capacity/roomtypecodes",
     "method": "GET",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "body": "",
     "pages": false,
-    "size": 500
+    "size": 500,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label": "reservations2",
+    "name": "reservations2",
     "url":  "/api/v1/reservations/{clientCode}/{propertyCode}/correlated/{statisticsCorrelationId}",
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "body": "",
     "pages": true,
-    "size": 500
+    "size": 500,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label":  "roomTypeMarketSegmentActivities",
+    "name":  "roomTypeMarketSegmentActivities",
     "url":  "/api/v1/activities/roomtypemarketsegment/{clientCode}/{propertyCode}/{correlationId}",
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "body": "",
     "pages": true,
     "size": 500,
-    "correlation": true
+    "correlation": true,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label": "roomTypeMarketSegmentHotelActivities",
+    "name": "roomTypeMarketSegmentHotelActivities",
     "url":  "/api/v1/activities/roomtypemarketsegment/{clientCode}/{propertyCode}/{correlationId}/hotel",
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "body": "",
     "pages": true,
     "size": 500,
-    "correlation": true
+    "correlation": true,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label": "roomTypeMarketSegmentProvidedActivities",
+    "name": "roomTypeMarketSegmentProvidedActivities",
     "url":  "/api/v1/activities/roomtypemarketsegment/{clientCode}/{propertyCode}/{correlationId}/provided",
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "body": "",
     "pages": true,
     "size": 500,
-    "correlation": true
+    "correlation": true,
+    "processor": "NGI",
+    "download":true
   },
 
   {
-    "label": "roomTypes",
+    "name": "roomTypes",
     "url":  "/api/v1/activities/roomtype/{clientCode}/{propertyCode}/{correlationId}",
     "method": "GET",
     "queryParam": ["page","size","startDate"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "body": "",
     "pages": true,
     "size": 500,
-    "correlation": true
+    "correlation": true,
+    "processor": "NGI",
+    "download":true
   },
   {
-    "label": "mockAnalyticalMarketServiceRemapReservationAndOccupancy",
+    "name": "mockAnalyticalMarketServiceRemapReservationAndOccupancy",
     "url":  "/analyticalMarketService/remapReservationAndOccupancy",
     "method": "POST",
     "queryParam": [],
     "pathParam": [],
-    "body": "",
     "pages": false,
     "size": 500,
     "correlation": false,
-    "store": "OK_ONLY",
+    "processor": "OK_ONLY",
     "g3CallBack": "callBack1"
   },
     {
-    "label": "/analyticalMarketService/deleteByProperty",
+    "name": "/analyticalMarketService/deleteByProperty",
     "url": "/analyticalMarketService/deleteByProperty",
     "method": "DELETE",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode"],
-    "store": "OK_ONLY"
+    "processor": "OK_ONLY"
   },
   {
-    "label": "/analyticalMarketService/populate",
+    "name": "/analyticalMarketService/populate",
     "url": "/analyticalMarketService/populate",
     "method": "POST",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode"],
-    "store": "OK_ONLY",
+    "processor": "OK_ONLY",
     "g3CallBack": "callG3"
   },
   {
-    "label": "htngClient",
+    "name": "htngClient",
     "url": "/htngClient",
     "method": "POST",
-    "store": "HTNG"
+    "processor": "HTNG",
+    "g3CallBack": "callG3"
   },
   {
-    "label": "oxiClient",
+    "name": "oxiClient",
     "url": "/oxiClient",
     "method": "POST",
-    "store": "OXI"
+    "processor": "OXI"
   },
   {
-    "label": "HiltonToken",
+    "name": "HiltonToken",
     "url": "/HILTON/BASE",
     "method": "GET",
-    "store" : "HILTON_TOKEN"
+    "processor" : "HILTON_TOKEN"
+  },
+  {
+    "name": "test",
+    "url": "/test",
+    "method": "GET",
+    "processor" : "NONE"
   }
 ]

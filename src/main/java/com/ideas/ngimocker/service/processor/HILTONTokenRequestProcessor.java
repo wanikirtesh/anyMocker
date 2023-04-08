@@ -1,6 +1,9 @@
-package com.ideas.ngimocker.service;
+package com.ideas.ngimocker.service.processor;
 
 import com.ideas.ngimocker.components.MockRequest;
+import com.ideas.ngimocker.service.G3CallbackService;
+import com.ideas.ngimocker.service.RequestProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
-@Service
-public class HILTONTokenRequestProcessor implements RequestProcessor{
+@Service("HILTON_TOKEN")
+public class HILTONTokenRequestProcessor implements RequestProcessor {
+    @Autowired
+    G3CallbackService g3CallbackService;
     @Override
     public ResponseEntity<String> process(MockRequest match, String body, HttpServletRequest req) {
         HttpHeaders headers = new HttpHeaders();
@@ -18,5 +23,12 @@ public class HILTONTokenRequestProcessor implements RequestProcessor{
         headers.set("hltMessageId", UUID.randomUUID().toString());
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(responseTxt,headers, HttpStatus.OK);
+    }
+
+    @Override
+    public void postProcessor(MockRequest match, String body, HttpServletRequest req) {
+        if(match.getG3CallBack()!=null){
+            g3CallbackService.callBack1(body);
+        }
     }
 }

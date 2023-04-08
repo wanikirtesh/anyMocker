@@ -5,11 +5,6 @@ import lombok.Setter;
 
 public class NGIProps {
     @Getter @Setter
-    private String host;
-    @Getter @Setter
-    private String propertyCode;
-    @Getter @Setter
-    private String clientCode;
-    @Getter @Setter
-    private String correlationID;
+    private String host,propertyCode,clientCode,correlationID;
+
 }

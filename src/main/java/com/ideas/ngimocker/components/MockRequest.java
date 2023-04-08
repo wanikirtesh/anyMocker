@@ -11,23 +11,11 @@ import java.util.Map;
 
 public class MockRequest {
     @Getter @Setter
-    private String label;
+    private String name,url,method,g3CallBack,processor="OK_ONLY",body="";
     @Getter @Setter
-    private String url;
-    @Getter @Setter
-    private String method;
-    @Getter @Setter
-    private String body;
-    @Getter @Setter
-    private boolean pages;
-    @Getter @Setter
-    private boolean correlation;
+    private boolean pages,correlation,download=false;
     @Getter @Setter
     private int size;
-    @Getter @Setter
-    private RequestHandler store = RequestHandler.FIXTURE;
-    @Getter @Setter
-    private String g3CallBack;
     @Getter
     private final List<String> queryParam = new ArrayList<>();
     @Getter
@@ -73,26 +61,15 @@ public class MockRequest {
         throw new Exception("No Correlation Id Found in request ");
     }
 
-    public String getPropertyCode() {
-        if(requestQueryParams.containsKey("propertyCode")){
-            return requestQueryParams.get("propertyCode");
+
+    public String getParameter(String paramName) {
+        if(requestQueryParams.containsKey(paramName)){
+            return requestQueryParams.get(paramName);
         }
-        if(requestPathParams.containsKey("propertyCode")){
-            return requestPathParams.get("propertyCode");
+        if(requestPathParams.containsKey(paramName)){
+            return requestPathParams.get(paramName);
         }
         return "";
     }
 
-    public String getClientCode() {
-        if(requestQueryParams.containsKey("clientCode")){
-            return requestQueryParams.get("clientCode");
-        }
-        if(requestPathParams.containsKey("clientCode")){
-            return requestPathParams.get("clientCode");
-        }
-        return "";
-    }
-    public boolean isFixture() {
-        return store==RequestHandler.FIXTURE;
-    }
 }

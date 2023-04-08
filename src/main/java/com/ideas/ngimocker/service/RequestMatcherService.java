@@ -20,15 +20,12 @@ public class RequestMatcherService {
 
     @Autowired
     AntPathMatcher matcher;
-
     @Autowired
     MockRequestMapper mockRequestMapper;
-
     private final Map<String, MockRequest> mapExpectations = new HashMap<>();
-
     @PostConstruct
     public void init() {
-       mockRequestMapper.getRequestList().forEach(mockRequest -> mapExpectations.put(mockRequest.getLabel(), mockRequest));
+       mockRequestMapper.getRequestList().forEach(mockRequest -> mapExpectations.put(mockRequest.getName(), mockRequest));
     }
 
     public MockRequest match(HttpServletRequest req, Map<String, String> queryParams,Object body) {
@@ -38,16 +35,16 @@ public class RequestMatcherService {
                 MockRequest comingRequest = mapExpectations.get(labels);
                 String pattern = comingRequest.getUrl();
                 if (matcher.match(pattern, url) && queryParams.keySet().containsAll(comingRequest.getQueryParam())) {
-                    log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with label:" + comingRequest.getLabel() );
+                    log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with label:" + comingRequest.getName() + " store:" + comingRequest.getProcessor());
                     log.fine( "body:" + (body != null ? body.toString() : ""));
                     MockRequest mockRequest = new MockRequest();
                     mockRequest.setRequestPathParams(matcher.extractUriTemplateVariables(pattern, url));
                     mockRequest.setUrl(url);
-                    mockRequest.setLabel(comingRequest.getLabel());
+                    mockRequest.setName(comingRequest.getName());
                     mockRequest.setPages(comingRequest.isPages());
                     mockRequest.setRequestQueryParams(queryParams);
                     mockRequest.setG3CallBack(comingRequest.getG3CallBack());
-                    mockRequest.setStore(comingRequest.getStore());
+                    mockRequest.setProcessor(comingRequest.getProcessor());
                     return mockRequest;
                 }
             }

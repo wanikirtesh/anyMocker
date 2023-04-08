@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RestController
-public class CrawlerController {
+public class FixtureController {
 
     @Autowired
     CrawlerService crawlerService;
@@ -22,6 +22,4 @@ public class CrawlerController {
         crawlerService.fetchFixtures();
         return new ResponseEntity<>("Server will restart after Downloading fixture",HttpStatus.OK);
     }
-
-
 }

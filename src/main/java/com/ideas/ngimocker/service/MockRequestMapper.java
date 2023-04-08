@@ -13,9 +13,7 @@ import java.util.List;
 
 @Controller
 public class MockRequestMapper {
-
     private List<MockRequest> mockRequests;
-
     @Value("${requests.path}")
     String reqConfigFilePath;
 

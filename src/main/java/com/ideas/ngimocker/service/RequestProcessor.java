@@ -7,4 +7,5 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface RequestProcessor {
     ResponseEntity<String> process(MockRequest match, String body, HttpServletRequest req);
+    void postProcessor(MockRequest match, String body, HttpServletRequest req);
 }

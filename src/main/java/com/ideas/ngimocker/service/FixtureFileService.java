@@ -1,5 +1,6 @@
 package com.ideas.ngimocker.service;
 
+import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +17,9 @@ import static java.nio.file.Files.readString;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 @Component
+@Log
 public class FixtureFileService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
-   @Value("${fixture.path}")
+    @Value("${fixture.path}")
    String fixtureDirectory;
 
    public String readFile(Path filePath) {
@@ -46,7 +46,7 @@ public class FixtureFileService {
                             this::readFullFileName)
                     );
         } catch (IOException e) {
-            logger.error("No Fixtures available at Path:" + path);
+            log.severe("No Fixtures available at Path:" + path);
             return null;
         }
     }
@@ -66,7 +66,7 @@ public class FixtureFileService {
                             this::collectFiles)
                     );
         } catch (IOException e) {
-            logger.error("No Fixtures available at Path:" + path);
+            log.severe("No Fixtures available at Path:" + path);
             return null;
         }
     }

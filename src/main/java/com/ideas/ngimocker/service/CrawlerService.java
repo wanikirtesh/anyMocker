@@ -46,7 +46,7 @@ public class CrawlerService {
         List<NGIProps> ngiPropsList = mapper.readValue(new File(crawlerConfigPath), new TypeReference<>() {});
         for (NGIProps ngiProps : ngiPropsList) {
             List<String> correlationId = ngiClient.getCorrelationId(ngiProps);
-            for (MockRequest mockRequest : mockRequestMapper.getRequestList().stream().filter(MockRequest::isFixture).collect(Collectors.toList())) {
+            for (MockRequest mockRequest : mockRequestMapper.getRequestList().stream().filter(MockRequest::isDownload).collect(Collectors.toList())) {
                 downloadFixture(ngiProps, mockRequest, correlationId);
             }
         }
@@ -67,17 +67,17 @@ public class CrawlerService {
                 if(request.isPages()){
                     params.put("page","0");
                     String content = ngiClient.processRequest(ngiProps,request,params);
-                    fixtureFileService.writeFile(content,request.getLabel(),correlationId,"0.json");
+                    fixtureFileService.writeFile(content,request.getName(),correlationId,"0.json");
                     var page=1;
                     while (checkNextPageExists(content)){
                         params.put("page",""+page);
                         content = ngiClient.processRequest(ngiProps,request,params);
-                        fixtureFileService.writeFile(content,request.getLabel(),correlationId,page+".json");
+                        fixtureFileService.writeFile(content,request.getName(),correlationId,page+".json");
                         page++;
                     }
                 }else{
                     String content = ngiClient.processRequest(ngiProps,request,params);
-                    fixtureFileService.writeFile(content,request.getLabel(),request.getRequestedCorrelationId()+".json");
+                    fixtureFileService.writeFile(content,request.getName(),request.getRequestedCorrelationId()+".json");
                 }
             }
         }else{
@@ -85,17 +85,17 @@ public class CrawlerService {
             if(request.isPages()){
                 params.put("page","0");
                 String content = ngiClient.processRequest(ngiProps,request,params);
-                fixtureFileService.writeFile(content,request.getLabel(),ngiProps.getCorrelationID(),"0.json");
+                fixtureFileService.writeFile(content,request.getName(),ngiProps.getCorrelationID(),"0.json");
                 var page=1;
                 while (checkNextPageExists(content)){
                     params.put("page",""+page);
                     content = ngiClient.processRequest(ngiProps,request,params);
-                    fixtureFileService.writeFile(content,request.getLabel(),ngiProps.getCorrelationID(),page+".json");
+                    fixtureFileService.writeFile(content,request.getName(),ngiProps.getCorrelationID(),page+".json");
                     page++;
                 }
             }else{
                 String content = ngiClient.processRequest(ngiProps,request,params);
-                fixtureFileService.writeFile(content,request.getLabel(),ngiProps.getCorrelationID()+".json");
+                fixtureFileService.writeFile(content,request.getName(),ngiProps.getCorrelationID()+".json");
             }
         }
     }

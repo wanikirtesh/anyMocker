@@ -1,5 +1,6 @@
 package com.ideas.ngimocker.components;
 
+import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.net.http.HttpResponse;
 import static java.net.http.HttpRequest.newBuilder;
 
 @Component
+@Log
 public class HTTPClientWrapper {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -24,7 +26,9 @@ public class HTTPClientWrapper {
     public String makePostRequest(String uri, HttpRequest.BodyPublisher bodyPublisher) {
         return makeRequest(uri, "POST", bodyPublisher);
     }
-    public String makePostRequest(String uri, String data, String[] headers) throws IOException, InterruptedException {
+    public HttpResponse<String> makePostRequest(String uri, String data, String[] headers) {
+        log.info("Sending post request to :" + uri);
+        log.finer("with Body " + data);
         // return makeRequest(uri, "POST", bodyPublisher);
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
@@ -33,8 +37,14 @@ public class HTTPClientWrapper {
                 .POST(HttpRequest.BodyPublishers.ofString(data))
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("Response code for the request is:" + response.statusCode());
+        return response;
     }
 
     private String makeRequest(String uri, String method, HttpRequest.BodyPublisher body) {
