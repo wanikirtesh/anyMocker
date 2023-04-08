@@ -217,6 +217,6 @@
     "name": "test",
     "url": "/test",
     "method": "GET",
-    "processor" : "NONE"
+    "processor" : "TEST"
   }
 ]

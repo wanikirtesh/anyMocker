@@ -1,4 +1,4 @@
-package com.ideas.ngimocker.components;
+package com.ideas.mocker.core.components;
 
 import lombok.extern.java.Log;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import static java.net.http.HttpRequest.newBuilder;
 
 @Component
 @Log
-public class HTTPClientWrapper {
+public class HTTPClient {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -29,7 +29,6 @@ public class HTTPClientWrapper {
     public HttpResponse<String> makePostRequest(String uri, String data, String[] headers) {
         log.info("Sending post request to :" + uri);
         log.finer("with Body " + data);
-        // return makeRequest(uri, "POST", bodyPublisher);
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))

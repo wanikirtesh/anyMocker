@@ -1,4 +1,4 @@
-package com.ideas.ngimocker;
+package com.ideas.mocker.core;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

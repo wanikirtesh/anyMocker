@@ -1,8 +1,10 @@
-package com.ideas.ngimocker.components;
+package com.ideas.mocker.mockers.ngi.compnents;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ideas.mocker.core.components.HTTPClient;
+import com.ideas.mocker.core.components.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +17,12 @@ import java.util.stream.Collectors;
 public class NGIClient {
 
      @Autowired
-    HTTPClientWrapper httpClientWrapper;
+     HTTPClient httpClientWrapper;
     private final Map<String ,String > extParam = new HashMap<>();
 
-    public List<String> getCorrelationId(NGIProps ngiProps) throws JsonProcessingException {
-        var content = httpClientWrapper.makeGetRequest(ngiProps.getHost()+"/statisticsCorrelation/"+ ngiProps.getClientCode() + "/"
-                + ngiProps.getPropertyCode() + "/" + ngiProps.getCorrelationID());
+    public List<String> getCorrelationId(NGIProperties ngiProperties) throws JsonProcessingException {
+        var content = httpClientWrapper.makeGetRequest(ngiProperties.getHost()+"/statisticsCorrelation/"+ ngiProperties.getClientCode() + "/"
+                + ngiProperties.getPropertyCode() + "/" + ngiProperties.getCorrelationID());
         ObjectMapper mapper = new ObjectMapper();
         var stats = mapper.readValue(content, JsonNode.class);
         var startDate = stats.get("lastModifiedDate").toString().substring(1, 11);
@@ -28,19 +30,17 @@ public class NGIClient {
         return stats.findValues("correlationId").stream().map(x -> x.toString().replace("\"","")).collect(Collectors.toList());
     }
 
-    public String processRequest(NGIProps ngiProps, MockRequest request, Map<String, String> params) {
+    public String processRequest(NGIProperties ngiProperties, Request request, Map<String, String> params) {
         params.put("size",request.getMeta("size"));
-        var url = ngiProps.getHost()+generateURL(request,params);
-        return generalize(httpClientWrapper.makeGetRequest(url),ngiProps);
+        var url = ngiProperties.getHost()+generateURL(request,params);
+        return generalize(httpClientWrapper.makeGetRequest(url), ngiProperties);
     }
 
-    private String generalize(String content,NGIProps props) {
-
-
+    private String generalize(String content, NGIProperties props) {
         return content.replaceAll("\"clientCode\" *: *\""+props.getClientCode()+"\"","\"clientCode\" : \"{clientCode}\"").replaceAll("\"propertyCode\" *: *\""+props.getPropertyCode()+"\"","\"propertyCode\" : \"{propertyCode}\"").replace(props.getHost(),"http://mockeserver:9191");
     }
 
-    private String generateURL(MockRequest request, Map<String, String> params) {
+    private String generateURL(Request request, Map<String, String> params) {
         params.putAll(extParam);
         String url = request.getUrl();
         List<String> pathParams =  request.getPathParam();

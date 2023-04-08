@@ -1,7 +1,7 @@
-package com.ideas.ngimocker.controller;
+package com.ideas.mocker.core.controller;
 
-import com.ideas.ngimocker.service.MockerService;
-import com.ideas.ngimocker.service.RequestMatcherService;
+import com.ideas.mocker.core.service.MockerService;
+import com.ideas.mocker.core.service.RequestMatcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

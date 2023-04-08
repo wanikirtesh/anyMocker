@@ -1,14 +1,13 @@
-package com.ideas.ngimocker.service.processor;
+package com.ideas.mocker.mockers.htng;
 
-import com.ideas.ngimocker.components.MockRequest;
-import com.ideas.ngimocker.service.G3CallbackService;
-import com.ideas.ngimocker.service.RequestProcessor;
+import com.ideas.mocker.core.components.HTTPClient;
+import com.ideas.mocker.core.components.Request;
+import com.ideas.mocker.core.service.RequestProcessor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -17,8 +16,8 @@ import org.xml.sax.InputSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
+import java.net.http.HttpResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -27,14 +26,20 @@ import java.util.Enumeration;
 @Log
 public class HTNGDecisionRequestProcessor implements RequestProcessor {
     @Autowired
-    G3CallbackService g3CallbackService;
+    HTTPClient httpClient;
+
 
     @Override
-    public ResponseEntity<String> process(MockRequest match, String body, HttpServletRequest req) {
+    public void init() {
+
+    }
+
+    @Override
+    public ResponseEntity<String> process(Request match, String body, HttpServletRequest req) {
         Enumeration<String> headerNames = req.getHeaderNames();
         HttpHeaders headers = new HttpHeaders();
         headers.set("content-type",req.getHeader("content-type"));
-        return new ResponseEntity<String>(processMessage(body,req),headers,HttpStatus.OK);
+        return new ResponseEntity<>(processMessage(body,req),headers,HttpStatus.OK);
     }
 
     private String processMessage(String body, HttpServletRequest req){
@@ -52,15 +57,20 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
     }
 
     @Override
-    public void postProcess(MockRequest match, String body, HttpServletRequest req){
+    public void postProcess(Request match, String body, HttpServletRequest req){
         if(!match.getMeta("g3CallBack").isEmpty()){
             String contentType = req.getHeader("content-type");
-            g3CallbackService.callBackHTNG(createCallBackResponse(body), contentType);
+            callBackHTNG(createCallBackResponse(body), contentType);
         }
     }
 
     @Override
-    public void preProcess(MockRequest match, String body, HttpServletRequest req) {
+    public void preProcess(Request match, String body, HttpServletRequest req) {
+
+    }
+
+    @Override
+    public void downloadFixtures(Request match) {
 
     }
 
@@ -90,6 +100,21 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
             throw new RuntimeException(e);
         }
         return res;
+    }
+
+    public void callBackHTNG(String[] callBack, String contentType){
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        String[] headers = new String[2];
+        headers[0]="Content-Type";
+        headers[1] = contentType ;
+        HttpResponse<String> response = httpClient.makePostRequest(callBack[1], callBack[0], headers);
+        if(response.statusCode()>300){
+            log.severe(callBack[0]);
+        }
     }
 
 }

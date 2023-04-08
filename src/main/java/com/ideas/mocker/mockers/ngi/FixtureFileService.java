@@ -1,8 +1,6 @@
-package com.ideas.ngimocker.service;
+package com.ideas.mocker.mockers.ngi;
 
 import lombok.extern.java.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +16,9 @@ import static java.nio.file.StandardOpenOption.WRITE;
 
 @Component
 @Log
-public class FixtureFileService {
+class FixtureFileService {
     @Value("${fixture.path}")
-   String fixtureDirectory;
+    String fixtureDirectory;
 
    public String readFile(Path filePath) {
         try {

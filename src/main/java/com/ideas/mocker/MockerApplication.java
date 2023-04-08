@@ -1,4 +1,4 @@
-package com.ideas.ngimocker;
+package com.ideas.mocker;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
@@ -10,11 +10,11 @@ import org.springframework.util.AntPathMatcher;
 
 @SpringBootApplication
 @EnableAsync
-public class NgiMockerApplication {
+public class MockerApplication {
 
 	private static ConfigurableApplicationContext  context;
 	public static void main(String[] args) {
-		context = SpringApplication.run(NgiMockerApplication.class, args);
+		context = SpringApplication.run(MockerApplication.class, args);
 	}
 
 	@Bean
@@ -26,7 +26,7 @@ public class NgiMockerApplication {
 
 		Thread thread = new Thread(() -> {
 			context.close();
-			context = SpringApplication.run(NgiMockerApplication.class, args.getSourceArgs());
+			context = SpringApplication.run(MockerApplication.class, args.getSourceArgs());
 		});
 
 		thread.setDaemon(false);

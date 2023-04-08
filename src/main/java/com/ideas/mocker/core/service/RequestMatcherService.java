@@ -1,6 +1,6 @@
-package com.ideas.ngimocker.service;
+package com.ideas.mocker.core.service;
 
-import com.ideas.ngimocker.components.MockRequest;
+import com.ideas.mocker.core.components.Request;
 import lombok.extern.java.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,33 +21,33 @@ public class RequestMatcherService {
     @Autowired
     AntPathMatcher matcher;
     @Autowired
-    MockRequestMapper mockRequestMapper;
-    private final Map<String, MockRequest> mapExpectations = new HashMap<>();
+    RequestFactory requestFactory;
+    private final Map<String, Request> mapExpectations = new HashMap<>();
     @PostConstruct
     public void init() {
-       mockRequestMapper.getRequestList().forEach(mockRequest -> mapExpectations.put(mockRequest.getName(), mockRequest));
+       requestFactory.getRequestList().forEach(mockRequest -> mapExpectations.put(mockRequest.getName(), mockRequest));
     }
 
-    public MockRequest match(HttpServletRequest req, Map<String, String> queryParams,Object body) {
+    public Request match(HttpServletRequest req, Map<String, String> queryParams, Object body) {
         String url =  req.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         try {
             for (String labels : mapExpectations.keySet()) {
-                MockRequest comingRequest = mapExpectations.get(labels);
+                Request comingRequest = mapExpectations.get(labels);
                 String pattern = comingRequest.getUrl();
                 if (matcher.match(pattern, url) && queryParams.keySet().containsAll(comingRequest.getQueryParam())) {
                     log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with name:" + comingRequest.getName() + " store:" + comingRequest.getProcessor());
                     log.fine( "body:" + (body != null ? body.toString() : ""));
-                    MockRequest mockRequest = new MockRequest();
-                    mockRequest.setRequestPathParams(matcher.extractUriTemplateVariables(pattern, url));
-                    mockRequest.setUrl(url);
-                    mockRequest.setMethod(comingRequest.getMethod());
-                    mockRequest.setName(comingRequest.getName());
-                    mockRequest.addMeta(comingRequest.getMeta());
-                    mockRequest.setRequestQueryParams(queryParams);
-                    mockRequest.setDownload(comingRequest.isDownload());
-                    mockRequest.setProcessor(comingRequest.getProcessor());
-                    mockRequest.setBody(comingRequest.getBody());
-                    return mockRequest;
+                    Request request = new Request();
+                    request.setRequestPathParams(matcher.extractUriTemplateVariables(pattern, url));
+                    request.setUrl(url);
+                    request.setMethod(comingRequest.getMethod());
+                    request.setName(comingRequest.getName());
+                    request.addMeta(comingRequest.getMeta());
+                    request.setRequestQueryParams(queryParams);
+                    request.setDownload(comingRequest.isDownload());
+                    request.setProcessor(comingRequest.getProcessor());
+                    request.setBody(comingRequest.getBody());
+                    return request;
                 }
             }
         }catch (Exception e){

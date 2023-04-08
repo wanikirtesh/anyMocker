@@ -1,18 +1,18 @@
-package com.ideas.ngimocker.components;
+package com.ideas.mocker.mockers.ngi.compnents;
 
+import com.ideas.mocker.core.components.HTTPClient;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.net.http.HttpResponse;
 
 @Component
 @Log
 public class G3Client {
     @Autowired
-    HTTPClientWrapper httpClientWrapper;
+    HTTPClient httpClientWrapper;
 
     @Value("${g3.url}")
     String g3BaseUrl;

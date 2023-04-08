@@ -1,4 +1,4 @@
-package com.ideas.ngimocker.components;
+package com.ideas.mocker.core.components;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MockRequest {
+public class Request {
     @Getter @Setter
     private String name,url,method,processor="OK_ONLY",body="";
     @Getter @Setter

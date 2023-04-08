@@ -1,10 +1,9 @@
-package com.ideas.ngimocker.components;
+package com.ideas.mocker.mockers.ngi.compnents;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class NGIProps {
+public class NGIProperties {
     @Getter @Setter
     private String host,propertyCode,clientCode,correlationID;
-
 }
