@@ -26,9 +26,12 @@ public class HILTONTokenRequestProcessor implements RequestProcessor {
     }
 
     @Override
-    public void postProcessor(MockRequest match, String body, HttpServletRequest req) {
-        if(match.getG3CallBack()!=null){
-            g3CallbackService.callBack1(body);
-        }
+    public void postProcess(MockRequest match, String body, HttpServletRequest req) {
+
+    }
+
+    @Override
+    public void preProcess(MockRequest match, String body, HttpServletRequest req) {
+
     }
 }

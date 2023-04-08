@@ -52,10 +52,16 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
     }
 
     @Override
-    public void postProcessor(MockRequest match, String body, HttpServletRequest req){
-        if(match.getG3CallBack()!=null){
-            g3CallbackService.callBackHTNG(createCallBackResponse(body),req.getHeader("content-type"));
+    public void postProcess(MockRequest match, String body, HttpServletRequest req){
+        if(!match.getMeta("g3CallBack").isEmpty()){
+            String contentType = req.getHeader("content-type");
+            g3CallbackService.callBackHTNG(createCallBackResponse(body), contentType);
         }
+    }
+
+    @Override
+    public void preProcess(MockRequest match, String body, HttpServletRequest req) {
+
     }
 
     private String[] createCallBackResponse(String body) {

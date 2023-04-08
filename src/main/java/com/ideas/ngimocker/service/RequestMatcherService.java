@@ -35,16 +35,18 @@ public class RequestMatcherService {
                 MockRequest comingRequest = mapExpectations.get(labels);
                 String pattern = comingRequest.getUrl();
                 if (matcher.match(pattern, url) && queryParams.keySet().containsAll(comingRequest.getQueryParam())) {
-                    log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with label:" + comingRequest.getName() + " store:" + comingRequest.getProcessor());
+                    log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with name:" + comingRequest.getName() + " store:" + comingRequest.getProcessor());
                     log.fine( "body:" + (body != null ? body.toString() : ""));
                     MockRequest mockRequest = new MockRequest();
                     mockRequest.setRequestPathParams(matcher.extractUriTemplateVariables(pattern, url));
                     mockRequest.setUrl(url);
+                    mockRequest.setMethod(comingRequest.getMethod());
                     mockRequest.setName(comingRequest.getName());
-                    mockRequest.setPages(comingRequest.isPages());
+                    mockRequest.addMeta(comingRequest.getMeta());
                     mockRequest.setRequestQueryParams(queryParams);
-                    mockRequest.setG3CallBack(comingRequest.getG3CallBack());
+                    mockRequest.setDownload(comingRequest.isDownload());
                     mockRequest.setProcessor(comingRequest.getProcessor());
+                    mockRequest.setBody(comingRequest.getBody());
                     return mockRequest;
                 }
             }

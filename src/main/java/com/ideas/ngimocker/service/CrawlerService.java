@@ -61,10 +61,10 @@ public class CrawlerService {
         params.put("propertyCode",ngiProps.getPropertyCode());
         params.put("clientCode",ngiProps.getClientCode());
         params.put("format","haljson");
-        if(request.isCorrelation()){
+        if(request.getMeta("correlation").equalsIgnoreCase("true")){
             for (String correlationId : correlationIds) {
                 params.put("correlationId",correlationId);
-                if(request.isPages()){
+                if(request.getMeta("pages").equals("true")){
                     params.put("page","0");
                     String content = ngiClient.processRequest(ngiProps,request,params);
                     fixtureFileService.writeFile(content,request.getName(),correlationId,"0.json");
@@ -77,12 +77,12 @@ public class CrawlerService {
                     }
                 }else{
                     String content = ngiClient.processRequest(ngiProps,request,params);
-                    fixtureFileService.writeFile(content,request.getName(),request.getRequestedCorrelationId()+".json");
+                    fixtureFileService.writeFile(content,request.getName(),getCorrelationId(request)+".json");
                 }
             }
         }else{
             params.put("correlationId",ngiProps.getCorrelationID());
-            if(request.isPages()){
+            if(request.getMeta("pages").equals("true")){
                 params.put("page","0");
                 String content = ngiClient.processRequest(ngiProps,request,params);
                 fixtureFileService.writeFile(content,request.getName(),ngiProps.getCorrelationID(),"0.json");
@@ -104,5 +104,21 @@ public class CrawlerService {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode obj = mapper.readValue(page, JsonNode.class);
         return obj.has("links") && obj.get("links").findValues("rel").contains(new TextNode("next"));
+    }
+
+    private String getCorrelationId(MockRequest match) throws Exception {
+        if(match.getRequestQueryParams().containsKey("correlationId")){
+            return match.getRequestQueryParams().get("correlationId");
+        }
+        if(match.getRequestQueryParams().containsKey("statisticsCorrelationId")){
+            return match.getRequestQueryParams().get("statisticsCorrelationId");
+        }
+        if(match.getRequestPathParams().containsKey("correlationId")){
+            return match.getRequestPathParams().get("correlationId");
+        }
+        if(match.getRequestPathParams().containsKey("statisticsCorrelationId")){
+            return match.getRequestPathParams().get("statisticsCorrelationId");
+        }
+        throw new Exception("No Correlation Id Found in request ");
     }
 }

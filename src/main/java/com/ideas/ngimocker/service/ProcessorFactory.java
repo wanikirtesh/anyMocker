@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 public class ProcessorFactory {
     @Autowired
     private ApplicationContext context;
-
     public RequestProcessor getProcessor(String serviceType) {
         return context.getBean(serviceType, RequestProcessor.class);
     }

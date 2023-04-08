@@ -5,9 +5,11 @@
     "method": "GET",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "pages": false,
     "processor": "NGI",
-    "download": true
+    "download": true,
+    "meta": {
+      "pages": false
+    }
   },
   {
     "name": "activitiesHotel",
@@ -15,11 +17,13 @@
     "method": "GET",
     "queryParam": ["size","page"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "pages": true,
-    "correlation": true,
-    "size": 500,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "correlation": true,
+      "size": 500
+    }
   },
   {
     "name": "groups",
@@ -27,10 +31,12 @@
     "method": "GET",
     "queryParam": ["size","page"],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "pages": true,
-    "size": 100,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "size": 100
+    }
   },
 
   {
@@ -39,9 +45,11 @@
     "method": "GET",
     "queryParam": ["clientCode","propertyCode","correlationId","format"],
     "pathParam": [],
-    "pages": false,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": false
+    }
   },
 
   {
@@ -50,9 +58,11 @@
     "method": "GET",
     "queryParam": [],
     "pathParam": ["statisticsCorrelationId"],
-    "pages": false,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": false
+    }
   },
   {
     "name": "reservations",
@@ -60,9 +70,11 @@
     "method": "GET",
     "queryParam": ["clientCode","propertyCode","statisticsCorrelationId","size","page"],
     "pathParam": [],
-    "pages": true,
-    "size": 100,
-    "processor": "OK_ONLY"
+    "processor": "OK_ONLY",
+    "meta": {
+      "pages": true,
+      "size": 100
+    }
   },
   {
     "name": "roomTypeCodes",
@@ -70,10 +82,12 @@
     "method": "GET",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "pages": false,
-    "size": 500,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": false,
+      "size": 500
+    }
   },
   {
     "name": "reservations2",
@@ -81,10 +95,12 @@
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","statisticsCorrelationId"],
-    "pages": true,
-    "size": 500,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "size": 500
+    }
   },
   {
     "name":  "roomTypeMarketSegmentActivities",
@@ -92,11 +108,13 @@
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "pages": true,
-    "size": 500,
-    "correlation": true,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "size": 500,
+      "correlation": true
+    }
   },
   {
     "name": "roomTypeMarketSegmentHotelActivities",
@@ -104,11 +122,13 @@
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "pages": true,
-    "size": 500,
-    "correlation": true,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "size": 500,
+      "correlation": true
+    }
   },
   {
     "name": "roomTypeMarketSegmentProvidedActivities",
@@ -116,11 +136,13 @@
     "method": "GET",
     "queryParam": ["page","size"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "pages": true,
-    "size": 500,
-    "correlation": true,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "size": 500,
+      "correlation": true
+    }
   },
 
   {
@@ -129,11 +151,13 @@
     "method": "GET",
     "queryParam": ["page","size","startDate"],
     "pathParam": ["clientCode","propertyCode","correlationId"],
-    "pages": true,
-    "size": 500,
-    "correlation": true,
     "processor": "NGI",
-    "download":true
+    "download":true,
+    "meta": {
+      "pages": true,
+      "size": 500,
+      "correlation": true
+    }
   },
   {
     "name": "mockAnalyticalMarketServiceRemapReservationAndOccupancy",
@@ -141,11 +165,13 @@
     "method": "POST",
     "queryParam": [],
     "pathParam": [],
-    "pages": false,
-    "size": 500,
-    "correlation": false,
     "processor": "OK_ONLY",
-    "g3CallBack": "callBack1"
+    "meta": {
+      "pages": false,
+      "size": 500,
+      "correlation": false,
+      "g3CallBack": "callBack1"
+    }
   },
     {
     "name": "/analyticalMarketService/deleteByProperty",
@@ -161,15 +187,19 @@
     "method": "POST",
     "queryParam": [],
     "pathParam": ["clientCode","propertyCode"],
-    "processor": "OK_ONLY",
-    "g3CallBack": "callG3"
+    "processor": "NGI",
+    "meta": {
+      "g3CallBack": "callG3"
+    }
   },
   {
     "name": "htngClient",
     "url": "/htngClient",
     "method": "POST",
     "processor": "HTNG",
-    "g3CallBack": "callG3"
+    "meta": {
+      "g3CallBack": "callG3"
+    }
   },
   {
     "name": "oxiClient",

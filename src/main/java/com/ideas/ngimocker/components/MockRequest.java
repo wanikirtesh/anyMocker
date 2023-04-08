@@ -11,11 +11,9 @@ import java.util.Map;
 
 public class MockRequest {
     @Getter @Setter
-    private String name,url,method,g3CallBack,processor="OK_ONLY",body="";
+    private String name,url,method,processor="OK_ONLY",body="";
     @Getter @Setter
-    private boolean pages,correlation,download=false;
-    @Getter @Setter
-    private int size;
+    private boolean download=false;
     @Getter
     private final List<String> queryParam = new ArrayList<>();
     @Getter
@@ -24,6 +22,7 @@ public class MockRequest {
     private final Map<String, String> requestPathParams = new HashMap<>();
     @Getter
     private final Map<String, String> requestQueryParams = new HashMap<>();
+    private final Map<String,String> meta = new HashMap<>();
 
     public void setQueryParam(List<String> queryParam) {
         this.queryParam.addAll(queryParam);
@@ -45,22 +44,6 @@ public class MockRequest {
         return this.requestQueryParams.get("page");
     }
 
-    public String getRequestedCorrelationId() throws Exception {
-        if(requestQueryParams.containsKey("correlationId")){
-            return requestQueryParams.get("correlationId");
-        }
-        if(requestQueryParams.containsKey("statisticsCorrelationId")){
-            return requestQueryParams.get("statisticsCorrelationId");
-        }
-        if(requestPathParams.containsKey("correlationId")){
-            return requestPathParams.get("correlationId");
-        }
-        if(requestPathParams.containsKey("statisticsCorrelationId")){
-            return requestPathParams.get("statisticsCorrelationId");
-        }
-        throw new Exception("No Correlation Id Found in request ");
-    }
-
 
     public String getParameter(String paramName) {
         if(requestQueryParams.containsKey(paramName)){
@@ -70,6 +53,34 @@ public class MockRequest {
             return requestPathParams.get(paramName);
         }
         return "";
+    }
+
+    public String getQueryParam(String paramName){
+        if(requestQueryParams.containsKey(paramName)){
+            return requestQueryParams.get(paramName);
+        }
+        return "";
+    }
+
+    public String getPathParam(String paramName){
+        if(requestPathParams.containsKey(paramName)){
+            return requestPathParams.get(paramName);
+        }
+        return "";
+    }
+
+    public void addMeta(Map<String ,String> meta){
+        this.meta.putAll(meta);
+    }
+
+    public String getMeta(String key){
+        if(meta.containsKey(key)){
+            return meta.get(key);
+        }
+        return "";
+    }
+    public Map<String,String> getMeta(){
+        return meta;
     }
 
 }

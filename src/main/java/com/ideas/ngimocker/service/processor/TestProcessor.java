@@ -12,11 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 public class TestProcessor implements RequestProcessor {
     @Override
     public ResponseEntity<String> process(MockRequest match, String body, HttpServletRequest req) {
-        log.info("pree");
+        log.info("process");
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
     @Override
-    public void postProcessor(MockRequest match, String body, HttpServletRequest req) {
+    public void postProcess(MockRequest match, String body, HttpServletRequest req) {
         log.info("post");
+    }
+
+    @Override
+    public void preProcess(MockRequest match, String body, HttpServletRequest req) {
+        log.info("pree");
     }
 }

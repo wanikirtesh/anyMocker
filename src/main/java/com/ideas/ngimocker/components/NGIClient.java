@@ -29,7 +29,7 @@ public class NGIClient {
     }
 
     public String processRequest(NGIProps ngiProps, MockRequest request, Map<String, String> params) {
-        params.put("size",request.getSize()+"");
+        params.put("size",request.getMeta("size"));
         var url = ngiProps.getHost()+generateURL(request,params);
         return generalize(httpClientWrapper.makeGetRequest(url),ngiProps);
     }

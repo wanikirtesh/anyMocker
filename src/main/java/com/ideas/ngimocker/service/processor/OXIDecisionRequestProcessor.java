@@ -27,7 +27,12 @@ public class OXIDecisionRequestProcessor implements RequestProcessor {
     }
 
     @Override
-    public void postProcessor(MockRequest match, String body, HttpServletRequest req) {
+    public void postProcess(MockRequest match, String body, HttpServletRequest req) {
+
+    }
+
+    @Override
+    public void preProcess(MockRequest match, String body, HttpServletRequest req) {
 
     }
 
