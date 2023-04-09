@@ -13,14 +13,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.net.http.HttpResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
 
 @Service("HTNG")
 @Log
@@ -36,14 +35,13 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
 
     @Override
     public ResponseEntity<String> process(Request match, String body, HttpServletRequest req) {
-        Enumeration<String> headerNames = req.getHeaderNames();
         HttpHeaders headers = new HttpHeaders();
         headers.set("content-type",req.getHeader("content-type"));
-        return new ResponseEntity<>(processMessage(body,req),headers,HttpStatus.OK);
+        return new ResponseEntity<>(processMessage(body),headers,HttpStatus.OK);
     }
 
-    private String processMessage(String body, HttpServletRequest req){
-        String wsaMessageId ="";
+    private String processMessage(String body){
+        String wsaMessageId;
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(new InputSource(new StringReader(body)));
@@ -75,7 +73,7 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
     }
 
     private String[] createCallBackResponse(String body) {
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
         String[] res = new String[2];
         try {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

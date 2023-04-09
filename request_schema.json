@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sbn.com/request.schema.json",
+  "title": "Requests",
+  "description": "Requests for mock server",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "description": "unique name for request",
+        "type": "string"
+      },
+      "url": {
+        "description": "request url",
+        "type": "string"
+      },
+      "method": {
+        "description": "request method",
+        "type": "string"
+      },
+      "processor": {
+        "description": "Bean name of request Processor",
+        "type": "string"
+      },
+      "download": {
+        "description": "need fixture download for response?",
+        "type": "boolean"
+      },
+      "meta": {
+        "description": "additional information <string:string> object for support",
+        "type": "object"
+      },
+      "queryParam": {
+        "description": "query parameter list",
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      },
+      "pathParam": {
+        "description": "path parameter list",
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      }
+    },
+    "required": [
+      "name",
+      "url",
+      "method",
+      "processor"
+    ]
+  }
+}
+

@@ -1,5 +1,4 @@
 package com.ideas.mocker.mockers.ngi;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,13 +21,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Log
 @Service("NGI")
@@ -47,22 +48,53 @@ public class NGIRequestProcessor implements RequestProcessor {
     @Autowired
     NGIClient ngiClient;
     private static final Map<String, Map<String, Path>> fixturesMap = new HashMap<>();
-    private static final Map<String, Map<String, Map<String, Path>>> pagedFixtureMap = new HashMap<String, Map<String, Map<String, Path>>>();
+    private static final Map<String, Map<String, Map<String, Path>>> pagedFixtureMap = new HashMap<>();
 
 
     @Override
     @PostConstruct
     public void init()  {
-        log.info("reading fixtures from \"" + fixturePath + "\"");
-        requestFactory.getRequests(this).forEach(key-> {
-            if(key.isDownload()) {
-                if (key.getMeta("pages").equals("true")) {
-                    pagedFixtureMap.put(key.getName(), fixtureFileService.collectNestedFiles(Path.of(fixturePath, key.getName())));
-                } else {
-                    fixturesMap.put(key.getName(), fixtureFileService.collectFiles(Path.of(fixturePath, key.getName())));
+        try {
+            log.info("reading fixtures from \"" + fixturePath + "\"");
+            long size = getFixtureSize(Path.of(fixturePath));
+            log.info("NGI fixture size is:" + ((size/1024)/1024) + "MB");
+            requestFactory.getRequests(this).forEach(request -> {
+                if (request.isDownload()) {
+                    if (request.getMeta("pages").equals("true")) {
+                        pagedFixtureMap.put(request.getName(), fixtureFileService.collectNestedFiles(Path.of(fixturePath, request.getName())));
+                    } else {
+                        fixturesMap.put(request.getName(), fixtureFileService.collectFiles(Path.of(fixturePath, request.getName())));
+                    }
                 }
-            }
-        });
+            });
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private long getFixtureSize(Path path) {
+        long size;
+
+        // need close Files.walk
+        try (Stream<Path> walk = Files.walk(path)) {
+
+            size = walk
+                    .filter(Files::isRegularFile)
+                    .mapToLong(p -> {
+                        try {
+                            return Files.size(p);
+                        } catch (IOException e) {
+                            System.out.printf("Failed to get size of %s%n%s", p, e);
+                            return 0L;
+                        }
+                    })
+                    .sum();
+
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return size;
     }
 
     @Override

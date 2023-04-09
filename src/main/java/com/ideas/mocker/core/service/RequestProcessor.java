@@ -4,7 +4,7 @@ import com.ideas.mocker.core.components.Request;
 import org.springframework.http.ResponseEntity;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface RequestProcessor {
     @PostConstruct
