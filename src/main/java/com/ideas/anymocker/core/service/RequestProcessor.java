@@ -1,0 +1,17 @@
+package com.ideas.anymocker.core.service;
+
+import com.ideas.anymocker.core.components.Request;
+import org.springframework.http.ResponseEntity;
+
+import javax.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+
+public interface RequestProcessor {
+    @PostConstruct
+    void init();
+    ResponseEntity<String> process(Request match, String body, HttpServletRequest req);
+    void postProcess(Request match, String body, HttpServletRequest req);
+    void preProcess(Request match, String body, HttpServletRequest req);
+
+    void downloadFixtures(Request match);
+}

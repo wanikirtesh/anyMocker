@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ideas</groupId>
-	<artifactId>mocker</artifactId>
+	<artifactId>anyMocker</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mocker</name>
-	<description>NGI Mocker</description>
+	<name>anyMocker</name>
+	<description>Any Mocker</description>
 	<packaging>jar</packaging>
 	<properties>
 		<java.version>11</java.version>
