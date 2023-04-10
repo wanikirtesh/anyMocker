@@ -49,5 +49,6 @@ Thumbs.db
 *.wmv
 
 /newFixtures/
+/fixtures
 /logs/
 crawler.json
