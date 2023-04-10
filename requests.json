@@ -196,6 +196,9 @@
     "name": "htngClient",
     "url": "/htngClient",
     "method": "POST",
+    "responseHeaders": {
+      "content-type": "application/soap+xml"
+    },
     "processor": "HTNG",
     "meta": {
       "g3CallBack": "callG3"

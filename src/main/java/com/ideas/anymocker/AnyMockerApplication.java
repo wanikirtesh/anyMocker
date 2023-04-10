@@ -1,5 +1,6 @@
 package com.ideas.anymocker;
 
+import lombok.extern.java.Log;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import org.springframework.util.AntPathMatcher;
 
 @SpringBootApplication
 @EnableAsync
+@Log
 public class AnyMockerApplication {
 
 	private static ConfigurableApplicationContext  context;
@@ -23,7 +25,7 @@ public class AnyMockerApplication {
 	}
 	public static void restart() {
 		ApplicationArguments args = context.getBean(ApplicationArguments.class);
-
+		log.info("Restarting application....");
 		Thread thread = new Thread(() -> {
 			context.close();
 			context = SpringApplication.run(AnyMockerApplication.class, args.getSourceArgs());

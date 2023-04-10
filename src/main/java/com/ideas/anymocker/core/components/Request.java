@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Request {
+public class Request implements Cloneable {
     @Getter @Setter
     private String name,url,method,processor="OK_ONLY",body="";
     @Getter @Setter
@@ -23,6 +23,7 @@ public class Request {
     @Getter
     private final Map<String, String> requestQueryParams = new HashMap<>();
     private final Map<String,String> meta = new HashMap<>();
+    private final Map<String ,String> responseHeaders = new HashMap<>();
 
     public void setQueryParam(List<String> queryParam) {
         this.queryParam.addAll(queryParam);
@@ -82,5 +83,30 @@ public class Request {
     public Map<String,String> getMeta(){
         return meta;
     }
+
+    public String getResponseHeader(String key){
+        if(responseHeaders.containsKey(key)){
+            return responseHeaders.get(key);
+        }
+        return "";
+    }
+    public Map<String,String> getResponseHeaders(){
+        return responseHeaders;
+    }
+
+    public void addResponseHeaders(Map<String ,String> headers){
+        responseHeaders.putAll(headers);
+    }
+
+    @Override
+    public Request clone() {
+        try {
+            return (Request) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+
 
 }

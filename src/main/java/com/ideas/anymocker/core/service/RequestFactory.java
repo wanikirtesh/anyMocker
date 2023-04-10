@@ -3,6 +3,7 @@ package com.ideas.anymocker.core.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ideas.anymocker.core.components.Request;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -14,13 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@Log
 public class RequestFactory {
     private List<Request> requests;
-
     ConfigurableListableBeanFactory beanFactory;
     @Value("${requests.path}")
     String reqConfigFilePath;
-
     @Autowired
     public RequestFactory(ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
@@ -28,10 +28,11 @@ public class RequestFactory {
     @PostConstruct
     private void init() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-            this.requests = mapper.readValue(new File(reqConfigFilePath), new TypeReference<>() {
+        log.info("Mapping requests from file:" + reqConfigFilePath);
+        this.requests = mapper.readValue(new File(reqConfigFilePath), new TypeReference<>() {
         });
+        log.info("Total " +  requests.size() + " requests mapped");
     }
-
     List<Request> getRequestList() {
         return this.requests;
     }

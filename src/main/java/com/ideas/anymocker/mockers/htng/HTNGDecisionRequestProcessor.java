@@ -5,7 +5,6 @@ import com.ideas.anymocker.core.components.Request;
 import com.ideas.anymocker.core.service.RequestProcessor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,9 +34,7 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
 
     @Override
     public ResponseEntity<String> process(Request match, String body, HttpServletRequest req) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("content-type",req.getHeader("content-type"));
-        return new ResponseEntity<>(processMessage(body),headers,HttpStatus.OK);
+       return new ResponseEntity<>(processMessage(body),HttpStatus.OK);
     }
 
     private String processMessage(String body){
@@ -94,6 +91,7 @@ public class HTNGDecisionRequestProcessor implements RequestProcessor {
             res[1] = replyTo;
         } catch (Exception e) {
             log.severe(e.getMessage());
+            e.printStackTrace();
             log.severe(body);
             throw new RuntimeException(e);
         }

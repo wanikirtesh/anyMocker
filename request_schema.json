@@ -19,6 +19,11 @@
         "description": "request method",
         "type": "string"
       },
+      "responseHeaders": {
+        "description": "headers to be include in response",
+        "type": "object",
+        "uniqueItems": true
+      },
       "processor": {
         "description": "Bean name of request Processor",
         "type": "string"

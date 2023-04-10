@@ -26,7 +26,7 @@ public class FixtureDownloadService {
             for (Request request : requestFactory.getRequestList().stream().filter(Request::isDownload).collect(Collectors.toList())) {
                 requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
             }
-            log.info("Fixture download Completed......");
+            log.info("Fixture download completed......");
             Files.deleteIfExists(downloading);
             AnyMockerApplication.restart();
         }catch (Exception e){
