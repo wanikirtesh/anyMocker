@@ -5,29 +5,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.nio.file.Files.readString;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 @Component
 @Log
-class FixtureFileService {
+public class FixtureFileService {
     @Value("${fixture.path}")
     String fixtureDirectory;
 
-   public String readFile(Path filePath) {
-        try {
-            return readString(filePath, StandardCharsets.ISO_8859_1);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public FixtureFileService(String fixtureDirectory){
+        this.fixtureDirectory = fixtureDirectory;
     }
 
+    public FixtureFileService(){
+        //this.fixtureDirectory = fixtureDirectory;
+    }
     public void writeFile(String content, String... paths) throws IOException {
         var filePath = Path.of(fixtureDirectory,paths);
         Files.createDirectories(filePath.getParent());

@@ -191,35 +191,6 @@
     "meta": {
       "g3CallBack": "callG3"
     }
-  },
-  {
-    "name": "htngClient",
-    "url": "/htngClient",
-    "method": "POST",
-    "responseHeaders": {
-      "content-type": "application/soap+xml"
-    },
-    "processor": "HTNG",
-    "meta": {
-      "g3CallBack": "callG3"
-    }
-  },
-  {
-    "name": "oxiClient",
-    "url": "/oxiClient",
-    "method": "POST",
-    "processor": "OXI"
-  },
-  {
-    "name": "HiltonToken",
-    "url": "/HILTON/BASE",
-    "method": "GET",
-    "processor" : "HILTON_TOKEN"
-  },
-  {
-    "name": "test",
-    "url": "/test",
-    "method": "GET",
-    "processor" : "TEST"
   }
+
 ]

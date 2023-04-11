@@ -4,7 +4,6 @@ import com.ideas.anymocker.AnyMockerApplication;
 import com.ideas.anymocker.core.components.Request;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -13,27 +12,19 @@ import java.util.stream.Collectors;
 
 @Service
 @Log
-public class FixtureDownloadService {
+public class NewFixtureDownloadService {
 
     @Autowired
     RequestFactory requestFactory;
 
-    @Value("${use.groovy.impl:true}")
-    private boolean useGroovy;
-
     @Autowired
-    NewRequestProcessorFactory newrequestProcessorFactory;
-    @Autowired
-    RequestProcessorFactory requestProcessorFactory;
+    NewRequestProcessorFactory requestProcessorFactory;
     public void download() {
         try {
             Path downloading = Path.of("./downloadingFixtures");
             Files.createFile(downloading);
-            for (Request request : requestFactory.getRequestList().stream().filter(Request::isDownload).collect(Collectors.toList())) {
-                if(useGroovy)
-                    newrequestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
-                else
-                    requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
+            for (Request request : requestFactory.getRequestList().stream().filter(Request::isDownload).toList()) {
+                requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
             }
             log.info("Fixture download completed......");
             Files.deleteIfExists(downloading);

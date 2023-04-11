@@ -20,6 +20,10 @@ public class NGIClient {
      HTTPClient httpClientWrapper;
     private final Map<String ,String > extParam = new HashMap<>();
 
+    public NGIClient(@Autowired HTTPClient httpClient){
+        this.httpClientWrapper = httpClient;
+    }
+
     public List<String> getCorrelationId(NGIProperties ngiProperties) throws JsonProcessingException {
         var content = httpClientWrapper.makeGetRequest(ngiProperties.getHost()+"/statisticsCorrelation/"+ ngiProperties.getClientCode() + "/"
                 + ngiProperties.getPropertyCode() + "/" + ngiProperties.getCorrelationID());

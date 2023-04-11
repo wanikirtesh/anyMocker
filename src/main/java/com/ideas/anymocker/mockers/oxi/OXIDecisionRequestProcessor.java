@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service("OXI")
 public class OXIDecisionRequestProcessor implements RequestProcessor {
 
-
     @Override
     public void init() {
 
