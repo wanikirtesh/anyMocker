@@ -5,9 +5,9 @@ name: Maven Package
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master,groovy ]
     pull_request:
-      branches: [ master ]
+      branches: [ master,groovy ]
 
 jobs:
   build:
