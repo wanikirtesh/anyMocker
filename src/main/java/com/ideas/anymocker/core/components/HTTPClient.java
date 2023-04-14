@@ -1,8 +1,6 @@
 package com.ideas.anymocker.core.components;
 
 import lombok.extern.java.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,7 +14,7 @@ import static java.net.http.HttpRequest.newBuilder;
 @Component
 @Log
 public class HTTPClient {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public String makeGetRequest(String uri) {
@@ -48,7 +46,7 @@ public class HTTPClient {
 
     private String makeRequest(String uri, String method, HttpRequest.BodyPublisher body) {
         try {
-            logger.info("Request " + method + " " + uri);
+            log.info("Request " + method + " " + uri);
             HttpResponse<String> response = httpClient.send(
                     newBuilder(URI.create(uri)).method(method, body).build(),
                     HttpResponse.BodyHandlers.ofString());

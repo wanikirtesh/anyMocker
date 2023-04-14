@@ -24,9 +24,10 @@ public class RequestMatcherService {
             for(Request mockRequest:requestFactory.getRequestList()){
                 String pattern = mockRequest.getUrl();
                 if (matcher.match(pattern, url) && queryParams.keySet().containsAll(mockRequest.getQueryParam())) {
-                    log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with name:" + mockRequest.getName() + " processor:" + mockRequest.getProcessor());
+                    log.info("Request " + req.getMethod() + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with name:" + mockRequest.getName() + " processor:" + mockRequest.getProcessor() + " From:" + req.getRemoteAddr() + "("+req.getRemoteHost()+")" );
                     log.fine( "body:" + (body != null ? body.toString() : ""));
-                    Request request = mockRequest.clone();
+                    Request request = new Request();
+                    request.clone(mockRequest);
                     request.setRequestPathParams(matcher.extractUriTemplateVariables(pattern, url));
                     request.setUrl(url);
                     request.setRequestQueryParams(queryParams);

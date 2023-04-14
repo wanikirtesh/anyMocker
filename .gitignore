@@ -53,3 +53,7 @@ Thumbs.db
 /logs/
 crawler.json
 /processors/
+!/processors/TEST.groovy
+/requests/
+!/requests/TEST.json
+/mockers/

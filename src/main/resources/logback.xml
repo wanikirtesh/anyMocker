@@ -5,17 +5,17 @@
         <file>${HOME_LOG}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
+            <maxFileSize>100MB</maxFileSize>
             <totalSizeCap>20GB</totalSizeCap>
             <maxHistory>35</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d %-5p %c{1} [%t] %m%n</pattern>
+            <pattern>%d %-5p %c{1}.%M:%line [%t] %m%n</pattern>
         </encoder>
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d %-5p %c{1} [%t] %m%n</pattern>
+            <pattern>%d %-5p %c{1}.%M:%line [%t] %m%n</pattern>
         </encoder>
     </appender>
     <logger name="com.ideas" level="info" additivity="false">

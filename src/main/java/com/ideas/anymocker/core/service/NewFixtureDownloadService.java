@@ -1,14 +1,13 @@
 package com.ideas.anymocker.core.service;
 
-import com.ideas.anymocker.AnyMockerApplication;
 import com.ideas.anymocker.core.components.Request;
+import com.ideas.anymocker.AnyMockerApplication;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.stream.Collectors;
 
 @Service
 @Log

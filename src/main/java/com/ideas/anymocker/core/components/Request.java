@@ -2,14 +2,15 @@ package com.ideas.anymocker.core.components;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class Request implements Cloneable {
+@Log
+public class Request {
     @Getter @Setter
     private String name,url,method,processor="OK_ONLY",body="";
     @Getter @Setter
@@ -22,7 +23,12 @@ public class Request implements Cloneable {
     private final Map<String, String> requestPathParams = new HashMap<>();
     @Getter
     private final Map<String, String> requestQueryParams = new HashMap<>();
-    private final Map<String,String> meta = new HashMap<>();
+    @Getter @Setter
+    private Map<String,String> meta;
+
+    public Request(){
+        meta = new HashMap<>();
+    }
     private final Map<String ,String> responseHeaders = new HashMap<>();
 
     public void setQueryParam(List<String> queryParam) {
@@ -39,10 +45,6 @@ public class Request implements Cloneable {
 
     public void setRequestQueryParams(Map<String, String> requestQueryParams) {
         this.requestQueryParams.putAll(requestQueryParams);
-    }
-
-    public String getPage(){
-        return this.requestQueryParams.get("page");
     }
 
 
@@ -74,15 +76,17 @@ public class Request implements Cloneable {
         this.meta.putAll(meta);
     }
 
-    public String getMeta(String key){
+    public String getMetaValue(String key){
+        //log.info(System.identityHashCode(meta)+"");
         if(meta.containsKey(key)){
             return meta.get(key);
         }
         return "";
     }
-    public Map<String,String> getMeta(){
-        return meta;
-    }
+   // public Map<String,String> getMeta(){
+        //log.info(meta.toString());
+   //     return meta;
+   // }
 
     public String getResponseHeader(String key){
         if(responseHeaders.containsKey(key)){
@@ -98,13 +102,18 @@ public class Request implements Cloneable {
         responseHeaders.putAll(headers);
     }
 
-    @Override
-    public Request clone() {
-        try {
-            return (Request) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+    public void clone(Request mockRequest) {
+        this.meta.putAll(mockRequest.meta);
+        this.responseHeaders.putAll(mockRequest.responseHeaders);
+        this.body = mockRequest.body;
+        this.name = mockRequest.name;
+        this.url=mockRequest.url;
+        this.processor=mockRequest.processor;
+        this.method=mockRequest.method;
+        this.pathParam.addAll(mockRequest.pathParam);
+        this.queryParam.addAll(mockRequest.queryParam);
+        this.requestQueryParams.putAll(mockRequest.requestQueryParams);
+        this.requestPathParams.putAll(mockRequest.requestPathParams);
     }
 
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +30,9 @@ public class NewMockerService {
     @Autowired
     RequestFactory requestFactory;
 
+    @Autowired
+    ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
     @PostConstruct
     public void init(){
         if(useGroovy){Set<String> collect = requestFactory.getRequestList().stream().map(Request::getProcessor).collect(Collectors.toSet());
@@ -46,8 +50,10 @@ public class NewMockerService {
         if(match != null){
             RequestProcessor service = requestProcessorFactory.getProcessor(match.getProcessor());
             service.preProcess(match,body,req);
-            CompletableFuture.runAsync(()->
-                    service.postProcess(match,body,req)
+
+            CompletableFuture.runAsync(()->{
+                   // log.info(service.toString());
+                    service.postProcess(match,body,req);},threadPoolTaskExecutor
             );
             ResponseEntity<String> response = service.process(match, body, req);
             HttpHeaders headers = new HttpHeaders();
