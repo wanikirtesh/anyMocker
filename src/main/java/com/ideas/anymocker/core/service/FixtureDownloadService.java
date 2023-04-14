@@ -22,18 +22,18 @@ public class FixtureDownloadService {
     private boolean useGroovy;
 
     @Autowired
-    NewRequestProcessorFactory newrequestProcessorFactory;
-    @Autowired
-    RequestProcessorFactory requestProcessorFactory;
+    RequestProcessorFactory newrequestProcessorFactory;
+    //@Autowired
+    //RequestProcessorFactory requestProcessorFactory;
     public void download() {
         try {
             Path downloading = Path.of("./downloadingFixtures");
             Files.createFile(downloading);
             for (Request request : requestFactory.getRequestList().stream().filter(Request::isDownload).collect(Collectors.toList())) {
-                if(useGroovy)
+                //if(useGroovy)
                     newrequestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
-                else
-                    requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
+                //else
+                //    requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
             }
             log.info("Fixture download completed......");
             Files.deleteIfExists(downloading);

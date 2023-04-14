@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ProcessorClosureWrapper implements RequestProcessor {
+public class ClosureProcessor implements RequestProcessor {
     private final Logger log;
     private final MethodClosure pre;
     private final MethodClosure process;
@@ -18,7 +18,7 @@ public class ProcessorClosureWrapper implements RequestProcessor {
 
     private final MethodClosure download;
 
-    public ProcessorClosureWrapper(Logger log, MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download) {
+    public ClosureProcessor(Logger log, MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download) {
         this.log = log;
         this.pre = pre;
         this.process = process;

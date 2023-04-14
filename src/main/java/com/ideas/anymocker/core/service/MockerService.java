@@ -1,16 +1,21 @@
 package com.ideas.anymocker.core.service;
 
 import com.ideas.anymocker.core.components.Request;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.concurrent.CompletableFuture;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 
-@Component
+import javax.annotation.PostConstruct;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+@Service
 @Log
 public class MockerService {
     @Value("${default.response.body:}")
@@ -19,12 +24,36 @@ public class MockerService {
     int defaultResponseCode;
     @Autowired
     RequestProcessorFactory requestProcessorFactory;
+    @Value("${use.groovy.impl:true}")
+    private boolean useGroovy;
+
+    @Autowired
+    RequestFactory requestFactory;
+
+    @Autowired
+    ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+    @PostConstruct
+    public void init(){
+        if(useGroovy){Set<String> collect = requestFactory.getRequestList().stream().map(Request::getProcessor).collect(Collectors.toSet());
+        for (String s : collect) {
+            try{
+            log.info("initializing Processor:" + s);
+            requestProcessorFactory.getProcessor(s).init(requestFactory.getRequests(s).stream().filter(Request::isDownload).collect(Collectors.toList()));
+            }catch (Exception e) {
+                log.severe("No Processor script found for " + s);
+            }
+        }
+        }
+    }
     public ResponseEntity<String> processRequest(Request match, String body, HttpServletRequest req) {
         if(match != null){
             RequestProcessor service = requestProcessorFactory.getProcessor(match.getProcessor());
             service.preProcess(match,body,req);
-            CompletableFuture.runAsync(()->
-                service.postProcess(match,body,req)
+
+            CompletableFuture.runAsync(()->{
+                   // log.info(service.toString());
+                    service.postProcess(match,body,req);},threadPoolTaskExecutor
             );
             ResponseEntity<String> response = service.process(match, body, req);
             HttpHeaders headers = new HttpHeaders();
