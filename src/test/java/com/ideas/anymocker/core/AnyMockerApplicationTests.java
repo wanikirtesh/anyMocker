@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 
 @SpringBootTest
-class NgimockerApplicationTests {
+class AnyMockerApplicationTests {
 	@Test
 	void contextLoads() throws IOException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 

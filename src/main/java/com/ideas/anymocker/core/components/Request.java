@@ -83,10 +83,6 @@ public class Request {
         }
         return "";
     }
-   // public Map<String,String> getMeta(){
-        //log.info(meta.toString());
-   //     return meta;
-   // }
 
     public String getResponseHeader(String key){
         if(responseHeaders.containsKey(key)){
@@ -114,8 +110,6 @@ public class Request {
         this.queryParam.addAll(mockRequest.queryParam);
         this.requestQueryParams.putAll(mockRequest.requestQueryParams);
         this.requestPathParams.putAll(mockRequest.requestPathParams);
+        this.download = mockRequest.download;
     }
-
-
-
 }

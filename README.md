@@ -60,7 +60,7 @@ The pattern uses three different wildcards.
 ---
 ### Processor Bean
 - This should be a JAVA SpringBoot Bean having same name which is mentioned **requests.html** as `processor`.
-- Bean should Implement the Interface `com.ideas.anymocker.core.service.RequestProcessor`
+- Bean should Implement the Interface `com.ideas.service.core.com.ideas.anymocker.RequestProcessor`
 - To implement the interface below three methods needs to be overridden
   - `public void init()`
   - `public ResponseEntity<String> process(Request matchRequest, String body, HttpServletRequest actualReq)`

@@ -35,20 +35,19 @@ public class GroovyHelper {
         for(String headerName:actHeaders.keySet()){
          actHeaders.set(headerName,headers.get(headerName));
         }
-        return new ResponseEntity<String>(body,actHeaders,statusCode);
+        return new ResponseEntity<>(body,actHeaders,statusCode);
     }
     public static ResponseEntity<String> getResponseEntity(String body, int statusCode){
         HttpHeaders actHeaders = new HttpHeaders();
-        return new ResponseEntity<String>(body,actHeaders,statusCode);
+        return new ResponseEntity<>(body,actHeaders,statusCode);
     }
 
     public static ResponseEntity<String> getResponseEntity(int statusCode){
         HttpHeaders actHeaders = new HttpHeaders();
-        return new ResponseEntity<String>("",actHeaders,statusCode);
+        return new ResponseEntity<>("",actHeaders,statusCode);
     }
 
     public static HttpResponse<String> makePostRequest(String uri, String data, String[] headers) {
-        HttpClient httpClient = HttpClient.newHttpClient();
         log.info("Sending post request to :" + uri);
         log.finer("with Body " + data);
         HttpClient client = HttpClient.newBuilder().build();

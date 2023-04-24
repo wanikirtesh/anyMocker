@@ -14,26 +14,17 @@ import java.util.stream.Collectors;
 @Service
 @Log
 public class FixtureDownloadService {
-
     @Autowired
     RequestFactory requestFactory;
 
-    @Value("${use.groovy.impl:true}")
-    private boolean useGroovy;
-
     @Autowired
-    RequestProcessorFactory newrequestProcessorFactory;
-    //@Autowired
-    //RequestProcessorFactory requestProcessorFactory;
+    RequestProcessorFactory requestProcessorFactory;
     public void download() {
         try {
             Path downloading = Path.of("./downloadingFixtures");
             Files.createFile(downloading);
             for (Request request : requestFactory.getRequestList().stream().filter(Request::isDownload).collect(Collectors.toList())) {
-                //if(useGroovy)
-                    newrequestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
-                //else
-                //    requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
+                requestProcessorFactory.getProcessor(request.getProcessor()).downloadFixtures(request);
             }
             log.info("Fixture download completed......");
             Files.deleteIfExists(downloading);
