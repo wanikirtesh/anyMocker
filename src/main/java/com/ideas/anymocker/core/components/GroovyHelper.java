@@ -32,7 +32,7 @@ public class GroovyHelper {
 
     public static ResponseEntity<String> getResponseEntity(String body, Map<String,String> headers, int statusCode){
         HttpHeaders actHeaders = new HttpHeaders();
-        for(String headerName:actHeaders.keySet()){
+        for(String headerName:headers.keySet()){
          actHeaders.set(headerName,headers.get(headerName));
         }
         return new ResponseEntity<>(body,actHeaders,statusCode);
