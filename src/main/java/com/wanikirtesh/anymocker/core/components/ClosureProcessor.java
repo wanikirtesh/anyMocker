@@ -20,44 +20,44 @@ public class ClosureProcessor implements RequestProcessor {
     private final MethodClosure download;
     private final Class<LogWebSocketHandler> broadcaster;
 
-    public ClosureProcessor(MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download,MethodClosure stats) {
+    public ClosureProcessor(final MethodClosure pre, final MethodClosure process, final MethodClosure post, final MethodClosure init, final MethodClosure download, final MethodClosure stats) {
         this.pre = pre;
         this.process = process;
         this.post = post;
         this.init = init;
         this.download = download;
         this.stats = stats;
-        this.broadcaster = LogWebSocketHandler.class;
+        broadcaster = LogWebSocketHandler.class;
 
     }
 
     @Override
-    public void init(List<Request> requests) {
-        this.init.call(log,requests);
+    public void init(final List<Request> requests) {
+        init.call(ClosureProcessor.log,requests);
     }
 
     @Override
-    public ResponseEntity<String> process(Request match, String body, HttpServletRequest req) {
-        return (ResponseEntity<String>) process.call(log,match,body,req);
+    public ResponseEntity<String> process(final Request match, final String body, final HttpServletRequest req) {
+        return (ResponseEntity<String>) this.process.call(ClosureProcessor.log,match,body,req);
     }
 
     @Override
-    public void postProcess(Request match, String body, HttpServletRequest req) {
-        post.call(log,match, body, req);
+    public void postProcess(final Request match, final String body, final HttpServletRequest req) {
+        this.post.call(ClosureProcessor.log,match, body, req);
     }
 
     @Override
-    public void preProcess(Request match, String body, HttpServletRequest req) {
-        pre.call(log,match,body,req);
+    public void preProcess(final Request match, final String body, final HttpServletRequest req) {
+        this.pre.call(ClosureProcessor.log,match,body,req);
     }
 
     @Override
-    public void downloadFixtures(Request match) {
-        download.call(log,match,broadcaster);
+    public void downloadFixtures(final Request match) {
+        this.download.call(ClosureProcessor.log,match, this.broadcaster);
     }
 
     @Override
-    public Map getStats(Request match) {
-        return (Map) stats.call(log,match);
+    public Map getStats(final Request match) {
+        return (Map) this.stats.call(ClosureProcessor.log,match);
     }
 }

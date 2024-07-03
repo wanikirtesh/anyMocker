@@ -21,60 +21,60 @@ import java.util.stream.Collectors;
 @Service
 @Log
 public class RequestFactory {
-    private List<Request> requests = new ArrayList<>();
+    private final List<Request> requests = new ArrayList<>();
     ConfigurableListableBeanFactory beanFactory;
     @Value("${requests.path}")
     String reqConfigFilePath;
     @Autowired
-    public RequestFactory(ConfigurableListableBeanFactory beanFactory) {
+    public RequestFactory(final ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
     @PostConstruct
     private void init() throws IOException {
-        requests.clear();
-        ObjectMapper mapper = new ObjectMapper();
-        log.info("Mapping requests from directory:" + reqConfigFilePath);
-        Files.list(Path.of(reqConfigFilePath)).forEach(path -> {
+        this.requests.clear();
+        final ObjectMapper mapper = new ObjectMapper();
+        RequestFactory.log.info("Mapping requests from directory:" + this.reqConfigFilePath);
+        Files.list(Path.of(this.reqConfigFilePath)).forEach(path -> {
             try {
-                log.info("Adding requests from " + path);
-                List<Request> requests = mapper.readValue(new File(path.toString()), new TypeReference<>() {
+                RequestFactory.log.info("Adding requests from " + path);
+                final List<Request> requests = mapper.readValue(new File(path.toString()), new TypeReference<>() {
                 });
-                List<Request> aList = requests.stream().peek(x -> x.setFileName(path.toString())).toList();
+                final List<Request> aList = requests.stream().peek(x -> x.setFileName(path.toString())).toList();
                 this.requests.addAll(aList);
-                log.info("Total " +  this.requests.size() + " requests mapped");
-            } catch (IOException e) {
+                RequestFactory.log.info("Total " +  this.requests.size() + " requests mapped");
+            } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         });
     }
     public List<Request> getRequestList() {
-        return this.requests;
+        return requests;
     }
 
-    private String getCaller(Object o){
-        String[] beanNamesForType = beanFactory.getBeanNamesForType(o.getClass());
-        if(beanNamesForType.length>0) {
+    private String getCaller(final Object o){
+        final String[] beanNamesForType = this.beanFactory.getBeanNamesForType(o.getClass());
+        if(0 < beanNamesForType.length) {
             return beanNamesForType[0];
         }
         return "";
     }
 
-    public List<Request> getRequests(RequestProcessor requestProcessor){
-        String caller = getCaller(requestProcessor);
-        return this.requests.stream().filter((r)->r.getProcessor().equals(caller)).collect(Collectors.toList());
+    public List<Request> getRequests(final RequestProcessor requestProcessor){
+        final String caller = this.getCaller(requestProcessor);
+        return requests.stream().filter((r)->r.getProcessor().equals(caller)).collect(Collectors.toList());
     }
 
-    public List<Request> getRequests(String caller){
+    public List<Request> getRequests(final String caller){
         //String caller = getCaller(requestProcessor);
-        return this.requests.stream().filter((r)->r.getProcessor().equals(caller)).collect(Collectors.toList());
+        return requests.stream().filter((r)->r.getProcessor().equals(caller)).collect(Collectors.toList());
     }
 
-    public Request getRequest(String requestName){
-        return this.requests.stream().filter((r)->r.getName().equals(requestName)).findAny().get();
+    public Request getRequest(final String requestName){
+        return requests.stream().filter((r)->r.getName().equals(requestName)).findAny().get();
     }
 
 
     public void reload() throws IOException {
-        init();
+        this.init();
     }
 }

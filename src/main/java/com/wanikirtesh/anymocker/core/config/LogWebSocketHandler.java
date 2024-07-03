@@ -15,22 +15,22 @@ public class LogWebSocketHandler extends TextWebSocketHandler {
     private static final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        sessions.add(session);
+    public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
+        LogWebSocketHandler.sessions.add(session);
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        sessions.remove(session);
+    public void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) throws Exception {
+        LogWebSocketHandler.sessions.remove(session);
     }
 
-    public static void broadcast(String message) {
-        synchronized (sessions) {
-            for (WebSocketSession session : sessions) {
+    public static void broadcast(final String message) {
+        synchronized (LogWebSocketHandler.sessions) {
+            for (final WebSocketSession session : LogWebSocketHandler.sessions) {
                 try {
                     session.sendMessage(new TextMessage(message));
-                } catch (Exception e) {
-                    log.severe(e.getMessage());
+                } catch (final Exception e) {
+                    LogWebSocketHandler.log.severe(e.getMessage());
                     e.printStackTrace();
                 }
             }

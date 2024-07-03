@@ -16,9 +16,9 @@ public class UIController {
     @Autowired
     private RequestFactory requestFactory;
     @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE")
-    public String manager(Model model)
+    public String manager(final Model model)
     {
-        model.addAttribute("requests",requestFactory.getRequestList());
+        model.addAttribute("requests", this.requestFactory.getRequestList());
         return "index";
     }
 }

@@ -33,12 +33,12 @@ public class FixtureController {
     private String processorsPath;
 
    @RequestMapping(method = RequestMethod.PUT, path = "/MOCKER/MANAGE/DOWNLOAD/{requestName}")
-    public ResponseEntity<String> downloadSpecific(@PathVariable String requestName){
+    public ResponseEntity<String> downloadSpecific(@PathVariable final String requestName){
         if(Files.exists(Path.of("./downloadingFixtures"))){
             return new ResponseEntity<>("Server is downloading Fixtures.... ",HttpStatus.OK);
         }
         CompletableFuture.runAsync(()->
-                downloadService.download(requestName)
+                this.downloadService.download(requestName)
         );
         return new ResponseEntity<>("Server will restart after Downloading fixture",HttpStatus.OK);
     }
@@ -49,20 +49,20 @@ public class FixtureController {
             return new ResponseEntity<>("Server is downloading Fixtures.... ",HttpStatus.OK);
         }
         CompletableFuture.runAsync(()->
-             downloadService.download()
+                this.downloadService.download()
         );
         return new ResponseEntity<>("Server will restart after Downloading fixture",HttpStatus.OK);
     }
     @RequestMapping(method = RequestMethod.PUT, path = "/MOCKER/MANAGE/STATS/{requestName}")
-    public ResponseEntity<Map> getSpecific(@PathVariable String requestName){
-        return new ResponseEntity<>(downloadService.getStats(requestName),HttpStatus.OK);
+    public ResponseEntity<Map> getSpecific(@PathVariable final String requestName){
+        return new ResponseEntity<>(this.downloadService.getStats(requestName),HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/RELOAD/{requestName}")
-    public ResponseEntity<String> reload(@PathVariable String requestName) throws IOException {
-        requestFactory.reload();
-        requestProcessorFactory.updateProcessor(requestFactory.getRequest(requestName).getProcessor());
-        mockerService.reload();
+    public ResponseEntity<String> reload(@PathVariable final String requestName) throws IOException {
+        this.requestFactory.reload();
+        this.requestProcessorFactory.updateProcessor(this.requestFactory.getRequest(requestName).getProcessor());
+        this.mockerService.reload();
         return new ResponseEntity<>("reloaded",HttpStatus.OK);
     }
 
@@ -72,16 +72,16 @@ public class FixtureController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/MOCKER/MANAGE/PROCESSOR/{file}")
-    public ResponseEntity<String> getProcessor(@PathVariable String file) throws IOException {
-        String content = Files.readString(Paths.get(processorsPath, file + ".groovy"));
+    public ResponseEntity<String> getProcessor(@PathVariable final String file) throws IOException {
+        final String content = Files.readString(Paths.get(this.processorsPath, file + ".groovy"));
         return new ResponseEntity<>(content,HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/SAVEPROCESSOR/{file}",consumes = "text/plain")
-    public ResponseEntity<String> getProcessor(@PathVariable String file,@RequestBody String content) throws IOException {
-        Files.writeString(Paths.get(processorsPath, file + ".groovy"),content);
-        requestProcessorFactory.updateProcessor(file);
-        mockerService.reload();
+    public ResponseEntity<String> getProcessor(@PathVariable final String file, @RequestBody final String content) throws IOException {
+        Files.writeString(Paths.get(this.processorsPath, file + ".groovy"),content);
+        this.requestProcessorFactory.updateProcessor(file);
+        this.mockerService.reload();
         return new ResponseEntity<>("Saved file",HttpStatus.OK);
     }
 }

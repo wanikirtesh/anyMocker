@@ -33,38 +33,38 @@ public class MockerService {
 
     @PostConstruct
     public void init(){
-        Set<String> collect = requestFactory.getRequestList().stream().map(Request::getProcessor).collect(Collectors.toSet());
-        for (String s : collect) {
+        final Set<String> collect = this.requestFactory.getRequestList().stream().map(Request::getProcessor).collect(Collectors.toSet());
+        for (final String s : collect) {
             try{
-            log.info("initializing Processor:" + s);
-            requestProcessorFactory.getProcessor(s).init(requestFactory.getRequests(s).stream().filter(Request::isDownload).toList());
-            }catch (Exception e) {
+                MockerService.log.info("initializing Processor:" + s);
+                this.requestProcessorFactory.getProcessor(s).init(this.requestFactory.getRequests(s).stream().filter(Request::isDownload).toList());
+            }catch (final Exception e) {
                 e.printStackTrace();
-                log.severe(e.getMessage());
-                log.severe("No Processor script found for " + s);
+                MockerService.log.severe(e.getMessage());
+                MockerService.log.severe("No Processor script found for " + s);
             }
         }
     }
-    public ResponseEntity<String> processRequest(Request match, String body, HttpServletRequest req) {
-        if(match != null){
-            RequestProcessor service = requestProcessorFactory.getProcessor(match.getProcessor());
+    public ResponseEntity<String> processRequest(final Request match, final String body, final HttpServletRequest req) {
+        if(null != match){
+            final RequestProcessor service = this.requestProcessorFactory.getProcessor(match.getProcessor());
             service.preProcess(match,body,req);
 
             CompletableFuture.runAsync(()->{
-                    service.postProcess(match,body,req);},threadPoolTaskExecutor
+                    service.postProcess(match,body,req);}, this.threadPoolTaskExecutor
             );
-            ResponseEntity<String> response = service.process(match, body, req);
-            HttpHeaders headers = new HttpHeaders();
+            final ResponseEntity<String> response = service.process(match, body, req);
+            final HttpHeaders headers = new HttpHeaders();
             headers.addAll(response.getHeaders());
-            for(String header:match.getResponseHeaders().keySet()) {
+            for(final String header:match.getResponseHeaders().keySet()) {
                 headers.add(header,match.getResponseHeader(header));
             }
             return new ResponseEntity<>(response.getBody(),headers,response.getStatusCode());
         }
-        return new ResponseEntity<>(defaultMessage.isEmpty()?null:defaultMessage,null,defaultResponseCode);
+        return new ResponseEntity<>(this.defaultMessage.isEmpty()?null: this.defaultMessage,null, this.defaultResponseCode);
     }
 
     public void reload(){
-        init();
+        this.init();
     }
 }

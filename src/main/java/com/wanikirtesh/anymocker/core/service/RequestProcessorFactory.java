@@ -19,40 +19,40 @@ public class RequestProcessorFactory {
     @Value("${processors.path}")
     private String processorsPath;
     private static final Map<String, ClosureProcessor> processors = new HashMap<>();
-    public ClosureProcessor getProcessor(String strProcessor) {
-        if(processors.containsKey(strProcessor)){
-            return processors.get(strProcessor);
+    public ClosureProcessor getProcessor(final String strProcessor) {
+        if(RequestProcessorFactory.processors.containsKey(strProcessor)){
+            return RequestProcessorFactory.processors.get(strProcessor);
         }
-        updateProcessor(strProcessor);
-        return processors.get(strProcessor);
+        this.updateProcessor(strProcessor);
+        return RequestProcessorFactory.processors.get(strProcessor);
     }
 
-    public void updateProcessor(String strProcessor) {
-        File file = new File(processorsPath + "/" + strProcessor + ".groovy");
-        log.info("adding / Resetting processor from file:" + file.getPath());
+    public void updateProcessor(final String strProcessor) {
+        final File file = new File(this.processorsPath + "/" + strProcessor + ".groovy");
+        RequestProcessorFactory.log.info("adding / Resetting processor from file:" + file.getPath());
         if(!file.exists())
-            log.severe("No Processor file found with ["+strProcessor+".groovy] ");
+            RequestProcessorFactory.log.severe("No Processor file found with ["+strProcessor+".groovy] ");
         else
             try {
-                ClassLoader parent = getClass().getClassLoader();
-                Class<?> groovyClass;
-                try (GroovyClassLoader loader = new GroovyClassLoader(parent)) {
+                final ClassLoader parent = this.getClass().getClassLoader();
+                final Class<?> groovyClass;
+                try (final GroovyClassLoader loader = new GroovyClassLoader(parent)) {
                     groovyClass = loader.parseClass(file);
                 }
-                Object closureOwner = groovyClass.newInstance();
-                Request myObject = new Request();
+                final Object closureOwner = groovyClass.newInstance();
+                final Request myObject = new Request();
                 myObject.setMethod("POST");
-                MethodClosure process = new MethodClosure(closureOwner, "process");
-                MethodClosure pre = new MethodClosure(closureOwner, "pre");
-                MethodClosure post = new MethodClosure(closureOwner, "post");
-                MethodClosure init = new MethodClosure(closureOwner, "init");
-                MethodClosure download = new MethodClosure(closureOwner, "download");
-                MethodClosure stats = new MethodClosure(closureOwner, "stats");
-                ClosureProcessor processor = new ClosureProcessor(pre, process, post, init, download,stats);
-                processors.put(strProcessor, processor);
-            }catch (Exception e){
+                final MethodClosure process = new MethodClosure(closureOwner, "process");
+                final MethodClosure pre = new MethodClosure(closureOwner, "pre");
+                final MethodClosure post = new MethodClosure(closureOwner, "post");
+                final MethodClosure init = new MethodClosure(closureOwner, "init");
+                final MethodClosure download = new MethodClosure(closureOwner, "download");
+                final MethodClosure stats = new MethodClosure(closureOwner, "stats");
+                final ClosureProcessor processor = new ClosureProcessor(pre, process, post, init, download,stats);
+                RequestProcessorFactory.processors.put(strProcessor, processor);
+            }catch (final Exception e){
                 e.printStackTrace();
-                log.severe(e.getMessage());
+                RequestProcessorFactory.log.severe(e.getMessage());
                 throw new RuntimeException(e);
             }
     }
