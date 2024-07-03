@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,12 +38,11 @@ public class RequestFactory {
         Files.list(Path.of(this.reqConfigFilePath)).forEach(path -> {
             try {
                 RequestFactory.log.info("Adding requests from " + path);
-                final List<Request> requests = mapper.readValue(new File(path.toString()), new TypeReference<>() {
-                });
+                final List<Request> requests = this.getListFromFile(new File(path.toString()));
                 final List<Request> aList = requests.stream().peek(x -> x.setFileName(path.toString())).toList();
                 this.requests.addAll(aList);
                 RequestFactory.log.info("Total " +  this.requests.size() + " requests mapped");
-            } catch (final IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -77,4 +77,32 @@ public class RequestFactory {
     public void reload() throws IOException {
         this.init();
     }
+
+    public void saveRequest(Request request) throws IOException {
+        final ObjectMapper mapper = new ObjectMapper();
+        final String fileName = Path.of(request.getFileName()).getFileName().toString();
+        final Path filePath = Path.of(reqConfigFilePath,fileName);
+
+        File fl = new File(filePath.toString());
+        if(!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }
+        final List<Request> requests = this.getListFromFile(fl);
+        requests.removeIf(rq -> rq.getName().equals(request.getName()));
+        requests.add(request);
+        mapper.writeValue(fl,requests);
+        reload();
+    }
+
+    private List<Request> getListFromFile(File file){
+          ObjectMapper mapper = new ObjectMapper();
+            try{
+                return mapper.readValue(file, new TypeReference<>() {
+                });
+            }catch(Exception e){
+                return new ArrayList<>();
+            }
+    }
+
+
 }

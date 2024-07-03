@@ -45,6 +45,17 @@ public class MockerService {
             }
         }
     }
+
+    public void init(String name){
+            try{
+                MockerService.log.info("initializing Processor:" + name);
+                this.requestProcessorFactory.getProcessor(name).init(this.requestFactory.getRequests(name).stream().filter(Request::isDownload).toList());
+            }catch (final Exception e) {
+                e.printStackTrace();
+                MockerService.log.severe(e.getMessage());
+                MockerService.log.severe("No Processor script found for " + name);
+            }
+    }
     public ResponseEntity<String> processRequest(final Request match, final String body, final HttpServletRequest req) {
         if(null != match){
             final RequestProcessor service = this.requestProcessorFactory.getProcessor(match.getProcessor());
@@ -66,5 +77,9 @@ public class MockerService {
 
     public void reload(){
         this.init();
+    }
+
+    public void reload(final String processor) {
+        this.init(processor);
     }
 }

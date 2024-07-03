@@ -1,6 +1,7 @@
 package com.wanikirtesh.anymocker.core.controller;
 
 import com.wanikirtesh.anymocker.core.components.GroovyHelper;
+import com.wanikirtesh.anymocker.core.components.Request;
 import com.wanikirtesh.anymocker.core.service.FixtureDownloadService;
 import com.wanikirtesh.anymocker.core.service.MockerService;
 import com.wanikirtesh.anymocker.core.service.RequestFactory;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -60,9 +62,9 @@ public class FixtureController {
 
     @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/RELOAD/{requestName}")
     public ResponseEntity<String> reload(@PathVariable final String requestName) throws IOException {
-        this.requestFactory.reload();
+        // this.requestFactory.reload();
         this.requestProcessorFactory.updateProcessor(this.requestFactory.getRequest(requestName).getProcessor());
-        this.mockerService.reload();
+        this.mockerService.reload(this.requestFactory.getRequest(requestName).getProcessor());
         return new ResponseEntity<>("reloaded",HttpStatus.OK);
     }
 
@@ -79,9 +81,23 @@ public class FixtureController {
 
     @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/SAVEPROCESSOR/{file}",consumes = "text/plain")
     public ResponseEntity<String> getProcessor(@PathVariable final String file, @RequestBody final String content) throws IOException {
-        Files.writeString(Paths.get(this.processorsPath, file + ".groovy"),content);
+        Path path = Paths.get(this.processorsPath, file + ".groovy");
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+        Files.writeString(path,content,StandardOpenOption.WRITE);
         this.requestProcessorFactory.updateProcessor(file);
-        this.mockerService.reload();
+        this.mockerService.reload(file);
         return new ResponseEntity<>("Saved file",HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE/REQUEST/GET/{request}")
+    public ResponseEntity<Request> getRequest(@PathVariable final String request) throws IOException {
+        return new ResponseEntity<>(requestFactory.getRequest(request),HttpStatus.OK);
+    }
+    @RequestMapping(method = RequestMethod.POST, path = "/MOCKER/MANAGE/REQUEST/SAVE")
+    public ResponseEntity<Request> saveRequest(@RequestBody Request request) throws IOException {
+       requestFactory.saveRequest(request);
+       return new ResponseEntity<>(request,HttpStatus.OK);
     }
 }
