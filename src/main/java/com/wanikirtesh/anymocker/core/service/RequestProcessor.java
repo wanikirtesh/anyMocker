@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Map;
+
 public interface RequestProcessor {
 
     void init();
@@ -13,4 +15,6 @@ public interface RequestProcessor {
     void preProcess(Request match, String body, HttpServletRequest req);
 
     void downloadFixtures(Request match);
+
+    Map getStats(Request match);
 }

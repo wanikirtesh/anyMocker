@@ -9,21 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 @Log
 public class Request {
-    @Getter @Setter
-    private String name,url,method,processor="OK_ONLY",body="";
-    @Getter @Setter
+    @Setter
+    private String name,url,method,processor="OK_ONLY",body="",fileName;
+    @Setter
     private boolean download=false;
-    @Getter
     private final List<String> queryParam = new ArrayList<>();
-    @Getter
     private final List<String> pathParam = new ArrayList<>();
-    @Getter
     private final Map<String, String> requestPathParams = new HashMap<>();
-    @Getter
     private final Map<String, String> requestQueryParams = new HashMap<>();
-    @Getter @Setter
+    @Setter
     private Map<String,String> meta;
 
     public Request(){
@@ -89,9 +86,6 @@ public class Request {
             return responseHeaders.get(key);
         }
         return "";
-    }
-    public Map<String,String> getResponseHeaders(){
-        return responseHeaders;
     }
 
     public void addResponseHeaders(Map<String ,String> headers){

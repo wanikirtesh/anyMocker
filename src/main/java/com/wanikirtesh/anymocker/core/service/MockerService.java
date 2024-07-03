@@ -37,6 +37,7 @@ public class MockerService {
         for (String s : collect) {
             try{
             log.info("initializing Processor:" + s);
+
             requestProcessorFactory.getProcessor(s).init(requestFactory.getRequests(s).stream().filter(Request::isDownload).toList());
             }catch (Exception e) {
                 e.printStackTrace();
@@ -51,7 +52,6 @@ public class MockerService {
             service.preProcess(match,body,req);
 
             CompletableFuture.runAsync(()->{
-                   // log.info(service.toString());
                     service.postProcess(match,body,req);},threadPoolTaskExecutor
             );
             ResponseEntity<String> response = service.process(match, body, req);
@@ -63,5 +63,9 @@ public class MockerService {
             return new ResponseEntity<>(response.getBody(),headers,response.getStatusCode());
         }
         return new ResponseEntity<>(defaultMessage.isEmpty()?null:defaultMessage,null,defaultResponseCode);
+    }
+
+    public void reload(){
+        init();
     }
 }

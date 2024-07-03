@@ -31,23 +31,23 @@ public class RequestFactory {
     }
     @PostConstruct
     private void init() throws IOException {
+        requests.clear();
         ObjectMapper mapper = new ObjectMapper();
         log.info("Mapping requests from directory:" + reqConfigFilePath);
         Files.list(Path.of(reqConfigFilePath)).forEach(path -> {
             try {
                 log.info("Adding requests from " + path);
-                this.requests.addAll(mapper.readValue(new File(path.toString()), new TypeReference<>() {
-                }));
-                log.info("Total " +  requests.size() + " requests mapped");
+                List<Request> requests = mapper.readValue(new File(path.toString()), new TypeReference<>() {
+                });
+                List<Request> aList = requests.stream().peek(x -> x.setFileName(path.toString())).toList();
+                this.requests.addAll(aList);
+                log.info("Total " +  this.requests.size() + " requests mapped");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-       // this.requests = mapper.readValue(new File(reqConfigFilePath), new TypeReference<>() {
-       // });
-
     }
-    List<Request> getRequestList() {
+    public List<Request> getRequestList() {
         return this.requests;
     }
 
@@ -67,5 +67,14 @@ public class RequestFactory {
     public List<Request> getRequests(String caller){
         //String caller = getCaller(requestProcessor);
         return this.requests.stream().filter((r)->r.getProcessor().equals(caller)).collect(Collectors.toList());
+    }
+
+    public Request getRequest(String requestName){
+        return this.requests.stream().filter((r)->r.getName().equals(requestName)).findAny().get();
+    }
+
+
+    public void reload() throws IOException {
+        init();
     }
 }

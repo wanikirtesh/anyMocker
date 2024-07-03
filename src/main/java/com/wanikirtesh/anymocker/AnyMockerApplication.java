@@ -18,8 +18,10 @@ public class AnyMockerApplication {
 	@Value("${post.threadpool.size:100}")
 	int postThreadPoolSize;
 	private static ConfigurableApplicationContext  context;
+
 	public static void main(String[] args) {
 		context = SpringApplication.run(AnyMockerApplication.class, args);
+
 	}
 	@Bean
 	public AntPathMatcher antPathMatcher() {

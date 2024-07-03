@@ -1,11 +1,13 @@
 package com.wanikirtesh.anymocker.core.components;
 
+import com.wanikirtesh.anymocker.core.config.LogWebSocketHandler;
 import com.wanikirtesh.anymocker.core.service.RequestProcessor;
 import jakarta.servlet.http.HttpServletRequest;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class ClosureProcessor implements RequestProcessor {
@@ -14,17 +16,19 @@ public class ClosureProcessor implements RequestProcessor {
     private final MethodClosure process;
     private final MethodClosure post;
     private final MethodClosure init;
-
-
+    private final MethodClosure stats;
     private final MethodClosure download;
+    private final Class<LogWebSocketHandler> broadcaster;
 
-    public ClosureProcessor(Logger log, MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download) {
+    public ClosureProcessor(Logger log, MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download,MethodClosure stats) {
         this.log = log;
         this.pre = pre;
         this.process = process;
         this.post = post;
         this.init = init;
         this.download = download;
+        this.stats = stats;
+        this.broadcaster = LogWebSocketHandler.class;
 
     }
 
@@ -54,6 +58,11 @@ public class ClosureProcessor implements RequestProcessor {
 
     @Override
     public void downloadFixtures(Request match) {
-        download.call(log,match);
+        download.call(log,match,broadcaster);
+    }
+
+    @Override
+    public Map getStats(Request match) {
+        return (Map) stats.call(log,match);
     }
 }
