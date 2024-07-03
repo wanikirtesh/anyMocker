@@ -48,7 +48,7 @@ public class RequestProcessorFactory {
                 MethodClosure init = new MethodClosure(closureOwner, "init");
                 MethodClosure download = new MethodClosure(closureOwner, "download");
                 MethodClosure stats = new MethodClosure(closureOwner, "stats");
-                ClosureProcessor processor = new ClosureProcessor(log, pre, process, post, init, download,stats);
+                ClosureProcessor processor = new ClosureProcessor(pre, process, post, init, download,stats);
                 processors.put(strProcessor, processor);
             }catch (Exception e){
                 e.printStackTrace();

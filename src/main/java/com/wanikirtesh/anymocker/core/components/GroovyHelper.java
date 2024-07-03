@@ -90,7 +90,6 @@ public class GroovyHelper {
         }
     }
 
-
     public static void writeFile(String content,String basePath, String... paths) {
         try {
             var filePath = Path.of(basePath, paths);
@@ -144,5 +143,7 @@ public class GroovyHelper {
         return new JSONArray(str);
     }
 
-
+    public static Map getStorage(){
+        return store;
+    }
 }

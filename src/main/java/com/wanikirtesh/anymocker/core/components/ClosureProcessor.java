@@ -3,15 +3,15 @@ package com.wanikirtesh.anymocker.core.components;
 import com.wanikirtesh.anymocker.core.config.LogWebSocketHandler;
 import com.wanikirtesh.anymocker.core.service.RequestProcessor;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.java.Log;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
+@Log
 public class ClosureProcessor implements RequestProcessor {
-    private final Logger log;
     private final MethodClosure pre;
     private final MethodClosure process;
     private final MethodClosure post;
@@ -20,8 +20,7 @@ public class ClosureProcessor implements RequestProcessor {
     private final MethodClosure download;
     private final Class<LogWebSocketHandler> broadcaster;
 
-    public ClosureProcessor(Logger log, MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download,MethodClosure stats) {
-        this.log = log;
+    public ClosureProcessor(MethodClosure pre, MethodClosure process, MethodClosure post, MethodClosure init, MethodClosure download,MethodClosure stats) {
         this.pre = pre;
         this.process = process;
         this.post = post;
@@ -32,13 +31,9 @@ public class ClosureProcessor implements RequestProcessor {
 
     }
 
+    @Override
     public void init(List<Request> requests) {
         this.init.call(log,requests);
-    }
-
-    @Override
-    public void init() {
-
     }
 
     @Override

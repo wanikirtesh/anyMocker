@@ -1,5 +1,6 @@
 package com.wanikirtesh.anymocker.core.config;
 
+import lombok.extern.java.Log;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -8,7 +9,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
+@Log
 public class LogWebSocketHandler extends TextWebSocketHandler {
 
     private static final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
@@ -29,6 +30,7 @@ public class LogWebSocketHandler extends TextWebSocketHandler {
                 try {
                     session.sendMessage(new TextMessage(message));
                 } catch (Exception e) {
+                    log.severe(e.getMessage());
                     e.printStackTrace();
                 }
             }

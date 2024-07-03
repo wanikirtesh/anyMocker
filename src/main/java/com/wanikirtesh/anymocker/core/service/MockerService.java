@@ -37,7 +37,6 @@ public class MockerService {
         for (String s : collect) {
             try{
             log.info("initializing Processor:" + s);
-
             requestProcessorFactory.getProcessor(s).init(requestFactory.getRequests(s).stream().filter(Request::isDownload).toList());
             }catch (Exception e) {
                 e.printStackTrace();

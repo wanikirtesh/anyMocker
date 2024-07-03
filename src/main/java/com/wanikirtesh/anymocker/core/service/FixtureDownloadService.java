@@ -11,7 +11,6 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-
 @Service
 @Log
 public class FixtureDownloadService {
@@ -32,7 +31,6 @@ public class FixtureDownloadService {
             Files.deleteIfExists(downloading);
             LogWebSocketHandler.broadcast("=========================== Download Finished ========================");
         }catch (Exception e){
-            log.severe(e.getMessage());
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
@@ -51,7 +49,6 @@ public class FixtureDownloadService {
             log.info("####### Fixture download completed ######");
             Files.deleteIfExists(downloading);
         }catch (Exception e){
-            log.severe(e.getMessage());
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
