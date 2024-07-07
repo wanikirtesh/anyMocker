@@ -100,4 +100,9 @@ public class FixtureController {
        requestFactory.saveRequest(request);
        return new ResponseEntity<>(request,HttpStatus.OK);
     }
+    @RequestMapping(method = RequestMethod.POST, path = "/MOCKER/MANAGE/REQUEST/SAVE/{requestName}")
+    public ResponseEntity<Request> saveRequest(@PathVariable String requestName, @RequestBody Request request) throws IOException {
+        requestFactory.saveRequest(request,requestName);
+        return new ResponseEntity<>(request,HttpStatus.OK);
+    }
 }

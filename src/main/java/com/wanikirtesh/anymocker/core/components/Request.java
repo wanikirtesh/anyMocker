@@ -1,5 +1,7 @@
 package com.wanikirtesh.anymocker.core.components;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -11,22 +13,27 @@ import java.util.Map;
 
 @Getter
 @Log
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request {
     @Setter
-    private String name,url,method,processor="OK_ONLY",body="",fileName;
+    private String name,url,method,processor="OK_ONLY",fileName;
+    @Setter
+    @JsonIgnore
+    private String body="";
     @Setter
     private boolean download;
     private final List<String> queryParam = new ArrayList<>();
     private final List<String> pathParam = new ArrayList<>();
+    @JsonIgnore
     private final Map<String, String> requestPathParams = new HashMap<>();
+    @JsonIgnore
     private final Map<String, String> requestQueryParams = new HashMap<>();
     @Setter
     private Map<String,String> meta;
-
+    private final Map<String ,String> responseHeaders = new HashMap<>();
     public Request(){
         this.meta = new HashMap<>();
     }
-    private final Map<String ,String> responseHeaders = new HashMap<>();
 
     public void setQueryParam(final List<String> queryParam) {
         this.queryParam.addAll(queryParam);

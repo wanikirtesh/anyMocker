@@ -46,7 +46,7 @@ public class MockerService {
         }
     }
 
-    public void init(String name){
+    public void init(final String name){
             try{
                 MockerService.log.info("initializing Processor:" + name);
                 this.requestProcessorFactory.getProcessor(name).init(this.requestFactory.getRequests(name).stream().filter(Request::isDownload).toList());
@@ -62,7 +62,7 @@ public class MockerService {
             service.preProcess(match,body,req);
 
             CompletableFuture.runAsync(()->{
-                    service.postProcess(match,body,req);}, this.threadPoolTaskExecutor
+                service.postProcess(match,body,req);}, this.threadPoolTaskExecutor
             );
             final ResponseEntity<String> response = service.process(match, body, req);
             final HttpHeaders headers = new HttpHeaders();

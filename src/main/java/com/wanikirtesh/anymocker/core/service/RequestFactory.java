@@ -1,5 +1,6 @@
 package com.wanikirtesh.anymocker.core.service;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.wanikirtesh.anymocker.core.components.Request;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Log
 public class RequestFactory {
     private final List<Request> requests = new ArrayList<>();
+    private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);;
     ConfigurableListableBeanFactory beanFactory;
     @Value("${requests.path}")
     String reqConfigFilePath;
@@ -33,7 +35,6 @@ public class RequestFactory {
     @PostConstruct
     private void init() throws IOException {
         this.requests.clear();
-        final ObjectMapper mapper = new ObjectMapper();
         RequestFactory.log.info("Mapping requests from directory:" + this.reqConfigFilePath);
         Files.list(Path.of(this.reqConfigFilePath)).forEach(path -> {
             try {
@@ -60,7 +61,7 @@ public class RequestFactory {
     }
 
     public List<Request> getRequests(final RequestProcessor requestProcessor){
-        final String caller = this.getCaller(requestProcessor);
+        final String caller = getCaller(requestProcessor);
         return requests.stream().filter((r)->r.getProcessor().equals(caller)).collect(Collectors.toList());
     }
 
@@ -79,7 +80,6 @@ public class RequestFactory {
     }
 
     public void saveRequest(Request request) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
         final String fileName = Path.of(request.getFileName()).getFileName().toString();
         final Path filePath = Path.of(reqConfigFilePath,fileName);
 
@@ -90,14 +90,13 @@ public class RequestFactory {
         final List<Request> requests = this.getListFromFile(fl);
         requests.removeIf(rq -> rq.getName().equals(request.getName()));
         requests.add(request);
-        mapper.writeValue(fl,requests);
+        RequestFactory.mapper.writeValue(fl,requests);
         reload();
     }
 
     private List<Request> getListFromFile(File file){
-          ObjectMapper mapper = new ObjectMapper();
             try{
-                return mapper.readValue(file, new TypeReference<>() {
+                return RequestFactory.mapper.readValue(file, new TypeReference<>() {
                 });
             }catch(Exception e){
                 return new ArrayList<>();
@@ -105,4 +104,17 @@ public class RequestFactory {
     }
 
 
+    public void saveRequest(Request request, String requestName) throws IOException {
+        final String fileName = Path.of(request.getFileName()).getFileName().toString();
+        final Path filePath = Path.of(reqConfigFilePath,fileName);
+        File fl = new File(filePath.toString());
+        if(!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }
+        final List<Request> requests = this.getListFromFile(fl);
+        requests.removeIf(rq -> rq.getName().equals(requestName));
+        requests.add(request);
+        RequestFactory.mapper.writeValue(fl,requests);
+        reload();
+    }
 }

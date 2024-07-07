@@ -16,7 +16,8 @@
 
         <div class="d-flex" role="search">
             <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" id="add" data-bs-target="#addModal">Add Request</button>&nbsp;
-            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#jsonContainer" id="getStorage">Storage</button>
+            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#jsonContainer" id="getStorage">Storage</button>&nbsp;
+            <button data-bs-toggle="modal" data-bs-target="#lgContainer" class="btn btn-sm btn-outline-danger btnDownloadAll" href="#">Download All</button>
         </div>
 
     </div>
@@ -24,16 +25,17 @@
 <div class="container-fluid">
     <div class="table-responsive">
         <table data-sortable="true" data-sort-class="table-active" data-toggle="table" class="table table-sm table-bordered ">
-            <thead class="table-header"><tr><th data-sortable="true">Name</th><th data-sortable="true">Requests</th><th data-sortable="true">Processor</th><th data-sortable="true">Request File</th><th>Action <a  data-bs-toggle="modal" data-bs-target="#lgContainer" class="btn btn-sm btn-danger btnDownloadAll" href="#">Download All</a> </th></tr></thead>
+            <thead class="table-header"><tr><th data-sortable="true">Name</th><th data-sortable="true">Requests</th><th data-sortable="true">Processor</th><th data-sortable="true">Request File</th><th>Action </th></tr></thead>
             <tbody>
             <tr th:each="request,iter:${requests}" >
                 <td th:text="${request.name}"></td><td th:text="${request.url}"></td> <td>
-                <button th:if="${request.processor!='OK_ONLY'}" th:text="${request.processor}" data-bs-toggle="modal" data-bs-target="#modEditor" class="btn btn-sm btn-outline-danger btnEdit"></button>
-                <span th:if="${request.processor=='OK_ONLY'}">OK_ONLY</span>  </td><td th:text="${request.fileName}"></td><td>
-                    <a th:if="${request.download}" data-bs-toggle="modal" data-bs-target="#lgContainer" href="#" class="btn btn-primary btn-sm btnDownload" th:name="${request.name}" >Download</a>
-                    <a th:if="${request.download}" class="btn btn-primary btn-sm btnStats" data-bs-toggle="modal" data-bs-target="#jsonContainer" href="#" th:name="${request.name}">Stats</a>
-                    <a href="#" class="btn btn-primary btn-sm btnRqEdit" data-bs-toggle="modal" data-bs-target="#addModal" th:name="${request.name}" >Edit</a>
-                </td>
+                <button th:if="${request.processor!='OK_ONLY'}" th:text="${request.processor}" class="btn btn-sm btn-outline-danger btnEdit"></button>
+                <span th:if="${request.processor=='OK_ONLY'}">OK_ONLY</span>  </td><td th:text="${request.fileName}"></td>
+                <td>
+                <a href="#" class="btn btn-primary btn-sm btnRqEdit" data-bs-toggle="modal" data-bs-target="#addModal" th:name="${request.name}" >Edit</a>
+                <a th:if="${request.download}" class="btn btn-primary btn-sm btnStats" data-bs-toggle="modal" data-bs-target="#jsonContainer" href="#" th:name="${request.name}">Stats</a>
+                <a th:if="${request.download}" data-bs-toggle="modal" data-bs-target="#lgContainer" href="#" class="btn btn-warning btn-sm btnDownload" th:name="${request.name}" >Download</a>
+            </td>
             </tr>
             </tbody>
         </table>
@@ -77,6 +79,7 @@
                 </div>
                 <div class="modal-body" style="height: 500px;">
                     <div id="editor"></div>
+                    <div id="loading" style="display: none;">Loading...</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="saveScript" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
@@ -517,24 +520,25 @@
     function visualizeJson(data) {
         const tree = jsonview.create(data);
         jsonview.render(tree, document.querySelector('#jsonContainer .modal-body'));
-        jsonview.expand(tree);
+        jsonview.collapse(tree);
     }
     let editor = ace.edit("editor");
     editor.setTheme("ace/theme/eclipse");
     editor.session.setMode("ace/mode/groovy")
     $(document).ready(function (){
 
-            $(".btnDownload").click(function (x){
+        socket = new WebSocket(`ws://${window.location.hostname}:9191/logs`);
+        socket.onmessage = function(event) {
+            let logContainer = document.getElementById('logContainer');
+            let logMessage = document.createElement('div');
+            logMessage.textContent = event.data;
+            logContainer.appendChild(logMessage);
+            //logContainer.scrollTop = logContainer.scrollHeight;
+        };
+        $(".btnDownload").click(function (x){
                 x.preventDefault();
-                socket = new WebSocket(`ws://${window.location.hostname}:9191/logs`);
                 $('#logContainer').empty();
-                socket.onmessage = function(event) {
-                    let logContainer = document.getElementById('logContainer');
-                    let logMessage = document.createElement('div');
-                    logMessage.textContent = event.data;
-                    logContainer.appendChild(logMessage);
-                    //logContainer.scrollTop = logContainer.scrollHeight;
-                };
+
                 let req = $(this).attr("name")
                 $.ajax({
                     url:"MANAGE/DOWNLOAD/" + req,
@@ -551,15 +555,7 @@
 
         $(".btnDownloadAll").click(function (x){
             x.preventDefault();
-            socket = new WebSocket(`ws://${window.location.hostname}:9191/logs`);
             $('#logContainer').empty();
-            socket.onmessage = function(event) {
-                let logContainer = document.getElementById('logContainer');
-                let logMessage = document.createElement('div');
-                logMessage.textContent = event.data;
-                logContainer.appendChild(logMessage);
-               // logContainer.scrollTop = logContainer.scrollHeight;
-            };
             $.ajax({
                 url:"MANAGE/DOWNLOADALL",
                 method: "PUT",
@@ -580,9 +576,7 @@
                     url:"MANAGE/STATS/" + rqName,
                     method: "PUT",
                     success:function (data){
-                        console.log(data);
-
-                        visualizeJson(data, $container);
+                        visualizeJson(data);
                         $container.on('click', '.collapsible > .list-group-item', function(event) {
                             $(this).parent().toggleClass('expanded');
                             $(this).siblings('.list-group').slideToggle();
@@ -603,6 +597,9 @@
             $('.btnRqEdit').click(function (x){
                 x.preventDefault();
                 let rqName = $(this).attr("name");
+                $('#addModal .modal-title').html(`Edit [${rqName}]`)
+                $('#addModal').data("edit",true)
+                $('#addModal').data("request",rqName)
                 $.ajax({
                     url:"MANAGE/REQUEST/GET/" + rqName,
                     method: "get",
@@ -634,17 +631,18 @@
                 })
             })
 
-            $('.btnEdit').click(function (){
+            $('.btnEdit').on("click",function (){
                 let file = $(this).text()
                 $('#editorLabel').html("Editor ["+file+".groovy]")
-                editor.setValue("");
+                editor.setValue('');
                 $.ajax({
                     url:"MANAGE/PROCESSOR/"+file,
                     method: "PUT",
                     success:function (data){
-                        editor.setValue(data);
+                        editor.setValue(data,-1);
                         editor.clearSelection();
                         $("#saveScript").data("file",file)
+                        $("#modEditor").modal('show');
                     }
                 })
             })
@@ -661,26 +659,21 @@
                 })
             })
             $('#add').click(function (){
-                $('#addModal').find('input[type="text"], input[type="number"], input[type="email"], textarea').val('');
-                $('#addModal').find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+                let $addModel = $('#addModal')
+                $addModel.find('input[type="text"], input[type="number"], input[type="email"], textarea').val('');
+                $addModel.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+                $('#addModal .modal-title').html(`New Request`)
+                $addModel.data("edit",false)
+
             })
 
         function parseKeyValueString(str) {
-            // Create an empty object to hold the key-value pairs
             const obj = {};
-
-            // Split the string by '&' to get each key-value pair
             const pairs = str.split('&');
-
-            // Iterate over each pair
             pairs.forEach(pair => {
-                // Split the pair by '=' to get the key and value
                 const [key, value] = pair.split('=');
-
-                // Add the key-value pair to the object
                 obj[key] = value;
             });
-
             return obj;
         }
 
@@ -698,8 +691,13 @@
                 request.download = $('#download').prop("checked")
                 request.processor = $('#processor').val()
                 console.log(request)
+                let url = "MANAGE/REQUEST/SAVE"
+                let $addModal = $('#addModal')
+                if($addModal.data("edit")){
+                    url = url+'/'+$addModal.data("request")
+                }
                 $.ajax({
-                    url:"MANAGE/REQUEST/SAVE",
+                    url:url,
                     method:"post",
                     contentType: "application/json",
                     data: JSON.stringify(request),

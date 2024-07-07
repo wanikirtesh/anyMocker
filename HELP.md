@@ -1,6 +1,6 @@
-# anyMocker: Open Source HTTP Request Mocking Tool
+# anyMocker: HTTP Request Mocking Tool
 
-anyMocker is an open-source application built with Spring Boot that allows users to mock HTTP requests and define dynamic responses based on the request. It provides flexibility in defining request mappings and processing the requests using Groovy scripts.
+anyMocker is an application built with Spring Boot that allows users to mock HTTP requests and define dynamic responses based on the request. It provides flexibility in defining request mappings and processing the requests using Groovy scripts.
 
 ## Features
 
