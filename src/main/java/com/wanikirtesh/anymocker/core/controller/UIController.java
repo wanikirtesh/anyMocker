@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -18,7 +18,32 @@ public class UIController {
     @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE")
     public String manager(final Model model)
     {
-        model.addAttribute("requests", this.requestFactory.getRequestList());
+        model.addAttribute("groupedUrls", groupRequests(this.requestFactory.getRequestList()));
         return "index";
     }
+
+    private Map<String, Map<String, Map<String,List<Request>>>> groupRequests(List<Request> requestList) {
+        Map<String, Map<String, Map<String,List<Request>>>> resultMap = new HashMap<>();
+        for (Request request : requestList) {
+            String[] parts = request.getUrl().split("/");
+            if(parts.length>=4){
+                String product = parts[1];
+                String module = parts[2];
+                String persona = parts[3];
+                resultMap
+                        .computeIfAbsent(product, k -> new HashMap<>())
+                        .computeIfAbsent(module, k -> new HashMap<>())
+                        .computeIfAbsent(persona, k -> new ArrayList<>())
+                        .add(request);
+            }else{
+                resultMap
+                        .computeIfAbsent("PRODUCT", k -> new HashMap<>())
+                        .computeIfAbsent("MODULE", k -> new HashMap<>())
+                        .computeIfAbsent("PERSONA", k -> new ArrayList<>())
+                        .add(request);
+            }
+        }
+        return resultMap;
+    }
+
 }

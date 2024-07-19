@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,7 +86,7 @@ public class FixtureController {
         if (!Files.exists(path)) {
             Files.createFile(path);
         }
-        Files.writeString(path,content,StandardOpenOption.WRITE);
+        Files.write(path,content.getBytes(StandardCharsets.UTF_8));
         this.requestProcessorFactory.updateProcessor(file);
         this.mockerService.reload(file);
         return new ResponseEntity<>("Saved file",HttpStatus.OK);
