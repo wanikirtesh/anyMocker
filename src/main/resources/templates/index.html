@@ -331,7 +331,7 @@
             logMessage.textContent = event.data;
             logContainer.appendChild(logMessage);
         };
-        $(".btnDownload").click(function (x) {
+        $('body').on("click",".btnDownload",function (x) {
             x.preventDefault();
             $('#logContainer').empty();
 
@@ -362,7 +362,7 @@
 
         })
 
-        $(".btnStats").click(function (x) {
+        $('body').on("click",".btnStats",function (x) {
             x.preventDefault();
             let rqName = $(this).attr("name");
             $('#exampleModalLabel').html(rqName)
@@ -375,7 +375,7 @@
             })
         })
 
-        $('.btnRqEdit').click(function (x) {
+        $('body').on("click",'.btnRqEdit',function (x) {
             x.preventDefault();
             $('#addModal').find('input[type="text"], input[type="number"], input[type="email"], textarea').val('');
             let rqName = $(this).attr("name");
@@ -405,7 +405,7 @@
                 }
             })
         })
-        $('#getStorage').click(function () {
+        $('body').on("click",'#getStorage',function () {
             $('#exampleModalLabel').html("Any Mocker Storage")
             $.ajax({
                 url: "MANAGE/STORAGE",
@@ -417,7 +417,7 @@
             })
         })
 
-        $('.btnEdit').on("click", function () {
+        $('body').on("click",'.btnEdit', function () {
             let file = $(this).text()
             $('#editorLabel').html("Editor [" + file + ".groovy]")
             $.ajax({
