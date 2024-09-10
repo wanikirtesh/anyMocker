@@ -521,6 +521,15 @@
             })
         })
     })
+
+    const socket2 = new WebSocket(`ws://${window.location.hostname}:9191/critical`);
+    socket2.onmessage = function(event) {
+        let log = JSON.parse(event.data)
+        //if(log.level === "WARN")
+            console[log.level.toLowerCase()](log);
+       // else
+       //     console.error(log);
+    };
 </script>
 </body>
 </html>

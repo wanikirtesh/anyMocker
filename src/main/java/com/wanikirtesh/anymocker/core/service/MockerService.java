@@ -2,7 +2,7 @@ package com.wanikirtesh.anymocker.core.service;
 
 import com.wanikirtesh.anymocker.core.components.Request;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
-@Log
+@Slf4j
 public class MockerService {
     @Value("${default.response.body:}")
     String defaultMessage;
@@ -40,8 +40,8 @@ public class MockerService {
                 this.requestProcessorFactory.getProcessor(s).init(this.requestFactory.getRequests(s).stream().filter(Request::isDownload).toList());
             }catch (final Exception e) {
                 e.printStackTrace();
-                MockerService.log.severe(e.getMessage());
-                MockerService.log.severe("No Processor script found for " + s);
+                MockerService.log.error(e.getMessage());
+                MockerService.log.error("No Processor script found for " + s,e);
             }
         }
     }
@@ -52,8 +52,8 @@ public class MockerService {
                 this.requestProcessorFactory.getProcessor(name).init(this.requestFactory.getRequests(name).stream().filter(Request::isDownload).toList());
             }catch (final Exception e) {
                 e.printStackTrace();
-                MockerService.log.severe(e.getMessage());
-                MockerService.log.severe("No Processor script found for " + name);
+                MockerService.log.error(e.getMessage(),e);
+                MockerService.log.error("No Processor script found for " + name,e);
             }
     }
     public ResponseEntity<String> processRequest(final Request match, final String body, final HttpServletRequest req) {

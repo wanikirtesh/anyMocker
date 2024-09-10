@@ -1,6 +1,6 @@
 package com.wanikirtesh.anymocker;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +11,7 @@ import org.springframework.util.AntPathMatcher;
 
 @SpringBootApplication
 @EnableAsync
-@Log
+@Slf4j
 public class AnyMockerApplication {
 	@Value("${post.threadpool.size:100}")
 	int postThreadPoolSize;

@@ -10,27 +10,28 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 @Slf4j
 @Component
-public class LogWebSocketHandler extends TextWebSocketHandler {
+public class MessageWebSocketHandler extends TextWebSocketHandler {
+
     private static final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
+
     @Override
     public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
-        LogWebSocketHandler.sessions.add(session);
+        MessageWebSocketHandler.sessions.add(session);
     }
 
     @Override
     public void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) throws Exception {
-        LogWebSocketHandler.sessions.remove(session);
+        MessageWebSocketHandler.sessions.remove(session);
     }
 
-    public void sendMessageToClients(String message) {
-        for (WebSocketSession session : sessions) {
-            if (session.isOpen()) {
+    public static void broadcast(final String message) {
+        synchronized (MessageWebSocketHandler.sessions) {
+            for (final WebSocketSession session : MessageWebSocketHandler.sessions) {
                 try {
                     session.sendMessage(new TextMessage(message));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     log.error(e.getMessage(),e);
                 }
             }

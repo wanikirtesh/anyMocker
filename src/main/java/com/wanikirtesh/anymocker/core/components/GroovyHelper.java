@@ -1,7 +1,7 @@
 package com.wanikirtesh.anymocker.core.components;
 
-import com.wanikirtesh.anymocker.core.config.LogWebSocketHandler;
-import lombok.extern.java.Log;
+import com.wanikirtesh.anymocker.core.config.MessageWebSocketHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.nio.file.StandardOpenOption.WRITE;
 
-@Log
+@Slf4j
 public enum GroovyHelper {
     ;
     private static final Map<String,Object> store = new ConcurrentHashMap<>();
@@ -51,7 +51,7 @@ public enum GroovyHelper {
 
     public static HttpResponse<String> makePostRequest(final String uri, final String data, final String[] headers) {
         GroovyHelper.log.info("Sending post request to :" + uri);
-        GroovyHelper.log.finer("with Body " + data);
+        GroovyHelper.log.debug("with Body " + data);
         final HttpClient client = HttpClient.newBuilder().build();
         final HttpRequest request = newBuilder()
                 .uri(URI.create(uri))
@@ -63,7 +63,7 @@ public enum GroovyHelper {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (final IOException | InterruptedException e) {
-            GroovyHelper.log.severe(e.getMessage());
+            GroovyHelper.log.error(e.getMessage(),e);
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -71,25 +71,21 @@ public enum GroovyHelper {
         return response;
     }
 
-    public static String makeGetRequest(final String uri) {
+    public static String makeGetRequest(final String uri) throws IOException, InterruptedException {
         return GroovyHelper.makeRequest(uri, "GET", HttpRequest.BodyPublishers.noBody());
     }
-    private static String makeRequest(final String uri, final String method, final HttpRequest.BodyPublisher body) {
-        LogWebSocketHandler.broadcast("Making request " + uri);
-        try {
-            final HttpClient httpClient = HttpClient.newHttpClient();
-            GroovyHelper.log.info("Request " + method + " " + uri);
-            final HttpResponse<String> response = httpClient.send(
-                    newBuilder(URI.create(uri)).method(method, body).build(),
-                    HttpResponse.BodyHandlers.ofString());
-            if (400 <= response.statusCode()) {
-                final String msg = "Unrecognized response from server. " + response.statusCode() + " for url " + uri;
-                throw new RuntimeException(msg);
-            }
-            return response.body();
-        } catch (final IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+    private static String makeRequest(final String uri, final String method, final HttpRequest.BodyPublisher body) throws IOException, InterruptedException {
+        MessageWebSocketHandler.broadcast("Making request " + uri);
+        final HttpClient httpClient = HttpClient.newHttpClient();
+        GroovyHelper.log.info("Request " + method + " " + uri);
+        final HttpResponse<String> response = httpClient.send(
+                newBuilder(URI.create(uri)).method(method, body).build(),
+                HttpResponse.BodyHandlers.ofString());
+        if (400 <= response.statusCode()) {
+            final String msg = "Unrecognized response from server. " + response.statusCode() + " for url " + uri;
+            throw new RuntimeException(msg);
         }
+        return response.body();
     }
 
     public static void writeFile(final String content, final String basePath, final String... paths) {
@@ -100,7 +96,7 @@ public enum GroovyHelper {
             Files.createFile(filePath);
             Files.write(filePath, content.getBytes(StandardCharsets.UTF_8), WRITE);
         }catch (final Exception e){
-            GroovyHelper.log.severe("error while writing file "+e.getMessage());
+            GroovyHelper.log.error("error while writing file "+e.getMessage(),e);
             e.printStackTrace();
             throw(new RuntimeException(e));
         }
@@ -113,7 +109,7 @@ public enum GroovyHelper {
                             GroovyHelper::readFullFileName)
                     );
         } catch (final IOException e) {
-            GroovyHelper.log.severe("No Fixtures available at Path:" + path);
+            GroovyHelper.log.error("No Fixtures available at Path:" + path,e);
             return null;
         }
     }
@@ -132,7 +128,7 @@ public enum GroovyHelper {
                             GroovyHelper::collectFiles)
                     );
         } catch (final IOException e) {
-            GroovyHelper.log.severe("No Fixtures available at Path:" + path);
+            GroovyHelper.log.error("No Fixtures available at Path:" + path,e);
             return null;
         }
     }

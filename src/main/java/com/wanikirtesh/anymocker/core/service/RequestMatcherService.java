@@ -1,7 +1,7 @@
 package com.wanikirtesh.anymocker.core.service;
 
 import com.wanikirtesh.anymocker.core.components.Request;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Component
-@Log
+@Slf4j
 public class RequestMatcherService {
 
     @Autowired
@@ -26,7 +26,7 @@ public class RequestMatcherService {
                 if (this.matcher.match(pattern, url) && queryParams.keySet().containsAll(mockRequest.getQueryParam())) {
                     final String queryString = req.getQueryString();
                     RequestMatcherService.log.info("Request " + req.getRequestURI()+ (null != queryString ?"?"+queryString:"") + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with name:" + mockRequest.getName() + " processor:" + mockRequest.getProcessor() + " From:" + req.getRemoteAddr() + "("+req.getRemoteHost()+")" );
-                    RequestMatcherService.log.fine( "body:" + (null != body ? body.toString() : ""));
+                    RequestMatcherService.log.debug( "body:" + (null != body ? body.toString() : ""));
                     final Request request = new Request();
                     request.clone(mockRequest);
                     request.setRequestPathParams(this.matcher.extractUriTemplateVariables(pattern, url));
@@ -38,7 +38,7 @@ public class RequestMatcherService {
         }catch (final Exception e){
             e.printStackTrace();
         }
-        RequestMatcherService.log.warning("Request not matched " + url + " query:" +queryParams + " method:" + req.getMethod() + " body:"+(null != body ?body.toString():"") );
+        RequestMatcherService.log.warn("Request not matched " + url + " query:" +queryParams + " method:" + req.getMethod() + " body:"+(null != body ?body.toString():"") );
         return null;
     }
 }

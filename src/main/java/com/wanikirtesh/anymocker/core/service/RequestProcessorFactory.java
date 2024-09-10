@@ -3,18 +3,16 @@ package com.wanikirtesh.anymocker.core.service;
 import com.wanikirtesh.anymocker.core.components.ClosureProcessor;
 import com.wanikirtesh.anymocker.core.components.Request;
 import groovy.lang.GroovyClassLoader;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
-@Log
+@Slf4j
 public class RequestProcessorFactory {
     @Value("${processors.path}")
     private String processorsPath;
@@ -31,7 +29,7 @@ public class RequestProcessorFactory {
         final File file = new File(this.processorsPath + "/" + strProcessor + ".groovy");
         RequestProcessorFactory.log.info("adding / Resetting processor from file:" + file.getPath());
         if(!file.exists())
-            RequestProcessorFactory.log.severe("No Processor file found with ["+strProcessor+".groovy] ");
+            RequestProcessorFactory.log.error("No Processor file found with ["+strProcessor+".groovy] ");
         else
             try {
                 final ClassLoader parent = this.getClass().getClassLoader();
@@ -52,7 +50,7 @@ public class RequestProcessorFactory {
                 RequestProcessorFactory.processors.put(strProcessor, processor);
             }catch (final Exception e){
                 e.printStackTrace();
-                RequestProcessorFactory.log.severe(e.getMessage());
+                RequestProcessorFactory.log.error(e.getMessage(),e);
                 throw new RuntimeException(e);
             }
     }

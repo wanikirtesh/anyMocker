@@ -1,16 +1,16 @@
 package com.wanikirtesh.anymocker.core.components;
 
-import com.wanikirtesh.anymocker.core.config.LogWebSocketHandler;
+import com.wanikirtesh.anymocker.core.config.MessageWebSocketHandler;
 import com.wanikirtesh.anymocker.core.service.RequestProcessor;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
-@Log
+
+@Slf4j
 public class ClosureProcessor implements RequestProcessor {
     private final MethodClosure pre;
     private final MethodClosure process;
@@ -18,7 +18,7 @@ public class ClosureProcessor implements RequestProcessor {
     private final MethodClosure init;
     private final MethodClosure stats;
     private final MethodClosure download;
-    private final Class<LogWebSocketHandler> broadcaster;
+    private final Class<MessageWebSocketHandler> broadcaster;
 
     public ClosureProcessor(final MethodClosure pre, final MethodClosure process, final MethodClosure post, final MethodClosure init, final MethodClosure download, final MethodClosure stats) {
         this.pre = pre;
@@ -27,7 +27,7 @@ public class ClosureProcessor implements RequestProcessor {
         this.init = init;
         this.download = download;
         this.stats = stats;
-        broadcaster = LogWebSocketHandler.class;
+        broadcaster = MessageWebSocketHandler.class;
 
     }
 
