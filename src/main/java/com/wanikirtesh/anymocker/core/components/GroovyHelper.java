@@ -23,14 +23,27 @@ import static java.net.http.HttpRequest.newBuilder;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 @Slf4j
-public enum GroovyHelper {
-    ;
-    private static final Map<String,Object> store = new ConcurrentHashMap<>();
+public class GroovyHelper {
+    private static final Map<String,Map<String,Object>> store = new ConcurrentHashMap<>();
     public static void putObject(final String key, final Object o){
-        GroovyHelper.store.put(key,o);
+        String caller = Thread.currentThread().getStackTrace()[3].getClassName();
+        addObjectInStore(caller,key,o);
+
     }
+
+    private static void addObjectInStore(String caller, String key, Object o) {
+        if(store.containsKey(caller)){
+            store.get(caller).put(key,o);
+        }else{
+            Map<String,Object> newMap = new ConcurrentHashMap<>();
+            newMap.put(key,o);
+            store.put(caller,newMap);
+        }
+    }
+
     public static Object getDataObject(final String key){
-        return GroovyHelper.store.get(key);
+        String caller = Thread.currentThread().getStackTrace()[3].getClassName();
+        return GroovyHelper.store.get(caller).get(key);
     }
     public static ResponseEntity<String> getResponseEntity(final String body, final Map<String,String> headers, final int statusCode){
         final HttpHeaders actHeaders = new HttpHeaders();
