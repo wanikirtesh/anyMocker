@@ -26,8 +26,9 @@ import static java.nio.file.StandardOpenOption.WRITE;
 public class GroovyHelper {
     private static final Map<String,Map<String,Object>> store = new ConcurrentHashMap<>();
     public static void putObject(final String key, final Object o){
-        String caller = Thread.currentThread().getStackTrace()[3].getClassName();
-        addObjectInStore(caller,key,o);
+        final String caller = Thread.currentThread().getStackTrace()[3].getClassName();
+        log.info("Putting Object for:{} with key:{}", caller, key);
+        GroovyHelper.addObjectInStore(caller,key,o);
 
     }
 
@@ -43,6 +44,11 @@ public class GroovyHelper {
 
     public static Object getDataObject(final String key){
         String caller = Thread.currentThread().getStackTrace()[3].getClassName();
+
+        if(!store.containsKey(caller)){
+             caller = Thread.currentThread().getStackTrace()[2].getClassName();
+        }
+        log.info("getting object request from:{} for key:{}", caller, key);
         return GroovyHelper.store.get(caller).get(key);
     }
     public static ResponseEntity<String> getResponseEntity(final String body, final Map<String,String> headers, final int statusCode){
@@ -90,7 +96,7 @@ public class GroovyHelper {
     private static String makeRequest(final String uri, final String method, final HttpRequest.BodyPublisher body) throws IOException, InterruptedException {
         MessageWebSocketHandler.broadcast("Making request " + uri);
         final HttpClient httpClient = HttpClient.newHttpClient();
-        GroovyHelper.log.info("Request " + method + " " + uri);
+        GroovyHelper.log.info("Request {} {}", method, uri);
         final HttpResponse<String> response = httpClient.send(
                 newBuilder(URI.create(uri)).method(method, body).build(),
                 HttpResponse.BodyHandlers.ofString());
@@ -141,7 +147,7 @@ public class GroovyHelper {
                             GroovyHelper::collectFiles)
                     );
         } catch (final IOException e) {
-            GroovyHelper.log.error("No Fixtures available at Path:" + path,e);
+            GroovyHelper.log.error("No Fixtures available at Path:{}", path, e);
             return null;
         }
     }

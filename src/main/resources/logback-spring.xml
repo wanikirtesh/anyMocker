@@ -25,11 +25,8 @@
         <appender-ref ref="FILE-ROLLING"/>
         <appender-ref ref="STDOUT"/>
     </logger>
-    <logger name="com.wanikirtesh" level="warn" additivity="false">
-        <appender-ref ref="WEBSOCKET"/>
-    </logger>
-    <root level="info">
-        <appender-ref ref="WEBSOCKET" />
+
+    <root level="warn">
         <appender-ref ref="FILE-ROLLING"/>
         <appender-ref ref="STDOUT"/>
     </root>
