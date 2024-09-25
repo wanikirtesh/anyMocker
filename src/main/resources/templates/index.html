@@ -34,10 +34,9 @@
 <div class="container-fluid">
     <div class="accordion" id="accordionProduct">
         <div th:each="productEntry : ${groupedUrls}" class="accordion-item">
-
             <h2 class="accordion-header" th:id="'headingP'+${productEntry.key}">
 
-                <button class="accordion-button collapsed" type="button"
+                <button class="accordion-button collapsed"
                         data-bs-toggle="collapse" th:data-bs-target="'#collapseP'+${productEntry.key}"
                         aria-expanded="false" th:aria-controls="'collapseP'+${productEntry.key}">
                     <i class="bi bi-stack"></i>&nbsp;
@@ -230,7 +229,7 @@
                                    aria-label="Method">
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label class="form-label" for="url">Request URI</label>
                             <input id="url" name="url" type="text" class="form-control" placeholder="Request URL"
                                    aria-label="Request URI">
@@ -245,6 +244,14 @@
                                 <input id="download" name="download" class="form-check-input" type="checkbox">
                                 <label class="form-check-label" for="download">
                                     Download Fixture
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input id="grouping" name="grouping" class="form-check-input" type="checkbox">
+                                <label class="form-check-label" for="grouping">
+                                    Group Requests
                                 </label>
                             </div>
                         </div>
@@ -406,7 +413,7 @@
                 method: "get",
                 success: function (data) {
                     let parts = data.url.split("/")
-                    if(parts.length>3) {
+                    if(parts.length>3 && data.grouping) {
                         $('#productName').val(parts[1]);
                         $('#moduleName').val(parts[2]);
                         $('#persona').val(parts[3]);
@@ -503,6 +510,7 @@
                 request.queryParam = $('#queryParam').val().split(",")
             request.meta = parseKeyValueString($('#meta').val())
             request.download = $('#download').prop("checked")
+            request.grouping = $('#grouping').prop("checked")
             request.processor = $('#processor').val()
             console.log(request)
             let url = "MANAGE/REQUEST/SAVE"

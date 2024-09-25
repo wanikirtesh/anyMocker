@@ -29,7 +29,7 @@ public class UIController {
         Map<String, Map<String, Map<String,List<Request>>>> resultMap = new HashMap<>();
             for (Request request : requestList) {
                 String[] parts = request.getUrl().split("/");
-                if (4 <= parts.length && groupRequests) {
+                if (4 <= parts.length && request.isGrouping() && groupRequests) {
                     String product = parts[1];
                     String module = parts[2];
                     String persona = parts[3];

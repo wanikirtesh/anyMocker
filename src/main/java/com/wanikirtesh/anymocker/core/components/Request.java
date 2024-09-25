@@ -21,7 +21,7 @@ public class Request {
     @JsonIgnore
     private String body="";
     @Setter
-    private boolean download;
+    private boolean download,grouping=false;
     private final List<String> queryParam = new ArrayList<>();
     private final List<String> pathParam = new ArrayList<>();
     @JsonIgnore
@@ -112,5 +112,21 @@ public class Request {
         requestQueryParams.putAll(mockRequest.requestQueryParams);
         requestPathParams.putAll(mockRequest.requestPathParams);
         download = mockRequest.download;
+        grouping = mockRequest.grouping;
+        fileName = mockRequest.fileName;
+    }
+
+    public String getActURL(){
+        if(grouping) {
+            int startIndex =-1;
+            int i = 0;
+            while (i<=3){
+                startIndex = url.indexOf("/",startIndex+1);
+                i++;
+            }
+            return url.substring(startIndex);
+        }
+        return url;
+
     }
 }
