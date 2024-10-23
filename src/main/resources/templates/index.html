@@ -347,7 +347,16 @@
     })
     $(document).ready(function () {
         $('#reload').click(function (){
-            $.ajax("MOCKER/MANAGE/RELOAD/")
+            $.ajax({
+                url:"/MOCKER/MANAGE/RELOAD",
+                method:"GET",
+                success:function () {
+                    location.reload()
+                }
+            })
+
+
+
         })
 
         socket = new WebSocket(`ws://${window.location.hostname}:9191/logs`);

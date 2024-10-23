@@ -17,6 +17,9 @@ public class RequestProcessorFactory {
     @Value("${processors.path}")
     private String processorsPath;
     private static final Map<String, ClosureProcessor> processors = new HashMap<>();
+    void init(){
+        processors.clear();
+    }
     public ClosureProcessor getProcessor(final String strProcessor) {
         if(RequestProcessorFactory.processors.containsKey(strProcessor)){
             return RequestProcessorFactory.processors.get(strProcessor);

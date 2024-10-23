@@ -24,28 +24,19 @@ public class MockerService {
     int defaultResponseCode;
     @Autowired
     RequestProcessorFactory requestProcessorFactory;
-
     @Autowired
     RequestFactory requestFactory;
-
     @Autowired
     ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @PostConstruct
     public void init(){
+        requestProcessorFactory.init();
         final Set<String> collect = this.requestFactory.getRequestList().stream().map(Request::getProcessor).collect(Collectors.toSet());
         for (final String s : collect) {
-            try{
-                MockerService.log.info("initializing Processor:" + s);
-                this.requestProcessorFactory.getProcessor(s).init(this.requestFactory.getRequests(s).stream().filter(Request::isDownload).toList());
-            }catch (final Exception e) {
-                e.printStackTrace();
-                MockerService.log.error(e.getMessage());
-                MockerService.log.error("No Processor script found for " + s,e);
-            }
+            init(s);
         }
     }
-
     public void init(final String name){
             try{
                 MockerService.log.info("initializing Processor:" + name);

@@ -106,4 +106,11 @@ public class FixtureController {
         requestFactory.saveRequest(request,requestName);
         return new ResponseEntity<>(request,HttpStatus.OK);
     }
+
+    @RequestMapping(method = RequestMethod.GET,path = "/MOCKER/MANAGE/RELOAD")
+    public ResponseEntity<String> reload() throws IOException {
+       requestFactory.reload();
+       mockerService.reload();
+       return new ResponseEntity<>("reloaded",HttpStatus.OK);
+    }
 }
