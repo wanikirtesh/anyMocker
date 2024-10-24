@@ -31,20 +31,20 @@ public class MockerService {
 
     @PostConstruct
     public void init(){
-        requestProcessorFactory.init();
+        this.requestProcessorFactory.init();
         final Set<String> collect = this.requestFactory.getRequestList().stream().map(Request::getProcessor).collect(Collectors.toSet());
         for (final String s : collect) {
-            init(s);
+            this.init(s);
         }
     }
     public void init(final String name){
             try{
-                MockerService.log.info("initializing Processor:" + name);
+                MockerService.log.info("initializing Processor:{}", name);
                 this.requestProcessorFactory.getProcessor(name).init(this.requestFactory.getRequests(name).stream().filter(Request::isDownload).toList());
             }catch (final Exception e) {
                 e.printStackTrace();
                 MockerService.log.error(e.getMessage(),e);
-                MockerService.log.error("No Processor script found for " + name,e);
+                MockerService.log.error("No Processor script found for {}", name, e);
             }
     }
     public ResponseEntity<String> processRequest(final Request match, final String body, final HttpServletRequest req) {

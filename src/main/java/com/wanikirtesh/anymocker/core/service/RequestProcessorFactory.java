@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +18,10 @@ import java.util.Map;
 public class RequestProcessorFactory {
     @Value("${processors.path}")
     private String processorsPath;
-    private static final Map<String, ClosureProcessor> processors = new HashMap<>();
+    private static Map<String, ClosureProcessor> processors= new HashMap<>();;
+    private GroovyClassLoader groovyClassLoader = new GroovyClassLoader(this.getClass().getClassLoader());
+
+    @PostConstruct
     void init(){
         processors.clear();
     }
@@ -35,26 +40,27 @@ public class RequestProcessorFactory {
             RequestProcessorFactory.log.error("No Processor file found with ["+strProcessor+".groovy] ");
         else
             try {
-                final ClassLoader parent = this.getClass().getClassLoader();
-                final Class<?> groovyClass;
-                try (final GroovyClassLoader loader = new GroovyClassLoader(parent)) {
-                    groovyClass = loader.parseClass(file);
-                }
+                final Class<?> groovyClass = groovyClassLoader.parseClass(file);
                 final Object closureOwner = groovyClass.newInstance();
-                final Request myObject = new Request();
-                myObject.setMethod("POST");
-                final MethodClosure process = new MethodClosure(closureOwner, "process");
-                final MethodClosure pre = new MethodClosure(closureOwner, "pre");
-                final MethodClosure post = new MethodClosure(closureOwner, "post");
-                final MethodClosure init = new MethodClosure(closureOwner, "init");
-                final MethodClosure download = new MethodClosure(closureOwner, "download");
-                final MethodClosure stats = new MethodClosure(closureOwner, "stats");
-                final ClosureProcessor processor = new ClosureProcessor(pre, process, post, init, download,stats);
+                final ClosureProcessor processor = getClosureProcessor(closureOwner);
+                RequestProcessorFactory.processors.remove(strProcessor);
                 RequestProcessorFactory.processors.put(strProcessor, processor);
             }catch (final Exception e){
                 e.printStackTrace();
-                RequestProcessorFactory.log.error(e.getMessage(),e);
+                log.error(e.getMessage(),e);
                 throw new RuntimeException(e);
             }
+    }
+
+    private static ClosureProcessor getClosureProcessor(Object closureOwner) {
+        final Request myObject = new Request();
+        myObject.setMethod("POST");
+        final MethodClosure process = new MethodClosure(closureOwner, "process");
+        final MethodClosure pre = new MethodClosure(closureOwner, "pre");
+        final MethodClosure post = new MethodClosure(closureOwner, "post");
+        final MethodClosure init = new MethodClosure(closureOwner, "init");
+        final MethodClosure download = new MethodClosure(closureOwner, "download");
+        final MethodClosure stats = new MethodClosure(closureOwner, "stats");
+        return new ClosureProcessor(pre, process, post, init, download,stats);
     }
 }

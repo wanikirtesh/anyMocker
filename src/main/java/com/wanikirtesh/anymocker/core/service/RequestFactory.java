@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class RequestFactory {
-    private final List<Request> requests = new ArrayList<>();
+    private  List<Request> requests = new ArrayList<>() ;
     private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     ConfigurableListableBeanFactory beanFactory;
     @Value("${requests.path}")
@@ -33,7 +33,6 @@ public class RequestFactory {
     }
     @PostConstruct
     private void init() throws IOException {
-        this.requests.clear();
         RequestFactory.log.info("Mapping requests from directory:" + this.reqConfigFilePath);
         Files.list(Path.of(this.reqConfigFilePath)).forEach(path -> {
             try {
