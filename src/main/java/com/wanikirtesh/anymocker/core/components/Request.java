@@ -16,10 +16,10 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request {
     @Setter
-    private String name,url,method,processor="OK_ONLY",fileName;
+    private String name,url,method,processor="OK_ONLY";
     @Setter
     @JsonIgnore
-    private String body="";
+    private String body="",fileName="";
     @Setter
     private boolean download,grouping=false;
     private final List<String> queryParam = new ArrayList<>();
@@ -130,5 +130,18 @@ public class Request {
         }
         return url;
 
+    }
+
+    @JsonIgnore
+    public String getProductName(){
+        return "";
+    }
+    @JsonIgnore
+    public String getModuleName(){
+        return "";
+    }
+    @JsonIgnore
+    public String getPersonaName(){
+        return "";
     }
 }

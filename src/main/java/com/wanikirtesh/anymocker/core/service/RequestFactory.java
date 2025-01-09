@@ -38,7 +38,7 @@ public class RequestFactory {
             try {
                 RequestFactory.log.info("Adding requests from " + path);
                 final List<Request> requests = this.getListFromFile(new File(path.toString()));
-                final List<Request> aList = requests.stream().peek(x -> x.setFileName(path.toString())).toList();
+                final List<Request> aList = requests.stream().peek(x -> x.setFileName(path.getFileName().toString())).toList();
                 this.requests.addAll(aList);
                 RequestFactory.log.info("Total " +  this.requests.size() + " requests mapped");
             } catch (Exception e) {

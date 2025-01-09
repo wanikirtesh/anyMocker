@@ -1,0 +1,141 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<div class="list-group" id="folderList">
+  <style>
+    .active-file,.active-folder {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+
+    .folder-icon {
+      color: #ffc107;
+    }
+
+    .file-icon {
+      color: #6c757d;
+    }
+
+    .open-folder-icon {
+      color: #d39e00;
+    }
+
+    .edit-file-icon {
+      color: #0d6efd;
+    }
+
+    .nested-folder {
+      padding-left: 1rem;
+    }
+    #editor {
+      border: 1px solid #ccc;
+
+    }
+  </style>
+  <div th:each="productEntry : ${groupedUrls}">
+    <a th:href="'#headingP'+${productEntry.key}" data-frole="prod" class="list-group-item list-group-item-action folder-toggle" data-bs-toggle="collapse">
+      <i class="bi bi-folder folder-icon"></i> <span th:text="${productEntry.key}"></span>
+    </a>
+    <div th:id="'headingP'+${productEntry.key}" class="collapse nested-folder">
+      <div th:each="moduleEntry : ${productEntry.value}">
+        <a th:href="'#headingM'+${moduleEntry.key}" data-frole="mod" class="list-group-item list-group-item-action folder-toggle" data-bs-toggle="collapse">
+          <i class="bi bi-folder folder-icon"></i>  <span th:text="${moduleEntry.key}"></span>
+        </a>
+        <div th:id="'headingM'+${moduleEntry.key}" class="collapse nested-folder">
+          <div th:each="personaEntry : ${moduleEntry.value}">
+            <a th:href="'#headingU'+${personaEntry.key}" data-frole="user" class="list-group-item list-group-item-action folder-toggle" data-bs-toggle="collapse">
+              <i class="bi bi-folder folder-icon"></i> <span th:text="${personaEntry.key}"></span>
+            </a>
+            <div th:id="'headingU'+${personaEntry.key}" class="collapse nested-folder">
+              <a th:each="request : ${personaEntry.value}" data-frole="req" href="#" class="list-group-item list-group-item-action file-item" th:name="${request.name}" th:data-file="${request.name} + '.txt'">
+                <i class="bi bi-file-earmark file-icon"></i> <span th:text="${request.name}"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script language="javascript">
+    const folderToggles = document.querySelectorAll('.folder-toggle');
+    folderToggles.forEach(folder => {
+      folder.addEventListener('click', () => {
+        const icon = folder.querySelector('.folder-icon, .open-folder-icon');
+        if (folder.getAttribute('aria-expanded') === 'true') {
+          icon.classList.replace('bi-folder', 'bi-folder2-open');
+          icon.classList.replace('folder-icon', 'open-folder-icon');
+        } else {
+          icon.classList.replace('bi-folder2-open', 'bi-folder');
+          icon.classList.replace('open-folder-icon', 'folder-icon');
+        }
+      });
+    });
+
+    const fileItems = document.querySelectorAll('.file-item');
+    const fileTitle = document.getElementById('fileTitle');
+    const fileContent = document.getElementById('fileContent');
+    const folderItems = document.querySelectorAll('.folder-toggle');
+
+    fileItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        fileItems.forEach(file => {
+          file.classList.remove('active-file');
+          const icon = file.querySelector('.file-icon, .edit-file-icon');
+          icon.classList.replace('bi-pencil-square', 'bi-file-earmark');
+          icon.classList.replace('edit-file-icon', 'file-icon');
+        });
+        item.classList.add('active-file');
+        const icon = item.querySelector('.file-icon');
+        icon.classList.replace('bi-file-earmark', 'bi-pencil-square');
+        icon.classList.replace('file-icon', 'edit-file-icon');
+        const requestName = item.name;
+        fetch(`/MOCKER/MANAGE/REQUEST/GET/V2/${requestName}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Error fetching file: ${response.status}`);
+              }
+              return response.text();
+            })
+            .then(content => {
+              document.querySelector(".main-content").innerHTML = content;
+              let scripts = document.querySelector(".main-content").getElementsByTagName('script');
+              for (let script of scripts) {
+                let existingScript = document.querySelector('script[data-src="rq_cont"]');
+                if (existingScript) {
+                  existingScript.remove();
+                }
+                let newScript = document.createElement('script');
+                newScript.type = 'text/javascript';
+                newScript.text = script.innerHTML;
+                newScript.setAttribute('data-src','rq_cont')
+                document.body.appendChild(newScript); // Append the script to the body to execute it
+              }
+            })
+            .catch(error => {
+              fileTitle.textContent = `Error loading ${requestName}`;
+            });
+        });
+    });
+
+    folderItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const folderName = item.dataset.folder;
+        const typeF = item.dataset.frole;
+        // Update UI for selected folder
+        folderItems.forEach(folder => {
+          folder.classList.remove('active-folder');
+          const icon = folder.querySelector('.folder-icon, .open-folder-icon');
+          icon.classList.replace('bi-folder2-open', 'bi-folder2');
+          icon.classList.replace('open-folder-icon', 'folder-icon');
+        });
+
+        item.classList.add('active-folder');
+        const icon = item.querySelector('.folder-icon');
+        icon.classList.replace('bi-folder2', 'bi-folder2-open');
+        icon.classList.replace('folder-icon', 'open-folder-icon');
+      });
+    });
+
+  </script>
+</div>
