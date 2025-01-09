@@ -79,7 +79,7 @@ public class Request {
     public void addMeta(final Map<String ,String> meta){
         this.meta.putAll(meta);
     }
-
+    @JsonIgnore
     public String getMetaValue(final String key){
         //log.info(System.identityHashCode(meta)+"");
         if(this.meta.containsKey(key)){
@@ -87,7 +87,7 @@ public class Request {
         }
         return "";
     }
-
+    @JsonIgnore
     public String getResponseHeader(final String key){
         if(this.responseHeaders.containsKey(key)){
             return this.responseHeaders.get(key);
@@ -99,6 +99,7 @@ public class Request {
         this.responseHeaders.putAll(headers);
     }
 
+    @JsonIgnore
     public void clone(final Request mockRequest) {
         meta.putAll(mockRequest.meta);
         responseHeaders.putAll(mockRequest.responseHeaders);
@@ -116,6 +117,7 @@ public class Request {
         fileName = mockRequest.fileName;
     }
 
+    @JsonIgnore
     public String getActURL(){
         if(grouping) {
             int startIndex =-1;
