@@ -1,0 +1,58 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<div class="card">
+    <div class="card-header">
+        <h5><i class="bi bi-braces"></i> <span th:text=" ${file}"></span> </h5>
+    </div>
+    <div class="card-body">
+        <div id="editor">
+
+        </div>
+    </div>
+    <div class="card-footer">
+        <button id="saveScript" class="btn btn-primary">Save</button>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function a() {
+            document.getElementById('editor').style.height = (document.querySelector(".main-content").offsetHeight - 150) + "px"
+            let editor;
+            let scr = /*[[${content}]]*/ "";
+            let fileName = /*[[${fileName}]]*/ "";
+            require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs'}});
+            require(['vs/editor/editor.main'], function () {
+                editor = monaco.editor.create(document.getElementById('editor'), {
+                    value: scr,
+                    language: 'java'
+                });
+            })
+           // editor.layout();
+
+            document.querySelector("#saveScript").addEventListener("click",e => {
+                debugger
+                fetch(`/MOCKER/MANAGE/SAVEPROCESSOR/${fileName}`,{method:"PATCH",
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body:editor.getValue()
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error fetching file: ${response.status}`);
+                    }
+                    return response.text();
+                }).then(content => {
+                    document.querySelector(".main-content").innerHTML = "";
+                    createToast({title:"Script saved",message:`Script ${fileName} saved successfully`,type:"success"})
+                }).catch(error => {
+                    createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
+                })
+            })
+
+        }
+
+
+
+
+        a();
+        /*]]>*/
+    </script>
+</div>

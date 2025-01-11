@@ -16,12 +16,12 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request {
     @Setter
-    private String name,url,method,processor="OK_ONLY";
+    private String name, url, method, processor = "OK_ONLY";
     @Setter
     @JsonIgnore
-    private String body="",fileName="";
+    private String body = "", fileName = "";
     @Setter
-    private boolean download,grouping=false;
+    private boolean download, grouping = false;
     private final List<String> queryParam = new ArrayList<>();
     private final List<String> pathParam = new ArrayList<>();
     @JsonIgnore
@@ -29,9 +29,10 @@ public class Request {
     @JsonIgnore
     private final Map<String, String> requestQueryParams = new HashMap<>();
     @Setter
-    private Map<String,String> meta;
-    private final Map<String ,String> responseHeaders = new HashMap<>();
-    public Request(){
+    private Map<String, String> meta;
+    private final Map<String, String> responseHeaders = new HashMap<>();
+
+    public Request() {
         this.meta = new HashMap<>();
     }
 
@@ -53,49 +54,51 @@ public class Request {
 
 
     public String getParameter(final String paramName) {
-        if(this.requestQueryParams.containsKey(paramName)){
+        if (this.requestQueryParams.containsKey(paramName)) {
             return this.requestQueryParams.get(paramName);
         }
-        if(this.requestPathParams.containsKey(paramName)){
+        if (this.requestPathParams.containsKey(paramName)) {
             return this.requestPathParams.get(paramName);
         }
         return "";
     }
 
-    public String getQueryParam(final String paramName){
-        if(this.requestQueryParams.containsKey(paramName)){
+    public String getQueryParam(final String paramName) {
+        if (this.requestQueryParams.containsKey(paramName)) {
             return this.requestQueryParams.get(paramName);
         }
         return "";
     }
 
-    public String getPathParam(final String paramName){
-        if(this.requestPathParams.containsKey(paramName)){
+    public String getPathParam(final String paramName) {
+        if (this.requestPathParams.containsKey(paramName)) {
             return this.requestPathParams.get(paramName);
         }
         return "";
     }
 
-    public void addMeta(final Map<String ,String> meta){
+    public void addMeta(final Map<String, String> meta) {
         this.meta.putAll(meta);
     }
+
     @JsonIgnore
-    public String getMetaValue(final String key){
+    public String getMetaValue(final String key) {
         //log.info(System.identityHashCode(meta)+"");
-        if(this.meta.containsKey(key)){
+        if (this.meta.containsKey(key)) {
             return this.meta.get(key);
         }
         return "";
     }
+
     @JsonIgnore
-    public String getResponseHeader(final String key){
-        if(this.responseHeaders.containsKey(key)){
+    public String getResponseHeader(final String key) {
+        if (this.responseHeaders.containsKey(key)) {
             return this.responseHeaders.get(key);
         }
         return "";
     }
 
-    public void addResponseHeaders(final Map<String ,String> headers){
+    public void addResponseHeaders(final Map<String, String> headers) {
         this.responseHeaders.putAll(headers);
     }
 
@@ -105,9 +108,9 @@ public class Request {
         responseHeaders.putAll(mockRequest.responseHeaders);
         body = mockRequest.body;
         name = mockRequest.name;
-        url=mockRequest.url;
-        processor=mockRequest.processor;
-        method=mockRequest.method;
+        url = mockRequest.url;
+        processor = mockRequest.processor;
+        method = mockRequest.method;
         pathParam.addAll(mockRequest.pathParam);
         queryParam.addAll(mockRequest.queryParam);
         requestQueryParams.putAll(mockRequest.requestQueryParams);
@@ -118,12 +121,12 @@ public class Request {
     }
 
     @JsonIgnore
-    public String getActURL(){
-        if(grouping) {
-            int startIndex =-1;
+    public String getActURL() {
+        if (grouping) {
+            int startIndex = -1;
             int i = 0;
-            while (i<=3){
-                startIndex = url.indexOf("/",startIndex+1);
+            while (i <= 3) {
+                startIndex = url.indexOf("/", startIndex + 1);
                 i++;
             }
             return url.substring(startIndex);
@@ -133,15 +136,17 @@ public class Request {
     }
 
     @JsonIgnore
-    public String getProductName(){
+    public String getProductName() {
         return "";
     }
+
     @JsonIgnore
-    public String getModuleName(){
+    public String getModuleName() {
         return "";
     }
+
     @JsonIgnore
-    public String getPersonaName(){
+    public String getPersonaName() {
         return "";
     }
 }

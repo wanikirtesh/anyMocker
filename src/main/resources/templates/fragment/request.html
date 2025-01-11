@@ -1,115 +1,205 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <div class="card cardreq frm">
-    <div class="row g-3 card-body">
+    <div th:if="${!add}" class="card-header">
+        <h5 th:text="${req.name}"></h5> <input type="hidden" id="modName" th:value="${req.fileName}"></input> <span th:text="${' (' + req.url + ')'}"></span>
+    </div>
+    <div class="card-body">
         <div class="row g-3">
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblproductName" >Product Name</span>
-                <input id="productName" th:value="${req.getProductName()}" name="produtName" type="text" class="form-control form-control-sm partUrl"
-                       placeholder="Product name" aria-label="Product name" aria-describedby="lblproductName">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-3">
+                    <span class="input-group-text" id="lblfileName">Module Name</span>
+                    <input th:id="${pre +'fileName'}" th:value="${req.fileName.replace('.json','')}" name="fileName"
+                           type="text" class="form-control form-control-sm"
+                           placeholder="File name" aria-label="File name" aria-describedby="lblfileName">
+                </div>
             </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblmoduleName">Module Name</span>
-                <input id="moduleName" th:value="${req.getModuleName()}" name="moduleName" type="text" class="form-control form-control-sm partUrl"
-                       placeholder="Module name" aria-label="Module name"  aria-describedby="lblmoduleName">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-3">
+                    <span class="input-group-text" id="lblname">Request Name</span>
+                    <input th:id="${pre+'name'}" name="name" th:value="${req.name}" type="text"
+                           class="form-control form-control-sm" placeholder="Request name"
+                           aria-label="Request name" aria-describedby="lblname">
+                </div>
             </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblpersona">Persona</span>
-                <input id="persona" th:value="${req.getPersonaName()}" name="persona" type="text" class="form-control form-control-sm partUrl" placeholder="Persona"
-                       aria-label="Persona" aria-describedby="lblpersona">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-3">
+                    <span class="input-group-text" id="lblprocessor">Processor Name</span>
+                    <input th:id="${pre+'processor'}" th:value="${req.processor}" name="processor" type="text"
+                           class="form-control form-control-sm"
+                           placeholder="Processor name" aria-label="Processor name" aria-describedby="lblprocessor">
+                </div>
             </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblname">Request Name</span>
-                <input id="name" name="name" th:value="${req.name}" type="text" class="form-control form-control-sm" placeholder="Request name"
-                       aria-label="Request name" aria-describedby="lblname">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-3">
+                    <span class="input-group-text" id="lblmethod">Method</span>
+                    <input th:value="${req.method}" th:id="${pre+'method'}" name="method" type="text"
+                           class="form-control form-control-sm" placeholder="Method"
+                           aria-label="Method" aria-describedby="lblmethod">
+                </div>
             </div>
-        </div>
-        <div class="row g-3">
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblprocessor">Processor Name</span>
-                <input id="processor" th:value="${req.processor}" name="processor" type="text" class="form-control form-control-sm"
-                       placeholder="Processor name" aria-label="Processor name" aria-describedby="lblprocessor">
-            </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblmethod">Method</span>
-                <input th:value="${req.method}" id="method" name="method" type="text" class="form-control form-control-sm" placeholder="Method"
-                       aria-label="Method" aria-describedby="lblmethod">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-3">
+                    <span class="input-group-text" id="lblurl">Request URI</span>
+                    <input th:id="${pre+'url'}" th:value="${req.url}" name="url" type="text"
+                           class="form-control form-control-sm" placeholder="Request URL"
+                           aria-label="Request URI" aria-describedby="lblurl">
+                </div>
             </div>
 
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblurl">Request URI</span>
-                <input id="url" th:value="${req.url}" name="url" type="text" class="form-control form-control-sm" placeholder="Request URL"
-                       aria-label="Request URI" aria-describedby="lblurl">
-            </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblfileName">Json File name</span>
-                <input id="fileName" th:value="${req.fileName}" name="fileName" type="text" class="form-control form-control-sm"
-                       placeholder="File name" aria-label="File name" aria-describedby="lblfileName">
-            </div>
-        </div>
-        <div class="row g-3">
-            <div class="col-md-3">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="form-check">
-                    <input id="download" name="download" th:checked="${req.download}" class="form-check-input" type="checkbox">
-                    <label class="form-check-label" for="download">
+                    <input th:id="${pre+'download'}" name="download" th:checked="${req.download}"
+                           class="form-check-input" type="checkbox">
+                    <label class="form-check-label" th:for="${pre+'download'}">
                         Download Fixture
                     </label>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-check">
-                    <input id="grouping" th:checked="${req.grouping}" name="grouping" class="form-check-input" type="checkbox">
-                    <label class="form-check-label" for="grouping">
-                        Group Requests
-                    </label>
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-12">
+                    <span class="input-group-text" id="lblmeta">Metadata</span>
+                    <input type="text" th:value="${#strings.listJoin(req.meta,',')}" th:id="${pre+'meta'}" name="meta"
+                           class="form-control form-control-sm" aria-describedby="lblmeta"></input>
                 </div>
             </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblpathParam">Path Parameters</span>
-                <input id="pathParam" th:value="${#strings.listJoin(req.pathParam,',')}" name="pathParam" type="text" placeholder="Path parameters"
-                       class="form-control form-control-sm" aria-label="File name" aria-describedby="lblpathParam">
-            </div>
-            <div class="input-group input-group-sm col col-mb-3">
-                <span class="input-group-text" id="lblqueryParam">Query Parameters</span>
-                <input id="queryParam" th:value="${#strings.listJoin(req.queryParam,',')}"  name="queryParam" type="text" placeholder="Query parameters"
-                       class="form-control form-control-sm" aria-label="File name" aria-describedby="lblqueryParam">
-            </div>
-        </div>
-        <div class="input-group input-group-sm col col-mb-12">
-            <span class="input-group-text" id="lblmeta">Metadata</span>
-            <input type="text" th:value="${#strings.listJoin(req.meta,',')}"  id="meta" name="meta" class="form-control form-control-sm" aria-describedby="lblmeta"></input>
         </div>
     </div>
 </div>
-<div style="margin-top: 10px" class="card cardreq">
-    <div id="editor" th:text="${gScript}">
+<div class="card cardreq frm mt-3">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col col-lg-6 col-md-6 col-sm-12">
+                <label th:for="${pre+'pathParam'}" class="form-label">Path Parameters</label>
+                <input name="pathParam" th:id="${pre+'pathParam'}" type="text" placeholder="Path parameters"
+                       class="form-control form-control-sm" th:value="${#strings.listJoin(req.pathParam,',')}">
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12">
+                <label th:for="${pre+'queryParam'}" class="form-label">Query Parameters</label>
+                <input name="queryParam" th:id="${pre+'queryParam'}" type="text"
+                       th:value="${#strings.listJoin(req.queryParam,',')}" placeholder="Query parameters"
+                       class="form-control form-control-sm">
+            </div>
+        </div>
     </div>
 </div>
-<div style="margin-top: 10px;flex-direction: row;justify-content: space-evenly;">
+
+<div th:if="${!add}" style="margin-top: 10px;flex-direction: row;justify-content: space-evenly;">
     <button th:data-for="${req.name}" id="btnRqSave" class="btn btn-primary">Save</button>
     <button th:if="${req.download}" class="btn btn-primary">Download</button>
-    <button class="btn btn-primary">Delete</button>
+    <button class="btn btn-primary" id="rqDelete">Delete</button>
     <button class="btn btn-primary">Refresh</button>
-    <button class="btn btn-primary">Create New from this</button>
+    <button class="btn btn-primary" id="rqClone">Create New from this</button>
 </div>
-<script>
-    function load(){
-        let elemEditor = document.getElementById('editor');
-        let prefilledValue = elemEditor.innerHTML;
-        elemEditor.innerText = '';
-        elemEditor.style.height = (document.querySelector(".main-content").offsetHeight - document.querySelector(".frm").offsetHeight - 100) + "px";
-        let editor;
-        require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs'}});
-        require(['vs/editor/editor.main'], function () {
-            editor = monaco.editor.create(elemEditor, {
-                value: prefilledValue,
-                language: 'java'
-            });
-            editor.layout();
-        })
-        document.querySelector('#btnRqSave').addEventListener('click', function (event) {
-            alert(event.target.dataset.for);
-        })
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function load() {
+        let isAdd = /*[[${add}]]*/ false;
+        if (!isAdd) {
+            document.querySelector('#btnRqSave').addEventListener('click', function (event) {
+                let request = createRequest();
+                let oldName = document.querySelector(".card-header>h5").innerHTML;
+                fetch(`/MOCKER/MANAGE/REQUEST/SAVE/${oldName}?fileName=${request.fileName}`,{method: "PATCH",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify(request)
+                }).then(response => {
+                    if (!response.ok) {
+                        createToast({title:"Exception",message:`Exception:${response.status}`,type:"danger"})
+                        throw new Error(`Error fetching file: ${response.status}`);
+                    }
+                    return response.text();
+                }).then(data =>{
+                    createToast({title:"API Saved",message:`API ${request.name} edited successfully!`})
+                    reloadLeftPane();
+                })
+            })
+
+            document.querySelector("#rqDelete").addEventListener("click", (e) => {
+                let fileName = document.querySelector("#fileName").value;
+                let name = document.querySelector("#name").value;
+                fetch(`/MOCKER/MANAGE/REQUEST/V2/DELETE/${name}?fileName=${fileName}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching file: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(content => {
+                        createToast({
+                            title: "API Deleted",
+                            message: `API ${name} Deleted successfully from module ${fileName}`,
+                            type: "success"
+                        })
+                        reloadLeftPane();
+                    })
+            })
+
+            document.querySelector("#rqClone").addEventListener("click", (e) => {
+                let request = createRequest()
+                //console.log(request)
+                fetch(`/MOCKER/MANAGE/REQUEST/NEW/V2?isNew=false&fileName=${request.fileName}`, {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(request)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching file: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(content => {
+                        document.querySelector("#reqBody").innerHTML = content;
+                        let scripts = document.querySelector("#reqBody").getElementsByTagName('script');
+                        for (let script of scripts) {
+                            let existingScript = document.querySelector('script[data-src="rq_new"]');
+                            if (existingScript) {
+                                existingScript.remove();
+                            }
+                            let newScript = document.createElement('script');
+                            newScript.type = 'text/javascript';
+                            newScript.text = script.innerHTML;
+                            newScript.setAttribute('data-src', 'rq_new')
+                            document.body.appendChild(newScript); // Append the script to the body to execute it
+                        }
+                    })
+                    .catch(error => {
+                        createToast({title:"Error",message: `Error ${error.message}`,type:"danger"});
+                    });
+                addModal.show();
+            })
+
+        }
     }
+
+    function createRequest(){
+        let request = {};
+        request.name = document.querySelector('#name').value
+        request.url = document.querySelector('#url').value
+        request.method = document.querySelector('#method').value
+        request.fileName = document.querySelector('#fileName').value
+        if (document.querySelector('#pathParam').value !== "")
+            request.pathParam = document.querySelector('#pathParam').value.split(",")
+        if (document.querySelector('#queryParam').value !== "")
+            request.queryParam = document.querySelector('#queryParam').value.split(",")
+        request.meta = parseKeyValueString(document.querySelector('#meta').value)
+        request.download = document.querySelector('#download').checked
+        request.processor = document.querySelector('#processor').value
+        return request;
+    }
+
     load();
+    /*]]>*/
 </script>
 </html>
