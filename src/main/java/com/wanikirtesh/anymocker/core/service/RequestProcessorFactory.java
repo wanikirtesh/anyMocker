@@ -53,8 +53,6 @@ public class RequestProcessorFactory {
     }
 
     private static ClosureProcessor getClosureProcessor(Object closureOwner) {
-        final Request myObject = new Request();
-        myObject.setMethod("POST");
         final MethodClosure process = new MethodClosure(closureOwner, "process");
         final MethodClosure pre = new MethodClosure(closureOwner, "pre");
         final MethodClosure post = new MethodClosure(closureOwner, "post");

@@ -14,7 +14,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         function a() {
-            document.getElementById('editor').style.height = (document.querySelector(".main-content").offsetHeight - 150) + "px"
+            document.getElementById('editor').style.height = (document.querySelector("#main-content").offsetHeight - 160) + "px"
             let editor;
             let scr = /*[[${content}]]*/ "";
             let fileName = /*[[${fileName}]]*/ "";
@@ -25,8 +25,6 @@
                     language: 'java'
                 });
             })
-           // editor.layout();
-
             document.querySelector("#saveScript").addEventListener("click",e => {
                 debugger
                 fetch(`/MOCKER/MANAGE/SAVEPROCESSOR/${fileName}`,{method:"PATCH",
@@ -40,7 +38,7 @@
                     }
                     return response.text();
                 }).then(content => {
-                    document.querySelector(".main-content").innerHTML = "";
+                    document.querySelector("#main-content").innerHTML = "";
                     createToast({title:"Script saved",message:`Script ${fileName} saved successfully`,type:"success"})
                 }).catch(error => {
                     createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
@@ -48,10 +46,6 @@
             })
 
         }
-
-
-
-
         a();
         /*]]>*/
     </script>

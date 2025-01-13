@@ -11,7 +11,7 @@ import java.util.Map;
 public interface RequestProcessor {
 
     void init(List<Request> requests);
-    ResponseEntity<String> process(Request match, String body, HttpServletRequest req);
+    ResponseEntity<Object> process(Request match, String body, HttpServletRequest req);
     void postProcess(Request match, String body, HttpServletRequest req);
     void preProcess(Request match, String body, HttpServletRequest req);
 

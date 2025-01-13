@@ -1,6 +1,5 @@
 package com.wanikirtesh.anymocker.core.components;
 
-import com.wanikirtesh.anymocker.core.config.MessageWebSocketHandler;
 import com.wanikirtesh.anymocker.core.service.RequestProcessor;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ public class ClosureProcessor implements RequestProcessor {
     private final MethodClosure init;
     private final MethodClosure stats;
     private final MethodClosure download;
-    private final Class<MessageWebSocketHandler> broadcaster;
 
     public ClosureProcessor(final MethodClosure pre, final MethodClosure process, final MethodClosure post, final MethodClosure init, final MethodClosure download, final MethodClosure stats) {
         this.pre = pre;
@@ -27,37 +25,40 @@ public class ClosureProcessor implements RequestProcessor {
         this.init = init;
         this.download = download;
         this.stats = stats;
-        broadcaster = MessageWebSocketHandler.class;
-
     }
 
     @Override
     public void init(final List<Request> requests) {
-        init.call(ClosureProcessor.log,requests);
+        init.call(log,requests);
     }
 
     @Override
-    public ResponseEntity<String> process(final Request match, final String body, final HttpServletRequest req) {
-        return (ResponseEntity<String>) this.process.call(ClosureProcessor.log,match,body,req);
+    public ResponseEntity<Object> process(final Request match, final String body, final HttpServletRequest req) {
+        return (ResponseEntity<Object>) this.process.call(ClosureProcessor.log,match,body,req);
     }
 
     @Override
     public void postProcess(final Request match, final String body, final HttpServletRequest req) {
-        this.post.call(ClosureProcessor.log,match, body, req);
+        this.post.call(log,match, body, req);
     }
 
     @Override
     public void preProcess(final Request match, final String body, final HttpServletRequest req) {
-        this.pre.call(ClosureProcessor.log,match,body,req);
+        pre.call(log,match,body,req);
     }
 
     @Override
     public void downloadFixtures(final Request match) {
-        this.download.call(ClosureProcessor.log,match, this.broadcaster);
+        download.call(log,match);
     }
 
     @Override
     public Map getStats(final Request match) {
-        return (Map) this.stats.call(ClosureProcessor.log,match);
+        try {
+            return (Map) stats.call(log, match);
+        }catch (Exception e){
+            log.error(stats.getDelegate().getClass().getName() + ":" +stats.getMethod() + ": " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }

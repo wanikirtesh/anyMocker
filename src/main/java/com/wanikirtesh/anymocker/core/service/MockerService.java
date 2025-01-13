@@ -47,7 +47,7 @@ public class MockerService {
                 MockerService.log.error("No Processor script found for {}", name, e);
             }
     }
-    public ResponseEntity<String> processRequest(final Request match, final String body, final HttpServletRequest req) {
+    public ResponseEntity<Object> processRequest(final Request match, final String body, final HttpServletRequest req) {
         if(null != match){
             final RequestProcessor service = this.requestProcessorFactory.getProcessor(match.getProcessor());
             service.preProcess(match,body,req);
@@ -55,7 +55,7 @@ public class MockerService {
             CompletableFuture.runAsync(()->{
                 service.postProcess(match,body,req);}, this.threadPoolTaskExecutor
             );
-            final ResponseEntity<String> response = service.process(match, body, req);
+            final ResponseEntity<Object> response = service.process(match, body, req);
             final HttpHeaders headers = new HttpHeaders();
             headers.addAll(response.getHeaders());
             for(final String header:match.getResponseHeaders().keySet()) {

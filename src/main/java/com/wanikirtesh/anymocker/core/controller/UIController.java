@@ -2,6 +2,7 @@ package com.wanikirtesh.anymocker.core.controller;
 
 import com.wanikirtesh.anymocker.core.components.Request;
 import com.wanikirtesh.anymocker.core.service.RequestFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
+@Slf4j
 public class UIController {
     @Value("${requests.grouping}")
     Boolean groupRequests;
@@ -26,13 +28,13 @@ public class UIController {
     @Autowired
     private RequestFactory requestFactory;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE")
+    @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE/OLD")
     public String manager(final Model model) {
         model.addAttribute("groupedUrls", groupRequests(this.requestFactory.getRequestList()));
         return "index";
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE/NEW")
+    @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE")
     public String manager_new(final Model model) {
         model.addAttribute("groupedUrls", groupRequests(this.requestFactory.getRequestList()));
         return "index_new";
@@ -49,10 +51,15 @@ public class UIController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE/PROCESSOR/{file}")
     public String getProcessor(final Model model,@PathVariable final String file) throws IOException {
-        final String content = Files.readString(Paths.get(this.processorsPath, file + ".groovy"));
-        model.addAttribute("content", content);
-        model.addAttribute("fileName", file);
-        return "fragment/editor";
+        try {
+            final String content = Files.readString(Paths.get(this.processorsPath, file + ".groovy"));
+            model.addAttribute("content", content);
+            model.addAttribute("fileName", file);
+            return "fragment/editor";
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/MOCKER/MANAGE/REQUEST/NEW/V2")

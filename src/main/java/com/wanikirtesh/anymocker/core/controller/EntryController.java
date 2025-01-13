@@ -21,7 +21,7 @@ public class EntryController {
     private RequestMatcherService requestMatcherService;
 
     @RequestMapping(headers = "!Upgrade")
-    public ResponseEntity<String> handleRequest(final HttpServletRequest req, @RequestParam(required = false) final Map<String,String> queryParams, @RequestBody(required = false) final String body) {
+    public ResponseEntity<Object> handleRequest(final HttpServletRequest req, @RequestParam(required = false) final Map<String,String> queryParams, @RequestBody(required = false) final String body) {
         if(Files.exists(Paths.get("./downloadingFixtures"))){
             return new ResponseEntity<>("Server is downloading Fixtures.... ", HttpStatus.OK);
         }else {

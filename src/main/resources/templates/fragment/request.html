@@ -85,16 +85,35 @@
 
 <div th:if="${!add}" style="margin-top: 10px;flex-direction: row;justify-content: space-evenly;">
     <button th:data-for="${req.name}" id="btnRqSave" class="btn btn-primary">Save</button>
-    <button th:if="${req.download}" class="btn btn-primary">Download</button>
+    <button th:if="${req.download}" id="btnDownload" class="btn btn-primary">Download</button>
+    <button th:if="${req.download}" id="btnStats" class="btn btn-primary">Stats</button>
     <button class="btn btn-primary" id="rqDelete">Delete</button>
     <button class="btn btn-primary">Refresh</button>
     <button class="btn btn-primary" id="rqClone">Create New from this</button>
 </div>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     function load() {
         let isAdd = /*[[${add}]]*/ false;
         if (!isAdd) {
+            document.querySelector("#btnDownload").addEventListener("click",evt => {
+                let request = createRequest();
+                fetch("/MOCKER/MANAGE/DOWNLOAD/"+request.name,{method:"PUT"})
+                    .then(response=>{
+                        if (!response.ok) {
+                            throw new Error(`Error fetching file: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(content=>{
+                        showLogs();
+                    })
+                    .catch(error=>{
+                        createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
+                    })
+            })
+
             document.querySelector('#btnRqSave').addEventListener('click', function (event) {
                 let request = createRequest();
                 let oldName = document.querySelector(".card-header>h5").innerHTML;
@@ -180,6 +199,41 @@
                 addModal.show();
             })
 
+            document.querySelector("#btnStats").addEventListener("click",(e) =>{
+                let request = createRequest()
+                fetch("/MOCKER/MANAGE/STATS/" + request.name,{method:"PUT",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }})
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching file: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(content =>{
+                        document.querySelector("#staticBackdrop1 h5").innerHTML = `Stats for ${request.name}`
+                        document.querySelector('#statBody').innerHTML = createTreeView(JSON.parse(content));
+                        document.querySelectorAll(".toggle-btn").forEach(button => {
+                            button.addEventListener("click", function () {
+                                const nested = this.nextElementSibling.nextElementSibling;
+                                if (nested.style.display === "none" || !nested.style.display) {
+                                    nested.style.display = "block";
+                                    this.textContent = "[-]";
+                                } else {
+                                    nested.style.display = "none";
+                                    this.textContent = "[+]";
+                                }
+                            });
+                        });
+                        statModal.show();
+                    })
+                    .catch(error =>{
+                        createToast({title:"Error",message: `Error ${error.message}`,type:"danger"});
+                    });
+
+            })
         }
     }
 

@@ -51,14 +51,14 @@ public class GroovyHelper {
         log.info("getting object request from:{} for key:{}", caller, key);
         return GroovyHelper.store.get(caller).get(key);
     }
-    public static ResponseEntity<String> getResponseEntity(final String body, final Map<String,String> headers, final int statusCode){
+    public static ResponseEntity<Object> getResponseEntity(final Object body, final Map<String,String> headers, final int statusCode){
         final HttpHeaders actHeaders = new HttpHeaders();
         for(final String headerName:headers.keySet()){
          actHeaders.set(headerName,headers.get(headerName));
         }
         return new ResponseEntity<>(body,actHeaders,statusCode);
     }
-    public static ResponseEntity<String> getResponseEntity(final String body, final int statusCode){
+    public static ResponseEntity<Object> getResponseEntity(final Object body, final int statusCode){
         final HttpHeaders actHeaders = new HttpHeaders();
         return new ResponseEntity<>(body,actHeaders,statusCode);
     }

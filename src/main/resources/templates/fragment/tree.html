@@ -57,7 +57,7 @@
     </div>
   </div>
   <div style="margin-bottom: 25px">
-    <a href="#" data-frole="log" class="list-group-item list-group-item-action">
+    <a href="#" data-frole="log" class="list-group-item list-group-item-action" id="btnLog">
       <i class="bi bi-card-text cpu-icon"></i> <span>Logs</span>
     </a>
   </div>
@@ -87,7 +87,7 @@
       fileItems.forEach(item => {
         item.addEventListener('click', (e) => {
           e.preventDefault();
-
+          closeLogs();
           fileItems.forEach(file => {
             file.classList.remove('active-file');
             const icon = file.querySelector('.file-icon, .edit-file-icon');
@@ -114,8 +114,8 @@
               return response.text();
             })
             .then(content => {
-              document.querySelector(".main-content").innerHTML = content;
-              let scripts = document.querySelector(".main-content").getElementsByTagName('script');
+              document.querySelector("#main-content").innerHTML = content;
+              let scripts = document.querySelector("#main-content").getElementsByTagName('script');
               for (let script of scripts) {
                 let existingScript = document.querySelector(`script[data-src="rq_${frole}"]`);
                 if (existingScript) {
@@ -154,6 +154,10 @@
           icon.classList.replace('folder-icon', 'open-folder-icon');
         });
       });
+
+      document.querySelector("#btnLog").addEventListener("click",e=>{
+        showLogs();
+      })
     }
     initTree();
   </script>

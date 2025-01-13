@@ -21,11 +21,14 @@ public class CustomLogEvent {
 
     private String[] stackTrace;
 
+    private long timestamp;
+
 
     public CustomLogEvent(ILoggingEvent eventObject) {
         this.message = eventObject.getFormattedMessage();
         this.loggerName = eventObject.getLoggerName();
         this.level = eventObject.getLevel().toString();
+        this.timestamp = eventObject.getTimeStamp();
 
         // Extract stack trace if the event contains a throwable
         if (eventObject.getThrowableProxy() != null) {
