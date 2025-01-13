@@ -23,7 +23,7 @@ public class RequestMatcherService {
         try {
             for(final Request mockRequest: this.requestFactory.getRequestList()){
                 final String pattern = mockRequest.getUrl();
-                if (this.matcher.match(pattern, url) && queryParams.keySet().containsAll(mockRequest.getQueryParam())) {
+                if (this.matcher.match(pattern, url) && queryParams.keySet().containsAll(mockRequest.getQueryParam()) && mockRequest.getMethod().equalsIgnoreCase(req.getMethod())) {
                     final String queryString = req.getQueryString();
                     RequestMatcherService.log.info("Request " + req.getRequestURI()+ (null != queryString ?"?"+queryString:"") + " Matched " + url + "?" + queryParams.keySet().stream().reduce("", (c, k) -> "&" + k + "=" + queryParams.get(k)) + " with name:" + mockRequest.getName() + " processor:" + mockRequest.getProcessor() + " From:" + req.getRemoteAddr() + "("+req.getRemoteHost()+")" );
                     RequestMatcherService.log.debug( "body:" + (null != body ? body.toString() : ""));
@@ -39,6 +39,15 @@ public class RequestMatcherService {
             e.printStackTrace();
         }
         RequestMatcherService.log.warn("Request not matched " + url + " query:" +queryParams + " method:" + req.getMethod() + " body:"+(null != body ?body.toString():"") );
+        return null;
+    }
+
+    public Request isMatchedAny(Request req) {
+        for (Request request : requestFactory.getRequestList()) {
+            if(matcher.match(request.getUrl(), req.getUrl()) && matcher.match(request.getMethod(), req.getMethod())) {
+                return request;
+            }
+        }
         return null;
     }
 }

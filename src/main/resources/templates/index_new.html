@@ -399,21 +399,21 @@
                 body: JSON.stringify(request)
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error(`Error fetching file: ${response.status}`);
+                    throw new Error(`Error: ${response.status} ${response.json()}`);
                 }
                 return response.text();
             })
-                .then(content => {
-                    createToast({
-                        title: "API Added",
-                        message: `API ${request.name} added successfully in module ${request.fileName}!`
-                    })
-                    reloadLeftPane();
-                    addModal.hide();
+            .then(content => {
+                createToast({
+                    title: "API Added",
+                    message: `API ${request.name} added successfully in module ${request.fileName}!`
                 })
-                .catch(error=>{
-                    createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
-                })
+                reloadLeftPane();
+                addModal.hide();
+            })
+            .catch(error=>{
+                createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
+            })
         })
     })
 

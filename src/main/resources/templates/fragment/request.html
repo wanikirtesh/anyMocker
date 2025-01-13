@@ -96,23 +96,61 @@
     /*<![CDATA[*/
     function load() {
         let isAdd = /*[[${add}]]*/ false;
+        let isDownload = /*[[${download}]]*/ false;
         if (!isAdd) {
-            document.querySelector("#btnDownload").addEventListener("click",evt => {
-                let request = createRequest();
-                fetch("/MOCKER/MANAGE/DOWNLOAD/"+request.name,{method:"PUT"})
-                    .then(response=>{
-                        if (!response.ok) {
-                            throw new Error(`Error fetching file: ${response.status}`);
-                        }
-                        return response.text();
-                    })
-                    .then(content=>{
-                        showLogs();
-                    })
-                    .catch(error=>{
-                        createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
-                    })
-            })
+            if(isDownload) {
+                document.querySelector("#btnDownload").addEventListener("click", evt => {
+                    let request = createRequest();
+                    fetch("/MOCKER/MANAGE/DOWNLOAD/" + request.name, {method: "PUT"})
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error fetching file: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(content => {
+                            showLogs();
+                        })
+                        .catch(error => {
+                            createToast({title: "Error", message: `Error ${error.message}`, type: "danger"})
+                        })
+                });
+                document.querySelector("#btnStats").addEventListener("click",(e) =>{
+                    let request = createRequest()
+                    fetch("/MOCKER/MANAGE/STATS/" + request.name,{method:"PUT",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }})
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error fetching file: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(content =>{
+                            document.querySelector("#staticBackdrop1 h5").innerHTML = `Stats for ${request.name}`
+                            document.querySelector('#statBody').innerHTML = createTreeView(JSON.parse(content));
+                            document.querySelectorAll(".toggle-btn").forEach(button => {
+                                button.addEventListener("click", function () {
+                                    const nested = this.nextElementSibling.nextElementSibling;
+                                    if (nested.style.display === "none" || !nested.style.display) {
+                                        nested.style.display = "block";
+                                        this.textContent = "[-]";
+                                    } else {
+                                        nested.style.display = "none";
+                                        this.textContent = "[+]";
+                                    }
+                                });
+                            });
+                            statModal.show();
+                        })
+                        .catch(error =>{
+                            createToast({title:"Error",message: `Error ${error.message}`,type:"danger"});
+                        });
+
+                });
+            }
 
             document.querySelector('#btnRqSave').addEventListener('click', function (event) {
                 let request = createRequest();
@@ -197,42 +235,6 @@
                         createToast({title:"Error",message: `Error ${error.message}`,type:"danger"});
                     });
                 addModal.show();
-            })
-
-            document.querySelector("#btnStats").addEventListener("click",(e) =>{
-                let request = createRequest()
-                fetch("/MOCKER/MANAGE/STATS/" + request.name,{method:"PUT",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }})
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error fetching file: ${response.status}`);
-                        }
-                        return response.text();
-                    })
-                    .then(content =>{
-                        document.querySelector("#staticBackdrop1 h5").innerHTML = `Stats for ${request.name}`
-                        document.querySelector('#statBody').innerHTML = createTreeView(JSON.parse(content));
-                        document.querySelectorAll(".toggle-btn").forEach(button => {
-                            button.addEventListener("click", function () {
-                                const nested = this.nextElementSibling.nextElementSibling;
-                                if (nested.style.display === "none" || !nested.style.display) {
-                                    nested.style.display = "block";
-                                    this.textContent = "[-]";
-                                } else {
-                                    nested.style.display = "none";
-                                    this.textContent = "[+]";
-                                }
-                            });
-                        });
-                        statModal.show();
-                    })
-                    .catch(error =>{
-                        createToast({title:"Error",message: `Error ${error.message}`,type:"danger"});
-                    });
-
             })
         }
     }

@@ -2,10 +2,7 @@ package com.wanikirtesh.anymocker.core.controller;
 
 import com.wanikirtesh.anymocker.core.components.GroovyHelper;
 import com.wanikirtesh.anymocker.core.components.Request;
-import com.wanikirtesh.anymocker.core.service.FixtureDownloadService;
-import com.wanikirtesh.anymocker.core.service.MockerService;
-import com.wanikirtesh.anymocker.core.service.RequestFactory;
-import com.wanikirtesh.anymocker.core.service.RequestProcessorFactory;
+import com.wanikirtesh.anymocker.core.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,6 +28,8 @@ public class FixtureController {
     private RequestFactory requestFactory;
     @Autowired
     private RequestProcessorFactory requestProcessorFactory;
+    @Autowired
+    private RequestMatcherService requestMatcherService;
 
     @Value("${processors.path}")
     private String processorsPath;
@@ -105,10 +104,15 @@ public class FixtureController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/MOCKER/MANAGE/REQUEST/V2/SAVE")
-    public ResponseEntity<Request> saveRequestv2(@RequestParam String fileName, @RequestBody Request request) throws IOException {
+    public ResponseEntity<String> saveRequestv2(@RequestParam String fileName, @RequestBody Request request) throws IOException {
         request.setFileName(fileName);
-        requestFactory.saveRequest(request);
-        return new ResponseEntity<>(request, HttpStatus.OK);
+        final Request ret = requestMatcherService.isMatchedAny(request);
+        if(null == ret) {
+                requestFactory.saveRequest(request);
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("API already exist ("+ret.getMethod()+") in module " + ret.getFileName(),HttpStatus.CONFLICT);
+        }
     }
 
 
