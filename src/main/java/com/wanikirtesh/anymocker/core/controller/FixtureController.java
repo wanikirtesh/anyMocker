@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,6 +40,48 @@ public class FixtureController {
 
     @Value("${processors.path}")
     private String processorsPath;
+
+    private final String initProc="import com.wanikirtesh.anymocker.core.components.GroovyHelper\n" +
+            "/*\n" +
+            "void putObject(String key,Object o)\n" +
+            "Object getDataObject(String key)\n" +
+            "ResponseEntity<String> getResponseEntity(String body, Map<String,String> headers, int statusCode)\n" +
+            "ResponseEntity<String> getResponseEntity(String body, int statusCode)\n" +
+            "ResponseEntity<String> getResponseEntity(int statusCode)\n" +
+            "HttpResponse<String> makePostRequest(String uri, String data, String[] headers)\n" +
+            "String makeGetRequest(String uri)\n" +
+            "String makeRequest(String uri, String method, HttpRequest.BodyPublisher body)\n" +
+            "void writeFile(String content,String basePath, String... paths)\n" +
+            "Map<String, Path> collectFiles(Path path)\n" +
+            "Map<String, Map<String, Path>> collectNestedFiles(Path path)\n" +
+            "JSONObject parseJsonObject(String str)\n" +
+            "JSONArray parseJsonArray(String str)\n" +
+            "*/\n" +
+            "\n" +
+            "def init(log,requests){\n" +
+            "\n" +
+            "}\n" +
+            "\n" +
+            "def process(log,match,body,req){\n" +
+            "    return GroovyHelper.getResponseEntity(\"success\",200)\n" +
+            "}\n" +
+            "\n" +
+            "def post( log,match, body, req){\n" +
+            "    \n" +
+            "}\n" +
+            "def pre( mlog,match, body, req){\n" +
+            "    \n" +
+            "}\n" +
+            "\n" +
+            "def download(log,match){\n" +
+            "\n" +
+            "}\n" +
+            "\n" +
+            "def stats(log,match){\n" +
+            "\n" +
+            "}\n" +
+            "\n" +
+            "\n";
 
     @RequestMapping(method = RequestMethod.PUT, path = "/MOCKER/MANAGE/DOWNLOAD/{requestName}")
     public ResponseEntity<String> downloadSpecific(@PathVariable final String requestName) {
@@ -109,10 +152,24 @@ public class FixtureController {
         final Request existingRequest = requestMatcherService.isMatchedAny(request);
         if(null == existingRequest) {
                 requestFactory.saveRequest(request);
+                createProcessorIfNotExist(request);
             return new ResponseEntity<>("success", HttpStatus.OK);
         }else{
             log.warn("API already exist ("+existingRequest.getUrl()+") "+existingRequest.getName()+" in module " + existingRequest.getFileName());
             return new ResponseEntity<>("API already exist ("+existingRequest.getMethod()+") in module " + existingRequest.getFileName(),HttpStatus.CONFLICT);
+        }
+    }
+
+    private void createProcessorIfNotExist(Request request) throws IOException {
+        try {
+            Path processorPath = Paths.get(processorsPath, request.getProcessor() + ".groovy");
+            File processorFile = processorPath.toFile();
+            if (!processorFile.exists()) {
+                Files.write(processorPath, initProc.getBytes());
+            }
+        }catch(Exception e) {
+            log.error(e.getMessage());
+            throw e;
         }
     }
 
