@@ -7,7 +7,7 @@
         <div class="row g-3">
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
-                    <span class="input-group-text" id="lblfileName">Module Name</span>
+                    <span class="input-group-text" id="lblfileName">Module</span>
                     <input th:id="${pre +'fileName'}" th:value="${req.fileName.replace('.json','')}" name="fileName"
                            type="text" class="form-control form-control-sm"
                            placeholder="File name" aria-label="File name" aria-describedby="lblfileName">
@@ -15,15 +15,15 @@
             </div>
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
-                    <span class="input-group-text" id="lblname">Request Name</span>
+                    <span class="input-group-text" id="lblname">API Name</span>
                     <input th:id="${pre+'name'}" name="name" th:value="${req.name}" type="text"
-                           class="form-control form-control-sm" placeholder="Request name"
+                           class="form-control form-control-sm" placeholder="API name"
                            aria-label="Request name" aria-describedby="lblname">
                 </div>
             </div>
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
-                    <span class="input-group-text" id="lblprocessor">Processor Name</span>
+                    <span class="input-group-text" id="lblprocessor">Processor</span>
                     <input th:id="${pre+'processor'}" th:value="${req.processor}" name="processor" type="text"
                            class="form-control form-control-sm"
                            placeholder="Processor name" aria-label="Processor name" aria-describedby="lblprocessor">
@@ -32,7 +32,7 @@
 
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
-                    <span class="input-group-text" id="lblspec">Specification File</span>
+                    <span class="input-group-text" id="lblspec">Specification</span>
                     <input th:id="${pre+'spec'}" th:value="${req.spec}" name="spec" type="text"
                            class="form-control form-control-sm"
                            placeholder="Specification file" aria-label="Specification file" aria-describedby="lblspec">
@@ -49,7 +49,7 @@
             </div>
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
-                    <span class="input-group-text" id="lblurl">Request URI</span>
+                    <span class="input-group-text" id="lblurl">API Path</span>
                     <input th:id="${pre+'url'}" th:value="${req.url}" name="url" type="text"
                            class="form-control form-control-sm" placeholder="Request URL"
                            aria-label="Request URI" aria-describedby="lblurl">
@@ -275,6 +275,7 @@
             request.queryParam = document.querySelector('#queryParam').value.split(",")
         request.meta = parseKeyValueString(document.querySelector('#meta').value)
         request.download = document.querySelector('#download').checked
+        request.validate = document.querySelector('#validate').checked
         request.processor = document.querySelector('#processor').value
         return request;
     }

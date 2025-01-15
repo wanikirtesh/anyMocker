@@ -452,6 +452,7 @@
                 request.queryParam = document.querySelector('#ed_queryParam').value.split(",");
             request.meta = parseKeyValueString(document.querySelector('#ed_meta').value);
             request.download = document.querySelector('#ed_download').checked;
+            request.validate = document.querySelector('#ed_validate').checked;
             request.processor = document.querySelector('#ed_processor').value;
             console.log(request)
             fetch("/MOCKER/MANAGE/REQUEST/V2/SAVE?fileName=" + request.fileName, {
