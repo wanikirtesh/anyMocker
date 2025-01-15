@@ -45,11 +45,13 @@ public class MockerService {
     public void init(final String name){
             try{
                 MockerService.log.info("initializing Processor:{}", name);
+                if(null==this.requestProcessorFactory.getProcessor(name)){
+                    throw new RuntimeException("Processor not found for name:" + name);
+                }
                 this.requestProcessorFactory.getProcessor(name).init(this.requestFactory.getRequests(name).stream().filter(Request::isDownload).toList());
-            }catch (final Exception e) {
-                e.printStackTrace();
-                MockerService.log.error(e.getMessage(),e);
-                MockerService.log.error("No Processor script found for {}", name, e);
+            }catch (Exception e) {
+               // e.printStackTrace();
+                MockerService.log.error("No Processor script found for {}", name);
             }
     }
     public ResponseEntity<Object> processRequest(final Request match, final String body, final HttpServletRequest req) {

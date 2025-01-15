@@ -46,7 +46,7 @@ public class RequestProcessorFactory {
                 RequestProcessorFactory.processors.remove(strProcessor);
                 RequestProcessorFactory.processors.put(strProcessor, processor);
             }catch (final Exception e){
-                e.printStackTrace();
+                //e.printStackTrace();
                 log.error(e.getMessage(),e);
                 throw new RuntimeException(e);
             }

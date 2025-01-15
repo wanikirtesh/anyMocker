@@ -62,6 +62,7 @@
             border-right: 1px solid #dee2e6;
             background-color: #f7f7f7;
             resize: horizontal;
+            flex-shrink: 0;
         }
 
         .tree {
@@ -216,7 +217,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="impBody">
-                <textarea class="form-control" id="impYml" placeholder="Paste you spec yaml here"></textarea>
+                <textarea class="form-control" id="impYml" style="height:50vh" placeholder="Paste you spec yaml here"></textarea>
             </div>
             <div class="modal-footer">
                 <input type="text" class="form-control" placeholder="Import in Module" id="impModule">
@@ -240,14 +241,12 @@
     let addModal;
     let statModal;
     let importModal
-    //let logModal;
 
     const loader = document.getElementById('loader-progress-bar');
     function showLoader() {
         loader.style.display = 'block';
     }
 
-    // Hide the loader
     function hideLoader() {
         loader.style.display = 'none';
     }
@@ -305,9 +304,27 @@
         document.addEventListener('mouseup', () => {
             if (isResizing) {
                 isResizing = false;
+                if(window.editor){
+                    editor.layout();
+                }
                 document.body.style.cursor = 'default';
             }
         });
+        document.querySelector("#refreshAll").addEventListener('click', () => {
+            fetch("/MOCKER/MANAGE/RELOAD")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error fetching file: ${response.status}`);
+                    }
+                    return response.text();
+                }).then(content => {
+                reloadLeftPane();
+                showLogs();
+            }).catch(error => {
+                createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
+            })
+
+        })
 
         document.querySelector("#btnCloseLog").addEventListener("click",e=>{
             closeLogs()

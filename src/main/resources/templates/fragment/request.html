@@ -32,7 +32,7 @@
 
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
-                    <span class="input-group-text" id="lblspec">Processor Name</span>
+                    <span class="input-group-text" id="lblspec">Specification File</span>
                     <input th:id="${pre+'spec'}" th:value="${req.spec}" name="spec" type="text"
                            class="form-control form-control-sm"
                            placeholder="Specification file" aria-label="Specification file" aria-describedby="lblspec">
@@ -197,27 +197,30 @@
             document.querySelector("#rqDelete").addEventListener("click", (e) => {
                 let fileName = document.querySelector("#fileName").value;
                 let name = document.querySelector("#name").value;
-                fetch(`/MOCKER/MANAGE/REQUEST/V2/DELETE/${name}?fileName=${fileName}`, {
-                    method: "DELETE",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error fetching file: ${response.status}`);
+                let userConfirm = confirm(`Are you sure you want to delete API ${name}?`);
+                if (userConfirm) {
+                    fetch(`/MOCKER/MANAGE/REQUEST/V2/DELETE/${name}?fileName=${fileName}`, {
+                        method: "DELETE",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
                         }
-                        return response.text();
                     })
-                    .then(content => {
-                        createToast({
-                            title: "API Deleted",
-                            message: `API ${name} Deleted successfully from module ${fileName}`,
-                            type: "success"
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error fetching file: ${response.status}`);
+                            }
+                            return response.text();
                         })
-                        reloadLeftPane();
-                    })
+                        .then(content => {
+                            createToast({
+                                title: "API Deleted",
+                                message: `API ${name} Deleted successfully from module ${fileName}`,
+                                type: "success"
+                            })
+                            reloadLeftPane();
+                        })
+                }
             })
 
             document.querySelector("#rqClone").addEventListener("click", (e) => {

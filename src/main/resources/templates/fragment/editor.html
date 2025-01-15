@@ -26,6 +26,7 @@
                     language: isProcessor?'java':'yaml'
                 });
             })
+            window.editor = editor;
             document.querySelector("#saveScript").addEventListener("click",e => {
                let endPoint = isProcessor? `/MOCKER/MANAGE/SAVEPROCESSOR/${fileName}` : `/MOCKER/MANAGE/SAVESPEC/${fileName}`
                 fetch(endPoint,{method:"PATCH",

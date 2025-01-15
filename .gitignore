@@ -58,7 +58,6 @@ crawler.json
 /requests/
 !/requests/TEST.json
 /mockers/
-/newFixtures_bkp/
 /service
 *.json
 /specs/

@@ -6,4 +6,5 @@ ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} anyMocker.jar
 RUN mkdir "requests"
 RUN mkdir "processes"
+RUN mkdir "specs"
 ENTRYPOINT ["java","-jar","/anyMocker.jar"]
