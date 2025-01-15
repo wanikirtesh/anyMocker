@@ -128,4 +128,22 @@ public class RequestFactory {
         RequestFactory.mapper.writeValue(fl, requests);
         reload();
     }
+
+    public void saveRequests(String moduleName, List<Request> addRequests) throws IOException {
+        final String fileName = Path.of(moduleName.replace(".json", "") + ".json").getFileName().toString();
+        final Path filePath = Path.of(reqConfigFilePath, fileName);
+        File fl = new File(filePath.toString());
+        final List<Request> orgRequest = new ArrayList<>();
+        if (!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }else{
+             orgRequest.addAll(this.getListFromFile(fl));
+            for (Request addRequest : addRequests) {
+                orgRequest.removeIf(rq -> rq.getName().equals(addRequest.getName()));
+            }
+        }
+        orgRequest.addAll(addRequests);
+        RequestFactory.mapper.writeValue(fl, orgRequest);
+        reload();
+    }
 }

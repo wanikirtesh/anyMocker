@@ -29,6 +29,16 @@
                            placeholder="Processor name" aria-label="Processor name" aria-describedby="lblprocessor">
                 </div>
             </div>
+
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="input-group col col-mb-3">
+                    <span class="input-group-text" id="lblspec">Processor Name</span>
+                    <input th:id="${pre+'spec'}" th:value="${req.spec}" name="spec" type="text"
+                           class="form-control form-control-sm"
+                           placeholder="Specification file" aria-label="Specification file" aria-describedby="lblspec">
+                </div>
+            </div>
+
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-3">
                     <span class="input-group-text" id="lblmethod">Method</span>
@@ -55,6 +65,17 @@
                     </label>
                 </div>
             </div>
+
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <div class="form-check">
+                    <input th:id="${pre+'validate'}" name="validate" th:checked="${req.validate}"
+                           class="form-check-input" type="checkbox">
+                    <label class="form-check-label" th:for="${pre+'validate'}">
+                        Validate Request
+                    </label>
+                </div>
+            </div>
+
             <div class="col col-lg-4 col-md-6 col-sm-12">
                 <div class="input-group col col-mb-12">
                     <span class="input-group-text" id="lblmeta">Metadata</span>
@@ -89,7 +110,7 @@
     <button th:if="${req.download}" id="btnStats" class="btn btn-primary">Stats</button>
     <button class="btn btn-primary" id="rqDelete">Delete</button>
     <button class="btn btn-primary">Refresh</button>
-    <button class="btn btn-primary" id="rqClone">Create New from this</button>
+    <button class="btn btn-primary" id="rqClone">Clone</button>
 </div>
 
 <script th:inline="javascript">

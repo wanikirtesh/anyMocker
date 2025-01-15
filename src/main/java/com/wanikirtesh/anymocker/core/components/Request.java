@@ -16,12 +16,12 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request {
     @Setter
-    private String name, url, method, processor = "OK_ONLY";
+    private String name, url, method, processor = "OK_ONLY",spec="";
     @Setter
     @JsonIgnore
     private String body = "", fileName = "";
     @Setter
-    private boolean download, grouping = false;
+    private boolean download, grouping = false,validate=false;
     private final List<String> queryParam = new ArrayList<>();
     private final List<String> pathParam = new ArrayList<>();
     @JsonIgnore
@@ -83,7 +83,6 @@ public class Request {
 
     @JsonIgnore
     public String getMetaValue(final String key) {
-        //log.info(System.identityHashCode(meta)+"");
         if (this.meta.containsKey(key)) {
             return this.meta.get(key);
         }
@@ -118,6 +117,8 @@ public class Request {
         download = mockRequest.download;
         grouping = mockRequest.grouping;
         fileName = mockRequest.fileName;
+        validate = mockRequest.validate;
+        spec = mockRequest.spec;
     }
 
     @JsonIgnore
@@ -133,20 +134,5 @@ public class Request {
         }
         return url;
 
-    }
-
-    @JsonIgnore
-    public String getProductName() {
-        return "";
-    }
-
-    @JsonIgnore
-    public String getModuleName() {
-        return "";
-    }
-
-    @JsonIgnore
-    public String getPersonaName() {
-        return "";
     }
 }

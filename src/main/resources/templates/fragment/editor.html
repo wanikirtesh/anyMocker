@@ -18,16 +18,17 @@
             let editor;
             let scr = /*[[${content}]]*/ "";
             let fileName = /*[[${fileName}]]*/ "";
+            let isProcessor = /*[[${isProcessor}]]*/ "";
             require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs'}});
             require(['vs/editor/editor.main'], function () {
                 editor = monaco.editor.create(document.getElementById('editor'), {
                     value: scr,
-                    language: 'java'
+                    language: isProcessor?'java':'yaml'
                 });
             })
             document.querySelector("#saveScript").addEventListener("click",e => {
-                debugger
-                fetch(`/MOCKER/MANAGE/SAVEPROCESSOR/${fileName}`,{method:"PATCH",
+               let endPoint = isProcessor? `/MOCKER/MANAGE/SAVEPROCESSOR/${fileName}` : `/MOCKER/MANAGE/SAVESPEC/${fileName}`
+                fetch(endPoint,{method:"PATCH",
                     headers: {
                         'Content-Type': 'text/plain'
                     },

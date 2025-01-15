@@ -207,6 +207,27 @@
     </div>
 </div>
 
+<div class="modal fade modal-xl " id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdrop1Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdrop2Label"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="impBody">
+                <textarea class="form-control" id="impYml" placeholder="Paste you spec yaml here"></textarea>
+            </div>
+            <div class="modal-footer">
+                <input type="text" class="form-control" placeholder="Import in Module" id="impModule">
+                <button id="btnImport" class="btn btn-primary">Import</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div id="loader-progress-bar">
     <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 100%"></div>
@@ -218,6 +239,7 @@
 <script>
     let addModal;
     let statModal;
+    let importModal
     //let logModal;
 
     const loader = document.getElementById('loader-progress-bar');
@@ -246,9 +268,6 @@
         }
     };
     document.addEventListener('DOMContentLoaded', () => {
-
-
-
         socket = new WebSocket(`ws://${window.location.hostname}:9191/critical`);
         socket.onmessage = function (event) {
             let logContainer = document.getElementById('logger');
@@ -260,6 +279,7 @@
         };
         addModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
         statModal = new bootstrap.Modal(document.getElementById("staticBackdrop1"));
+        importModal = new bootstrap.Modal(document.getElementById("staticBackdrop2"));
         reloadLeftPane();
         const resizer = document.querySelector('.resizer');
         const sidebar = document.querySelector('.resizable-sidebar');
@@ -292,6 +312,33 @@
         document.querySelector("#btnCloseLog").addEventListener("click",e=>{
             closeLogs()
         })
+        document.querySelector("#impReq").addEventListener("click",e=>{
+            document.querySelector("#impYml").value = "";
+            importModal.show();
+        })
+
+        document.querySelector("#btnImport").addEventListener("click",e=>{
+            let module = document.querySelector("#impModule").value;
+            fetch("/MOCKER/MANAGE/IMPORT/"+module,{method:"PUT",
+                body:document.querySelector("#impYml").value,
+                headers: {
+                    'Content-Type': 'text/plain'
+                } })
+                .then(response=>{
+                    if (!response.ok) {
+                        throw new Error(`Error fetching file: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(content=>{
+                    reloadLeftPane();
+                    importModal.hide()
+                })
+                .catch(error=>{
+                    createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
+                })
+        })
+
         document.querySelector("#btnlogClear").addEventListener("click",e=>{
             document.querySelector("#logger").innerHTML = "";
         });

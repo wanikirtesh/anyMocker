@@ -61,3 +61,4 @@ crawler.json
 /newFixtures_bkp/
 /service
 *.json
+/specs/

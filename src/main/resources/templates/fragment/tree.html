@@ -37,7 +37,7 @@
         </a>
         <div th:id="'headingM'+${moduleEntry.key}" class="collapse nested-folder">
           <a th:each="request : ${moduleEntry.value}" data-frole="req" href="#" class="list-group-item list-group-item-action file-item" th:name="${request.name}" th:data-file="${request.name} + '.json'">
-            <i class="bi bi-file-earmark file-icon"></i> <span th:text="${request.name}"></span> <span class="badge" style="background: green" th:text="${request.method}"></span>
+            <i class="bi bi-file-earmark file-icon"></i> <span th:text="${request.name}"></span> <span class="badge" style="background: green" th:text="${request.method}"></span> <span class="badge" style="background: #0d6efd" th:if="${request.validate}">Validate</span> <span class="badge" style="background: darkmagenta" th:if="${!request.validate}">Mock</span>
             <br/>
             <span style="color:#888" class="badge badge-pill" th:text="${request.url}"></span>
           </a>
@@ -47,15 +47,27 @@
   </div>
 
   <div>
-    <a href="#headingProcessors" data-frole="api" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
+    <a href="#headingProcessors" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
       <i class="bi bi-cpu cpu-icon"></i> <span>Processors</span>
     </a>
     <div id="headingProcessors" class="collapse nested-folder">
-          <a th:each="processor : ${processors}" data-frole="processor" href="#" class="list-group-item list-group-item-action file-item" th:name="${processor}" th:data-file="${processor} + '.txt'">
+          <a th:each="processor : ${processors}" data-frole="processor" href="#" class="list-group-item list-group-item-action file-item" th:name="${processor}" th:data-file="${processor} + '.groovy'">
             <i class="bi bi-braces file-icon"></i> <span th:text="${processor}"></span>
           </a>
     </div>
   </div>
+
+  <div>
+    <a href="#headingSpecs" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
+      <i class="bi bi-layers cpu-icon"></i> <span>API Specifications</span>
+    </a>
+    <div id="headingSpecs" class="collapse nested-folder">
+      <a th:each="specification : ${specifications}" data-frole="spec" href="#" class="list-group-item list-group-item-action file-item" th:name="${specification}" th:data-file="${specification} + '.yaml'">
+        <i class="bi bi-filetype-yml file-icon"></i> <span th:text="${specification}"></span>
+      </a>
+    </div>
+  </div>
+
   <div style="margin-bottom: 25px">
     <a href="#" data-frole="log" class="list-group-item list-group-item-action" id="btnLog">
       <i class="bi bi-card-text cpu-icon"></i> <span>Logs</span>
@@ -101,10 +113,17 @@
           const requestName = item.name;
           let endPoint
           let frole = item.dataset.frole;
-          if (item.dataset.frole === 'req') {
-            endPoint = `/MOCKER/MANAGE/REQUEST/GET/V2/${requestName}`
-          }else {
-            endPoint = `/MOCKER/MANAGE/PROCESSOR/${requestName}`
+
+          switch (item.dataset.frole){
+            case "req":
+              endPoint = `/MOCKER/MANAGE/REQUEST/GET/V2/${requestName}`;
+                  break;
+            case "processor":
+              endPoint = `/MOCKER/MANAGE/PROCESSOR/${requestName}`;
+                  break;
+            case "spec":
+              endPoint = `/MOCKER/MANAGE/SPEC/${requestName}`
+                  break;
           }
           fetch(endPoint)
             .then(response => {

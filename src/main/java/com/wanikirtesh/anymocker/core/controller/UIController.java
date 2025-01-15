@@ -21,6 +21,10 @@ public class UIController {
     @Value("${processors.path}")
     private String processorsPath;
 
+    @Value("${specs.path}")
+    private String specsPath;
+
+
     @Autowired
     private RequestFactory requestFactory;
 
@@ -43,12 +47,28 @@ public class UIController {
             final String content = Files.readString(Paths.get(this.processorsPath, file + ".groovy"));
             model.addAttribute("content", content);
             model.addAttribute("fileName", file);
+            model.addAttribute("isProcessor", true);
             return "fragment/editor";
         }catch (Exception e) {
             log.error(e.getMessage());
             throw e;
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/MOCKER/MANAGE/SPEC/{file}")
+    public String getSpec(final Model model,@PathVariable final String file) throws IOException {
+        try {
+            final String content = Files.readString(Paths.get(this.specsPath, file));
+            model.addAttribute("content", content);
+            model.addAttribute("fileName", file);
+            model.addAttribute("isProcessor", false);
+            return "fragment/editor";
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST, path = "/MOCKER/MANAGE/REQUEST/NEW/V2")
     public String getRequestV2New(final Model model, @RequestParam(required = false) final String isNew, @RequestParam(required = false) String fileName, @RequestBody(required = false) Request oldR) {
         Request r;
@@ -70,7 +90,12 @@ public class UIController {
     public String getTree(final Model model) {
         model.addAttribute("groupedUrls", groupRequestsNew(this.requestFactory.getRequestList()));
         model.addAttribute("processors", getProcessors(this.requestFactory.getRequestList()));
+        model.addAttribute("specifications",getSpecifications(this.requestFactory.getRequestList()));
         return "fragment/tree";
+    }
+
+    private Set<String> getSpecifications(List<Request> requestList) {
+        return requestList.stream().filter(r -> !r.getSpec().isBlank()).map(Request::getSpec).collect(Collectors.toSet());
     }
 
     private Map<String, List<Request>> groupRequestsNew(final List<Request> requestList) {

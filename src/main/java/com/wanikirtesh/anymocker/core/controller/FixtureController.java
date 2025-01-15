@@ -1,6 +1,7 @@
 package com.wanikirtesh.anymocker.core.controller;
 
 import com.wanikirtesh.anymocker.core.components.GroovyHelper;
+import com.wanikirtesh.anymocker.core.components.OpenApiImporter;
 import com.wanikirtesh.anymocker.core.components.Request;
 import com.wanikirtesh.anymocker.core.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -32,6 +34,8 @@ public class FixtureController {
     private RequestProcessorFactory requestProcessorFactory;
     @Autowired
     private RequestMatcherService requestMatcherService;
+    @Value("${specs.path}")
+    private String specPath;
 
     @Value("${processors.path}")
     private String processorsPath;
@@ -77,7 +81,7 @@ public class FixtureController {
     }
 
     @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/SAVEPROCESSOR/{file}", consumes = "text/plain")
-    public ResponseEntity<String> getProcessor(@PathVariable final String file, @RequestBody final String content) throws IOException {
+    public ResponseEntity<String> saveProcessor(@PathVariable final String file, @RequestBody final String content) throws IOException {
         Path path = Paths.get(this.processorsPath, file + ".groovy");
         if (!Files.exists(path)) {
             Files.createFile(path);
@@ -85,6 +89,17 @@ public class FixtureController {
         Files.write(path, content.getBytes(StandardCharsets.UTF_8));
         this.requestProcessorFactory.updateProcessor(file);
         this.mockerService.reload(file);
+        return new ResponseEntity<>("Saved file", HttpStatus.OK);
+    }
+
+
+    @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/SAVESPEC/{file}", consumes = "text/plain")
+    public ResponseEntity<String> saveSpec(@PathVariable final String file, @RequestBody final String content) throws IOException {
+        Path path = Paths.get(this.specPath, file);
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+        Files.write(path, content.getBytes(StandardCharsets.UTF_8));
         return new ResponseEntity<>("Saved file", HttpStatus.OK);
     }
 
@@ -105,6 +120,21 @@ public class FixtureController {
     public ResponseEntity<String> deleteRequestv2(@RequestParam String fileName, @PathVariable String requestName) throws IOException {
         requestFactory.deleteRequest(requestName, fileName);
         return new ResponseEntity<>("success", HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,path = "/MOCKER/MANAGE/IMPORT/{moduleName}")
+    public ResponseEntity<String> importModule(@PathVariable String moduleName, @RequestBody final String requestYml) throws IOException {
+        try{
+            List<Request> requests = OpenApiImporter.importFromOpenApiSpec(requestYml);
+            String specFileName = "spec_" + (new Date().getTime()) + ".yaml";
+            Files.write(Paths.get(specPath,specFileName), requestYml.getBytes());
+            List<Request> list = requests.stream().peek(req -> {req.setValidate(true);req.setSpec(specFileName);}).toList();
+            requestFactory.saveRequests(moduleName,list);
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        }catch(Exception e){
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     @RequestMapping(method = RequestMethod.PATCH, path = "/MOCKER/MANAGE/REQUEST/SAVE/{requestName}")
