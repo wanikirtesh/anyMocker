@@ -41,6 +41,11 @@
                     return response.text();
                 }).then(content => {
                     document.querySelector("#main-content").innerHTML = "";
+                    setTimeout(() => {
+                        document.querySelector(`${isProcessor?"#headingProcessors":"#headingSpecs"}`).classList.add("show");
+                        document.querySelector(`a[name="${fileName}"][data-frole=${isProcessor?"processor":"spec"}]`).parentNode.classList.add("show");
+                        document.querySelector(`a[name="${fileName}"][data-frole=${isProcessor?"processor":"spec"}]`).click();
+                    }, 100);
                     createToast({title:"Script saved",message:`Script ${fileName} saved successfully`,type:"success"})
                 }).catch(error => {
                     createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})

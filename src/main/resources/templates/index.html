@@ -475,13 +475,17 @@
                 })
                 reloadLeftPane();
                 addModal.hide();
+                setTimeout(() => {
+                    document.querySelector("#headingAPI").classList.add("show");
+                    document.querySelector(`a[name="${request.name}"][data-frole="req"]`).parentNode.classList.add("show");
+                    document.querySelector(`a[name="${request.name}"][data-frole="req"]`).click();
+                }, 100);
             })
             .catch(error=>{
                 createToast({title:"Error",message:`Error ${error.message}`,type:"danger"})
             })
         })
     })
-
     function parseKeyValueString(str) {
         str = str.replace("{", "").replace("}", "")
         const obj = {};

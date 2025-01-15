@@ -184,13 +184,19 @@
                     body:JSON.stringify(request)
                 }).then(response => {
                     if (!response.ok) {
-                        createToast({title:"Exception",message:`Exception:${response.status}`,type:"danger"})
+                        createToast({title:"Exception",message:`Exception:${response.status}`,type:"danger"});
+
                         throw new Error(`Error fetching file: ${response.status}`);
                     }
                     return response.text();
                 }).then(data =>{
                     createToast({title:"API Saved",message:`API ${request.name} edited successfully!`})
                     reloadLeftPane();
+                    setTimeout(() => {
+                        document.querySelector("#headingAPI").classList.add("show");
+                        document.querySelector(`a[name="${request.name}"][data-frole="req"]`).parentNode.classList.add("show");
+                        document.querySelector(`a[name="${request.name}"][data-frole="req"]`).click();
+                    }, 100);
                 })
             })
 
