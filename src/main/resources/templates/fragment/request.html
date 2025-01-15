@@ -117,7 +117,7 @@
     /*<![CDATA[*/
     function load() {
         let isAdd = /*[[${add}]]*/ false;
-        let isDownload = /*[[${download}]]*/ false;
+        let isDownload = /*[[${req.download}]]*/ false;
         if (!isAdd) {
             if(isDownload) {
                 document.querySelector("#btnDownload").addEventListener("click", evt => {
