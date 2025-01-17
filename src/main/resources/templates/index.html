@@ -44,6 +44,8 @@
             background-color: #f8f9fa;
             border-bottom: 1px solid #dee2e6;
             padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
         }
 
         .content {
@@ -79,7 +81,9 @@
         .main-content {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 1rem;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
         }
         .json-key {
             font-weight: bold;
@@ -137,18 +141,19 @@
             <img alt="" height="40"
                  src="https://raw.githubusercontent.com/wanikirtesh/anyMocker/main/logo/logo-no-background.png">
         </a>
+        <div class="actions m-2" style="text-align: right">
+            <a href="#" title="Add API" id="addReq" class="btn btn-primary"><i class="bi bi-plus"></i></a>
+            <a href="#" title="Import API" id="impReq" class="btn btn-primary"><i class="bi bi-file-plus"></i></a>
+            <a href="#" title="Refresh" id="refreshAll" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></a>
+            <a href="#" title="Download All" id="downloadAll" class="btn btn-primary"><i class="bi bi-download"></i></a>
+            <a href="#" title="Storage" id="statsAll" class="btn btn-primary"><i class="bi bi-database"></i></a>
+        </div>
     </div>
     <!-- Content Section -->
     <div class="content">
         <!-- Left Pane: Sidebar -->
         <div class="resizable-sidebar">
-            <div class="actions m-2" style="text-align: right">
-                <a href="#" title="Add API" id="addReq" class="btn btn-primary"><i class="bi bi-plus"></i></a>
-                <a href="#" title="Import API" id="impReq" class="btn btn-primary"><i class="bi bi-file-plus"></i></a>
-                <a href="#" title="Refresh" id="refreshAll" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></a>
-                <a href="#" title="Download All" id="downloadAll" class="btn btn-primary"><i class="bi bi-download"></i></a>
-                <a href="#" title="Storage" id="statsAll" class="btn btn-primary"><i class="bi bi-database"></i></a>
-            </div>
+
             <div class="tree"></div>
         </div>
         <!-- Resizer -->
@@ -159,15 +164,24 @@
         <div class="main-content container-fluid" id="main-content">
         </div>
         <div id="logContainer" style="display: none" class="main-content container-fluid">
-            <div>
-                <div class="small" id="logger">
+            <div class="card" style="height: 100%;">
+                <div class="card-header">
+                    <h5 class="card-title">Logs</h5>
+                </div>
+                <div  class="small card-body overflow-auto">
+                    <div id="logger">
 
+                    </div>
+                    <div class="spinner-border spinner-border-sm mt-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" id="btnCloseLog">Close</button>
+                    <button class="btn btn-primary" id="btnlogClear">Clear</button>
                 </div>
             </div>
-            <div class="card-footer">
-                <button class="btn btn-primary" id="btnCloseLog">Close</button>
-                <button class="btn btn-primary" id="btnlogClear">Clear</button>
-            </div>
+
         </div>
 
     </div>
@@ -242,6 +256,12 @@
     let statModal;
     let importModal
 
+    window.addEventListener("resize", () => {
+        if(document.querySelector("#editor")) {
+            document.querySelector("#editor").style.height = "100%"
+            window.editor.layout();
+        }
+    })
     const loader = document.getElementById('loader-progress-bar');
     function showLoader() {
         loader.style.display = 'block';
@@ -274,7 +294,7 @@
             const errorObj = JSON.parse(event.data)
             logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> <span class="lg_loggerName">${errorObj.loggerName}</span> <span class="lg_message">${errorObj.message}</pre></span>`
             logContainer.appendChild(logMessage);
-            document.querySelector("#btnCloseLog").scrollIntoView({ behavior: 'smooth', block: 'end' });
+            document.querySelector('.spinner-border').scrollIntoView({behavior: 'smooth'});
         };
         addModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
         statModal = new bootstrap.Modal(document.getElementById("staticBackdrop1"));
@@ -593,10 +613,10 @@
 
     function showLogs(){
         document.querySelector("#main-content").style.display = "none"
-        document.querySelector("#logContainer").style.display = "block"
+        document.querySelector("#logContainer").style.display = "flex"
     }
     function closeLogs(){
-        document.querySelector("#main-content").style.display = "block"
+        document.querySelector("#main-content").style.display = "flex"
         document.querySelector("#logContainer").style.display = "none"
     }
 

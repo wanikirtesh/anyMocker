@@ -1,11 +1,18 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
-<div class="card">
+<div class="card" style="height: 100%">
+    <style>
+        .cbody{
+            padding: 0;
+        }
+        #editor{
+            scrollbar-width: thin;
+        }
+    </style>
     <div class="card-header">
-        <h5><i class="bi bi-braces"></i> <span th:text=" ${file}"></span> </h5>
+        <h5><i th:if="${isProcessor}" class="bi bi-braces"></i><i th:if="${!isProcessor}" class="bi bi-filetype-yml"></i> <span th:text=" ${file}"></span> </h5>
     </div>
-    <div class="card-body">
-        <div id="editor">
-
+    <div class="card-body cbody">
+        <div style="height: 100%" id="editor">
         </div>
     </div>
     <div class="card-footer">
@@ -14,7 +21,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         function a() {
-            document.getElementById('editor').style.height = (document.querySelector("#main-content").offsetHeight - 160) + "px"
+           // document.getElementById('editor').style.height = (document.querySelector("#main-content").offsetHeight - 160) + "px"
             let editor;
             let scr = /*[[${content}]]*/ "";
             let fileName = /*[[${fileName}]]*/ "";

@@ -2,7 +2,7 @@
 <div class="list-group" id="folderList">
   <style>
     .active-file,.active-folder {
-      background-color: #e9ecef;
+      /*background-color: #e9ecef;*/
       font-weight: bold;
     }
     .folder-icon {
@@ -12,18 +12,22 @@
     .file-icon {
       color: #6c757d;
     }
-    .open-folder-icon {
-      color: #d39e00;
+    .list-group-item{
+      border-right: 0;
+      border-top: 0;
     }
+
     .edit-file-icon {
       color: #0d6efd;
     }
-    .nested-folder {
-      padding-left: 1rem;
+    .nested-folder>a {
+      padding-left: 2em;
     }
-    #editor {
-      border: 1px solid #ccc;
-
+    .nested-folder>.nested-folder>a {
+      padding-left: 4em;
+    }
+    .tree{
+      scrollbar-width: thin;
     }
   </style>
   <div>
@@ -31,7 +35,7 @@
       <i class="bi bi-stack"></i> <span>API</span>
     </a>
     <div id="headingAPI" class="collapse nested-folder">
-      <div th:each="moduleEntry : ${groupedUrls}">
+      <th:block th:each="moduleEntry : ${groupedUrls}">
         <a th:href="'#headingM'+${moduleEntry.key}" data-frole="mod" class="list-group-item list-group-item-action folder-toggle" data-bs-toggle="collapse">
           <i class="bi bi-folder folder-icon"></i>  <span th:text="${moduleEntry.key}"></span> <span class="badge badge-primary" style="background: #0d6efd" th:text="${moduleEntry.value.size()}"></span>
         </a>
@@ -42,7 +46,7 @@
             <span style="color:#888" class="badge badge-pill" th:text="${request.url}"></span>
           </a>
         </div>
-      </div>
+      </th:block>
     </div>
   </div>
 
@@ -80,14 +84,16 @@
       const folderToggles = document.querySelectorAll('.folder-toggle');
       folderToggles.forEach(folder => {
         folder.addEventListener('click', () => {
-          const icon = folder.querySelector('.folder-icon, .open-folder-icon');
-          if (folder.getAttribute('aria-expanded') === 'true') {
-            icon.classList.replace('bi-folder', 'bi-folder2-open');
-            icon.classList.replace('folder-icon', 'open-folder-icon');
-          } else {
-            icon.classList.replace('bi-folder2-open', 'bi-folder');
-            icon.classList.replace('open-folder-icon', 'folder-icon');
-          }
+          const icon = folder.querySelector('.folder-icon');
+          setTimeout(()=> {
+            if (folder.getAttribute('aria-expanded') === 'true') {
+              icon.classList.remove('bi-folder');
+              icon.classList.add('bi-folder2-open');
+            } else {
+              icon.classList.add('bi-folder');
+              icon.classList.remove('bi-folder2-open');
+            }
+          },50);
         });
       });
 
@@ -106,6 +112,7 @@
             icon.classList.replace('bi-pencil-square', 'bi-file-earmark');
             icon.classList.replace('edit-file-icon', 'file-icon');
           });
+
           item.classList.add('active-file');
           const icon = item.querySelector('.file-icon');
           icon.classList.replace('bi-file-earmark', 'bi-pencil-square');
@@ -113,10 +120,13 @@
           const requestName = item.name;
           let endPoint
           let frole = item.dataset.frole;
-
+          folderItems.forEach(folder => {
+            folder.classList.remove('active-file');
+          })
           switch (item.dataset.frole){
             case "req":
               endPoint = `/MOCKER/MANAGE/REQUEST/GET/V2/${requestName}`;
+              item.parentNode.previousElementSibling.classList.add('active-file');
                   break;
             case "processor":
               endPoint = `/MOCKER/MANAGE/PROCESSOR/${requestName}`;
@@ -161,16 +171,14 @@
           const typeF = item.dataset.frole;
           // Update UI for selected folder
           folderItems.forEach(folder => {
-            folder.classList.remove('active-folder');
-            const icon = folder.querySelector('.folder-icon, .open-folder-icon');
+          //  folder.classList.remove('active-folder');
+            const icon = folder.querySelector('.folder-icon');
             icon.classList.replace('bi-folder2-open', 'bi-folder2');
-            icon.classList.replace('open-folder-icon', 'folder-icon');
           });
 
-          item.classList.add('active-folder');
+        //  item.classList.add('active-folder');
           const icon = item.querySelector('.folder-icon');
           icon.classList.replace('bi-folder2', 'bi-folder2-open');
-          icon.classList.replace('folder-icon', 'open-folder-icon');
         });
       });
 
