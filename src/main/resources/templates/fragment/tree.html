@@ -41,7 +41,7 @@
         </a>
         <div th:id="'headingM'+${moduleEntry.key}" class="collapse nested-folder">
           <a th:each="request : ${moduleEntry.value}" data-frole="req" href="#" class="list-group-item list-group-item-action file-item" th:name="${request.name}" th:data-file="${request.name} + '.json'">
-            <i class="bi bi-file-earmark file-icon"></i> <span th:text="${request.name}"></span> <span class="badge" style="background: green;float:right" th:text="${request.method}"></span> <span class="badge" style="background: #0d6efd;float:right" th:if="${request.validate}">Validate</span> <span class="badge" style="background: darkmagenta;float:right" th:if="${!request.validate}">Mock</span>
+            <i class="bi bi-file-earmark file-icon"></i> <span th:text="${request.name}"></span> <span class="fw-bold" th:text="${' ('+request.method+')'}"></span> <span class="badge" style="background: #0d6efd;float:right" th:if="${request.validate}">Validate</span> <span class="badge" style="background: darkmagenta;float:right" th:if="${!request.validate}">Mock</span>
             <br/>
             <span style="color:#888" class="badge badge-pill" th:text="${request.url}"></span>
           </a>
