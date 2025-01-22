@@ -1,13 +1,13 @@
-# Introduction to Anymocker
+# Introduction to anyMocker
 
-Anymocker is a Spring Boot-based application designed to revolutionize how you mock and validate HTTP requests. Think of it as your go-to API wizard, capable of spinning up dynamic responses and enforcing strict validation rules with ease. With Anymocker, developers and testers are armed with a tool that combines flexibility, power, and simplicity.
+anyMocker is a Spring Boot-based application designed to revolutionize how you mock and validate HTTP requests. Think of it as your go-to API wizard, capable of spinning up dynamic responses and enforcing strict validation rules with ease. With anyMocker, developers and testers are armed with a tool that combines flexibility, power, and simplicity.
 
 ---
 
 ## Key Features
 
 ### 1. Mocking HTTP Requests
-Anymocker offers an intuitive interface to mock HTTP responses on the fly. Here’s what you can do:
+anyMocker offers an intuitive interface to mock HTTP responses on the fly. Here’s what you can do:
 
 - **Define APIs with Precision:** Specify attributes like:
   - Name
@@ -22,14 +22,14 @@ Anymocker offers an intuitive interface to mock HTTP responses on the fly. Here�
 - **Dynamic Responses:** Generate responses that adapt based on the request’s body, path, and query parameters.
 
 ### 2. Request Validation
-- **OpenAPI Spec Integration:** Upload an OpenAPI spec file, and Anymocker will transform it into actionable request objects.
+- **OpenAPI Spec Integration:** Upload an OpenAPI spec file, and anyMocker will transform it into actionable request objects.
 - **Validation Like a Pro:** Match incoming requests against the spec file to ensure consistency with defined API structures.
 
 ---
 
 ## The Processor
 
-At the heart of Anymocker lies the **Processor**—a Groovy script that breathes life into your mocked APIs. With its hooks, you can:
+At the heart of anyMocker lies the **Processor**—a Groovy script that breathes life into your mocked APIs. With its hooks, you can:
 
 - **Initialize:** `init` – Prepare for action.
 - **Process Requests:** `process` – The main event where requests are handled and responses are born.
@@ -38,7 +38,7 @@ At the heart of Anymocker lies the **Processor**—a Groovy script that breathes
 
 ### Example Processor
 ```groovy
-import com.wanikirtesh.anymocker.core.components.GroovyHelper
+import com.wanikirtesh.anyMocker.core.components.GroovyHelper
 
 def init(log, requests) {
     log.info("Initializing processor with ${requests.size()} requests.")
@@ -72,7 +72,7 @@ def download(log, match) {
 
 ### Example Processor Script
 ```groovy
-import com.wanikirtesh.anymocker.core.components.GroovyHelper
+import com.wanikirtesh.anyMocker.core.components.GroovyHelper
 
 def process(log, match, body, req) {
     log.info("Incoming request for API: ${match.name}, Path: ${match.url}")
@@ -110,7 +110,7 @@ GET /api/example?name=John&age=30
 
 ## Leveraging GroovyHelper
 
-Anymocker’s **GroovyHelper** component is packed with utility methods that make dynamic API responses effortless. Here’s a snapshot of its capabilities:
+anyMocker’s **GroovyHelper** component is packed with utility methods that make dynamic API responses effortless. Here’s a snapshot of its capabilities:
 
 - **Data Storage and Retrieval:**
   - `putObject(String key, Object o)` – Store objects for reuse across requests.
@@ -193,7 +193,7 @@ paths:
 
 ## Logging and Monitoring
 
-With Anymocker, you’re always in the loop:
+With anyMocker, you’re always in the loop:
 
 - **Real-Time Insights:** The `log` object captures everything from info-level messages to detailed debug logs. These logs are prominently displayed in the application’s UI.
 - **Detailed Activity Logs:** Every interaction, parameter, and decision point is logged for transparency and troubleshooting.
@@ -211,5 +211,5 @@ log.info("✅ Successfully processed request. Response dispatched.")
 
 ## Conclusion
 
-Anymocker isn’t just a tool—it’s your API ally. Whether you need to mock intricate responses, validate against OpenAPI specs, or log every detail with flair, Anymocker delivers. Embrace the power of dynamic, responsive, and efficient API handling with Anymocker today.
+anyMocker isn’t just a tool—it’s your API ally. Whether you need to mock intricate responses, validate against OpenAPI specs, or log every detail with flair, anyMocker delivers. Embrace the power of dynamic, responsive, and efficient API handling with anyMocker today.
 
