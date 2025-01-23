@@ -165,8 +165,11 @@
         </div>
         <div id="logContainer" style="display: none" class="main-content container-fluid">
             <div class="card" style="height: 100%;">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h5 class="card-title"><i class="bi bi-card-text"></i> Log</h5>
+                    <div><label for="autoScroll" >Auto scroll to end of log </label>
+                    <input type="checkbox" id="autoScroll" checked class="form-check-input">
+                    </div>
                 </div>
                 <div class="small card-body overflow-auto">
                     <div id="logger">
@@ -287,14 +290,18 @@
         }
     };
     document.addEventListener('DOMContentLoaded', () => {
-        socket = new WebSocket(`ws://${window.location.hostname}:9191/critical`);
+        let logcon = document.querySelector("#logContainer .card-body");
+        setInterval(()=>{
+            if(document.querySelector("#autoScroll").checked)
+            logcon.scrollTo(0,document.querySelector("#logContainer .card-body").scrollHeight)
+        }, 1000);
+        var socket = new WebSocket(`ws://${window.location.hostname}:9191/critical`);
         socket.onmessage = function (event) {
             let logContainer = document.getElementById('logger');
             let logMessage = document.createElement('div');
             const errorObj = JSON.parse(event.data)
             logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> <span class="lg_loggerName">${errorObj.loggerName}</span> <span class="lg_message">${errorObj.message}</pre></span>`
             logContainer.appendChild(logMessage);
-            document.querySelector('.spinner-border').scrollIntoView({behavior: 'smooth'});
         };
         addModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
         statModal = new bootstrap.Modal(document.getElementById("staticBackdrop1"));
