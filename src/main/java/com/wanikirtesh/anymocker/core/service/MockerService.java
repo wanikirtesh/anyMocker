@@ -3,12 +3,11 @@ package com.wanikirtesh.anymocker.core.service;
 import com.wanikirtesh.anymocker.core.components.Request;
 import com.wanikirtesh.anymocker.core.components.OpenApiValidator;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.openapi4j.core.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -54,22 +53,12 @@ public class MockerService {
                 MockerService.log.error("No Processor script found for {}", name);
             }
     }
-    public ResponseEntity<Object> processRequest(final Request match, final String body, final HttpServletRequest req) {
+    public ResponseEntity<Object> processRequest(final Request match, final String body, final HttpServletRequest req, HttpServletResponse resp) {
         if(null != match){
             if(match.isValidate()){
                 log.info("validating request: {}", match.getName());
-                try {
-                    final ValidationException validationException = this.openApiValidator.validateRequest(match,req, body);
-                    if(null != validationException) {
-                        log.error(validationException.results().toString());
-                        return new ResponseEntity<>(validationException.results().toString(), HttpStatus.BAD_REQUEST);
-                    }
-                    return new ResponseEntity<>("success", HttpStatus.OK);
-                }catch (final Exception e) {
-                    e.printStackTrace();
-                    log.error(e.getMessage(),e);
-                    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-                }
+                resp.setContentType("application/json");
+                return this.openApiValidator.validateRequest(match,req, body);
             }
             final RequestProcessor service = this.requestProcessorFactory.getProcessor(match.getProcessor());
             service.preProcess(match,body,req);

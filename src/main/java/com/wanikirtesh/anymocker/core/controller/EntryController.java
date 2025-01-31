@@ -2,6 +2,7 @@ package com.wanikirtesh.anymocker.core.controller;
 
 import com.wanikirtesh.anymocker.core.service.MockerService;
 import com.wanikirtesh.anymocker.core.service.RequestMatcherService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,12 @@ public class EntryController {
     private RequestMatcherService requestMatcherService;
 
     @RequestMapping(headers = "!Upgrade")
-    public ResponseEntity<Object> handleRequest(final HttpServletRequest req, @RequestParam(required = false) final Map<String,String> queryParams, @RequestBody(required = false) final String body) {
+    @ResponseBody
+    public ResponseEntity<Object> handleRequest(final HttpServletRequest req, HttpServletResponse resp, @RequestParam(required = false) final Map<String,String> queryParams, @RequestBody(required = false) final String body) {
         if(Files.exists(Paths.get("./downloadingFixtures"))){
             return new ResponseEntity<>("Server is downloading Fixtures.... ", HttpStatus.OK);
         }else {
-            return this.mockerService.processRequest(this.requestMatcherService.match(req,queryParams,body),body,req);
+            return this.mockerService.processRequest(this.requestMatcherService.match(req,queryParams,body),body,req,resp);
         }
     }
 }
