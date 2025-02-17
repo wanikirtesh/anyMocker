@@ -4,6 +4,7 @@ import com.wanikirtesh.anymocker.core.service.RequestProcessor;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.groovy.runtime.MethodClosure;
+import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -29,31 +30,37 @@ public class ClosureProcessor implements RequestProcessor {
 
     @Override
     public void init(final List<Request> requests) {
+        MDC.put("processorName",process.getDelegate().getClass().toString().replace("class ",""));
         init.call(log,requests);
     }
 
     @Override
     public ResponseEntity<Object> process(final Request match, final String body, final HttpServletRequest req) {
+        MDC.put("processorName",process.getDelegate().getClass().toString().replace("class ",""));
         return (ResponseEntity<Object>) this.process.call(ClosureProcessor.log,match,body,req);
     }
 
     @Override
     public void postProcess(final Request match, final String body, final HttpServletRequest req) {
+        MDC.put("processorName",process.getDelegate().getClass().toString().replace("class ",""));
         this.post.call(log,match, body, req);
     }
 
     @Override
     public void preProcess(final Request match, final String body, final HttpServletRequest req) {
+        MDC.put("processorName",process.getDelegate().getClass().toString().replace("class ",""));
         pre.call(log,match,body,req);
     }
 
     @Override
     public void downloadFixtures(final Request match) {
+        MDC.put("processorName",process.getDelegate().getClass().toString().replace("class ",""));
         download.call(log,match);
     }
 
     @Override
     public Map getStats(final Request match) {
+        MDC.put("processorName",process.getDelegate().getClass().toString().replace("class ",""));
         try {
             return (Map) stats.call(log, match);
         }catch (Exception e){

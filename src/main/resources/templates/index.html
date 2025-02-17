@@ -31,6 +31,10 @@
         .lg_message{
             font-weight: bold;
         }
+        .lg_processor{
+            font-weight: bold;
+            color: darkgreen;
+        }
 
         .main-container {
             height: 100vh;
@@ -300,7 +304,7 @@
             let logContainer = document.getElementById('logger');
             let logMessage = document.createElement('div');
             const errorObj = JSON.parse(event.data)
-            logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> <span class="lg_loggerName">${errorObj.loggerName}</span> <span class="lg_message">${errorObj.message}</pre></span>`
+            logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> ${errorObj.processorName?("<span class=\"lg_processor\">["+errorObj.processorName+"]</span>"):("<span class=\"lg_loggerName\">" +errorObj.loggerName + "</span>")} <span class="lg_message">${errorObj.message}</pre></span>`
             logContainer.appendChild(logMessage);
         };
         addModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));

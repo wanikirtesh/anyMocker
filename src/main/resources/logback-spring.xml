@@ -13,12 +13,12 @@
             <maxHistory>35</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d %-5p %c{1}.%M:%line [%t] %m%n</pattern>
+            <pattern>%d %-5p %c{1}.%M:%line [%t] [%X{processorName}] %m%n</pattern>
         </encoder>
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d %-5p %c{1}.%M:%line [%t] %m%n</pattern>
+            <pattern>%d %-5p %c{1}.%M:%line [%t] [%X{processorName}] %m%n</pattern>
         </encoder>
     </appender>
     <logger name="com.wanikirtesh" level="info" additivity="false">

@@ -22,6 +22,7 @@ public class CustomLogEvent {
     private String[] stackTrace;
 
     private long timestamp;
+    private String processorName = "";
 
 
     public CustomLogEvent(ILoggingEvent eventObject) {
@@ -29,6 +30,7 @@ public class CustomLogEvent {
         this.loggerName = eventObject.getLoggerName();
         this.level = eventObject.getLevel().toString();
         this.timestamp = eventObject.getTimeStamp();
+        this.processorName = eventObject.getMDCPropertyMap().get("processorName");
 
         // Extract stack trace if the event contains a throwable
         if (eventObject.getThrowableProxy() != null) {
