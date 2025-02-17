@@ -5,6 +5,7 @@ import com.wanikirtesh.anymocker.core.service.RequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,8 @@ public class UIController {
     @Value("${specs.path}")
     private String specsPath;
 
+    @Autowired
+    BuildProperties buildProperties;
 
     @Autowired
     private RequestFactory requestFactory;
@@ -91,6 +94,7 @@ public class UIController {
         model.addAttribute("groupedUrls", groupRequestsNew(this.requestFactory.getRequestList()));
         model.addAttribute("processors", getProcessors(this.requestFactory.getRequestList()));
         model.addAttribute("specifications",getSpecifications(this.requestFactory.getRequestList()));
+        model.addAttribute("buildProperties", buildProperties);
         return "fragment/tree";
     }
 
