@@ -295,18 +295,40 @@
     };
     document.addEventListener('DOMContentLoaded', () => {
         let logcon = document.querySelector("#logContainer .card-body");
-        setInterval(()=>{
-            if(document.querySelector("#autoScroll").checked)
-            logcon.scrollTo(0,document.querySelector("#logContainer .card-body").scrollHeight)
-        }, 1000);
+        let logContainer = document.getElementById('logger');
+        const MAX_LOGS = 50000;
+        let logBuffer = [];
+        function trimLogs() {
+            while (logContainer.children.length > MAX_LOGS) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+
+        function processLogs() {
+            if (logBuffer.length > 0) {
+                let fragment = document.createDocumentFragment();
+                logBuffer.forEach(log => fragment.appendChild(log));
+                logContainer.appendChild(fragment);
+                logBuffer = [];
+                trimLogs();
+                scrollToBottom();
+            }
+            requestAnimationFrame(processLogs);
+        }
+
+        function scrollToBottom() {
+            if (document.querySelector("#autoScroll").checked) {
+                logcon.scrollTop = logcon.scrollHeight;
+            }
+        }
         var socket = new WebSocket(`ws://${window.location.hostname}:9191/critical`);
         socket.onmessage = function (event) {
-            let logContainer = document.getElementById('logger');
-            let logMessage = document.createElement('div');
-            const errorObj = JSON.parse(event.data)
+            const errorObj = JSON.parse(event.data);
+            let logMessage = document.createElement("div");
             logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> ${errorObj.processorName?("<span class=\"lg_processor\">["+errorObj.processorName+"]</span>"):("<span class=\"lg_loggerName\">" +errorObj.loggerName + "</span>")} <span class="lg_message">${errorObj.message}</pre></span>`
-            logContainer.appendChild(logMessage);
+            logBuffer.push(logMessage);
         };
+        requestAnimationFrame(processLogs);
         addModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
         statModal = new bootstrap.Modal(document.getElementById("staticBackdrop1"));
         importModal = new bootstrap.Modal(document.getElementById("staticBackdrop2"));
