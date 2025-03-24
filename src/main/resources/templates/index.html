@@ -321,13 +321,17 @@
                 logcon.scrollTop = logcon.scrollHeight;
             }
         }
-        var socket = new WebSocket(`ws://${window.location.hostname}:9191/critical`);
-        socket.onmessage = function (event) {
-            const errorObj = JSON.parse(event.data);
-            let logMessage = document.createElement("div");
-            logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> ${errorObj.processorName?("<span class=\"lg_processor\">["+errorObj.processorName+"]</span>"):("<span class=\"lg_loggerName\">" +errorObj.loggerName + "</span>")} <span class="lg_message">${errorObj.message}</pre></span>`
-            logBuffer.push(logMessage);
-        };
+        try {
+            var socket = new WebSocket(`wss://${window.location.hostname}:9191/critical`);
+            socket.onmessage = function (event) {
+                const errorObj = JSON.parse(event.data);
+                let logMessage = document.createElement("div");
+                logMessage.innerHTML = `<span class="lg_timeStamp">${new Date(errorObj.timestamp).toLocaleString()}</span> <span class="lg_level lg_${errorObj.level}">${errorObj.level}</span> ${errorObj.processorName ? ("<span class=\"lg_processor\">[" + errorObj.processorName + "]</span>") : ("<span class=\"lg_loggerName\">" + errorObj.loggerName + "</span>")} <span class="lg_message">${errorObj.message}</pre></span>`
+                logBuffer.push(logMessage);
+            };
+        }catch(e){
+            console.error("error in wss connection")
+        }
         requestAnimationFrame(processLogs);
         addModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
         statModal = new bootstrap.Modal(document.getElementById("staticBackdrop1"));
