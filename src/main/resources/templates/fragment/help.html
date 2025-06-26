@@ -1,0 +1,367 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    pre code {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        display: block;
+        border-radius: 0.375rem;
+        border-left: 5px solid #0d6efd;
+    }
+    .section {
+        margin-bottom: 2rem;
+    }
+</style>
+<div class="container py-5">
+    <div class="mb-4 text-center">
+        <h1 class="display-5 fw-bold text-primary">Welcome to AnyMocker</h1>
+        <p class="lead">A lightweight mock server for HTTP mocking and OpenAPI validation</p>
+    </div>
+
+    <div class="alert alert-info">
+        <strong>AnyMocker</strong> helps you:
+        <ul>
+            <li>Mock HTTP responses via UI and Groovy logic.</li>
+            <li>Validate HTTP requests using OpenAPI specifications.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2 class="h4 text-secondary">🚀 Key Features</h2>
+
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">1. Mock HTTP Responses</div>
+            <div class="card-body">
+                <ul>
+                    <li><strong>Name</strong>: Descriptive mock API name</li>
+                    <li><strong>Path</strong>: Endpoint path</li>
+                    <li><strong>Request Type</strong>: <code>GET</code>, <code>POST</code>, etc.</li>
+                    <li><strong>Path / Query Params</strong></li>
+                    <li><strong>Processor</strong>: Groovy filename for logic</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-secondary text-white">2. Groovy Processors</div>
+            <div class="card-body">
+                <p>Groovy files can define any or all of:</p>
+                <ul>
+                    <li><code>init</code></li>
+                    <li><code>process</code></li>
+                    <li><code>post</code></li>
+                    <li><code>download</code></li>
+                </ul>
+                <p>🔧 Sample:</p>
+                <pre><code>import com.wanikirtesh.anymocker.core.components.GroovyHelper
+
+def init(log, requests) {}
+
+def process(log, match, body, req) {
+    return GroovyHelper.getResponseEntity("ok", 200)
+}
+
+def post(log, match, body, req) {}
+
+def download(log, match) {}</code></pre>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">GroovyHelper Class - Developer Help</div>
+            <div class="card-body">
+
+
+            <p>The <code>GroovyHelper</code> class provides a set of utility methods for data storage, response generation, file operations, HTTP requests, and JSON parsing. It is part of the <code>com.wanikirtesh.anymocker.core.components</code> package and is commonly used in Groovy scripts executed within the Anymocker framework.</p>
+
+            <div class="section">
+                <h2>🗃 In-Memory Storage</h2>
+                <p><strong>Usage:</strong> Temporarily share data between script executions, keyed by caller class name and object key.</p>
+
+                <ul>
+                    <li><code>putObject(String key, Object o)</code> – Stores an object associated with the caller class.</li>
+                    <li><code>getDataObject(String key)</code> – Retrieves a previously stored object.</li>
+                    <li><code>getStorage()</code> – Returns the entire nested storage map.</li>
+                </ul>
+
+                <pre><code>GroovyHelper.putObject("userInfo", userMap);
+def stored = GroovyHelper.getDataObject("userInfo");</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>🌐 HTTP Requests</h2>
+                <p><strong>Usage:</strong> Make outbound HTTP requests within Groovy mocks.</p>
+
+                <ul>
+                    <li><code>makePostRequest(String uri, String data, String[] headers)</code></li>
+                    <li><code>makeGetRequest(String uri)</code></li>
+                </ul>
+
+                <pre><code>def response = GroovyHelper.makePostRequest("http://example.com/api", "{}", ["Content-Type", "application/json"]);
+def json = response.body();</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📄 File Utilities</h2>
+                <ul>
+                    <li><code>writeFile(String content, String basePath, String... paths)</code> – Writes a file, creating dirs if needed.</li>
+                    <li><code>collectFiles(Path path)</code> – Returns a flat map of file names to full paths.</li>
+                    <li><code>collectNestedFiles(Path path)</code> – Returns a nested map of dir name → { filename → full path }.</li>
+                </ul>
+
+                <pre><code>GroovyHelper.writeFile("some content", "/tmp", "mock", "test.json");
+def map = GroovyHelper.collectFiles(Path.of("/fixtures"))</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📦 ResponseEntity Helpers</h2>
+                <p><strong>Usage:</strong> Quickly generate Spring HTTP responses from within Groovy logic.</p>
+
+                <ul>
+                    <li><code>getResponseEntity(Object body, Map headers, int statusCode)</code></li>
+                    <li><code>getResponseEntity(Object body, int statusCode)</code></li>
+                    <li><code>getResponseEntity(int statusCode)</code></li>
+                </ul>
+
+                <pre><code>return GroovyHelper.getResponseEntity(["error": "Not found"], 404);</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📊 JSON Parsing</h2>
+                <p><strong>Usage:</strong> Parse raw JSON strings to use as <code>JSONObject</code> or <code>JSONArray</code>.</p>
+
+                <ul>
+                    <li><code>parseJsonObject(String json)</code> → JSONObject</li>
+                    <li><code>parseJsonArray(String json)</code> → JSONArray</li>
+                </ul>
+
+                <pre><code>def obj = GroovyHelper.parseJsonObject('{"id":123}');
+def arr = GroovyHelper.parseJsonArray('[1,2,3]');</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📘 Additional Notes</h2>
+                <ul>
+                    <li>Caller identification is used to scope storage per calling Groovy script.</li>
+                    <li>File and network operations are logged and exceptions are surfaced clearly.</li>
+                    <li>Class is thread-safe thanks to use of <code>ConcurrentHashMap</code>.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        </div>
+
+
+
+
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">3. Request Validation</div>
+            <div class="card-body">
+                <p>Enable request validation against your OpenAPI spec file (YAML or JSON).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="h4 text-secondary">⚙️ Utility Functions</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">🧩 <code>putObject</code>, <code>getDataObject</code></li>
+                    <li class="list-group-item">🧩 <code>makePostRequest</code>, <code>makeGetRequest</code></li>
+                    <li class="list-group-item">🧩 <code>parseJsonObject</code>, <code>parseJsonArray</code></li>
+                    <li class="list-group-item">🧩 <code>writeFile</code>, <code>collectFiles</code></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Hook parameters:</strong></p>
+                <ul>
+                    <li><code>log</code>: Print to UI logs</li>
+                    <li><code>match</code>: Contains params and meta</li>
+                    <li><code>req</code>: A request object</li>
+                </ul>
+                <pre><code>class Request {
+  String name, url, method, processor;
+  List&lt;String&gt; pathParam, queryParam;
+  Map&lt;String, String&gt; requestPathParams, requestQueryParams, meta;
+  String getParameter(String paramName);
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="h4 text-secondary">💡 Examples</h2>
+
+        <div class="accordion" id="exampleAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="matchHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#matchHelp">
+                        🧩 match (Request Object) – Reference Guide
+                    </button>
+                </h2>
+                <div id="matchHelp" class="accordion-collapse collapse" data-bs-parent="#exampleAccordion">
+                    <div class="accordion-body">
+                        <p>
+                            In the <code>process(log, match, body, req)</code> method, the <code>match</code> object is an instance of the Java class <code>Request</code>. It holds important context about the incoming request and helps in dynamically handling routing logic.
+                        </p>
+
+                        <h6 class="mt-3">🔑 Commonly Used Fields</h6>
+                        <ul>
+                            <li><code>match.name</code>: Mock name (used to route to dynamic Groovy methods)</li>
+                            <li><code>match.url</code>: Requested full URL</li>
+                            <li><code>match.method</code>: HTTP method like GET, POST, etc.</li>
+                            <li><code>match.processor</code>: Processor type (usually "OK_ONLY" unless overridden)</li>
+                            <li><code>match.body</code>: Body from the matched mock file (available only if body matching is used)</li>
+                            <li><code>match.meta</code>: Map of additional metadata for the request</li>
+                            <li><code>match.fileName</code>: Original file name of the mock (without path)</li>
+                            <li><code>match.grouping</code>: Boolean indicating if it belongs to a grouped mock</li>
+                            <li><code>match.validate</code>: Boolean flag used to enforce schema validations</li>
+                        </ul>
+
+                        <h6 class="mt-3">📦 Param Access</h6>
+                        <ul>
+                            <li><code>match.getParameter("paramName")</code>: Auto-resolves from path or query</li>
+                            <li><code>match.getQueryParam("q")</code>: Gets query param like <code>?q=value</code></li>
+                            <li><code>match.getPathParam("id")</code>: Extracted from REST path like <code>/user/{id}</code></li>
+                        </ul>
+
+                        <h6 class="mt-3">🧠 Advanced</h6>
+                        <ul>
+                            <li><code>match.getMetaValue("key")</code>: Get metadata key from mock definition</li>
+                            <li><code>match.getResponseHeader("X-Header")</code>: Get mock-defined response headers</li>
+                            <li><code>match.addResponseHeaders(Map)</code>: Dynamically add custom headers in response</li>
+                            <li><code>match.getActURL()</code>: For grouped mocks, returns stripped URL useful for version-based mocking</li>
+                        </ul>
+
+                        <h6 class="mt-3">🧪 Example</h6>
+                        <pre><code>def getUser(log, match, body, req) {
+    def userId = match.getPathParam("userId")
+    def query = match.getQueryParam("verbose")
+    def source = match.getMetaValue("source")
+    return [id: userId, verbose: query, metaSource: source]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+            <!-- Example 1 -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="ex1Heading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ex1" aria-expanded="true">
+                        GET User Details
+                    </button>
+                </h2>
+                <div id="ex1" class="accordion-collapse collapse show" data-bs-parent="#exampleAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li><strong>Path</strong>: <code>/api/users/{userId}</code></li>
+                            <li><strong>Processor</strong>: USER_PROCESSOR</li>
+                            <li><strong>Query Params</strong>: include=address,orders</li>
+                            <li><strong>Validate</strong>: ✅</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 2 -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="ex2Heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ex2">
+                        POST Create Order
+                    </button>
+                </h2>
+                <div id="ex2" class="accordion-collapse collapse" data-bs-parent="#exampleAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li><strong>Path</strong>: <code>/api/orders</code></li>
+                            <li><strong>Processor</strong>: ORDER_PROCESSOR</li>
+                            <li><strong>OpenAPI</strong>: <code>/specs/order-spec.yaml</code></li>
+                            <li><strong>Validate</strong>: ✅</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 3 -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="ex3Heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ex3">
+                        GET Download Catalog
+                    </button>
+                </h2>
+                <div id="ex3" class="accordion-collapse collapse" data-bs-parent="#exampleAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li><strong>Path</strong>: <code>/api/products/catalog</code></li>
+                            <li><strong>Download Fixture</strong>: ✅</li>
+                            <li><strong>Format</strong>: PDF</li>
+                            <li><strong>Validate</strong>: ❌</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Example 4 -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="ex4Heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ex4">
+                        Advanced Processor: Dispatch by Match Name
+                    </button>
+                </h2>
+                <div id="ex4" class="accordion-collapse collapse" data-bs-parent="#exampleAccordion">
+                    <div class="accordion-body">
+                        <p>This example shows how you can handle multiple endpoints or logic branches in one Groovy file using <code>match.name</code> to dynamically invoke different methods:</p>
+
+                        <pre><code>def runFunctionByName(Object... args) {
+    return this.metaClass.invokeMethod(this, args[1].name, args)
+}
+
+def process(log, match, body, req) {
+    def headers = [ "Content-Type": "application/json" ]
+    return GroovyHelper.getResponseEntity(runFunctionByName(log, match, body, req), headers, 200)
+}
+
+// Handle 'getUser' request
+def getUser(log, match, body, req) {
+    return [ "id": match.requestPathParams.get("userId"), "name": "Alice" ]
+}
+
+// Handle 'createOrder' request
+def createOrder(log, match, body, req) {
+    def payload = GroovyHelper.parseJsonObject(body)
+    return [ "orderId": UUID.randomUUID().toString(), "status": "created", "items": payload.items ]
+}
+
+// Handle 'downloadCatalog' request
+def downloadCatalog(log, match, body, req) {
+    return GroovyHelper.getFileResponseEntity("catalogs/product-catalog.pdf", "application/pdf")
+}
+</code></pre>
+
+                        <p><strong>Mock Setup Example:</strong></p>
+                        <ul>
+                            <li><strong>Name</strong>: <code>getUser</code> → calls <code>getUser()</code></li>
+                            <li><strong>Name</strong>: <code>createOrder</code> → calls <code>createOrder()</code></li>
+                            <li><strong>Name</strong>: <code>downloadCatalog</code> → calls <code>downloadCatalog()</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="text-muted">🔧 Empower your team with flexible, programmable mocks and validations.</p>
+        <h5 class="text-success">Build. Mock. Validate. Repeat. ✅</h5>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
