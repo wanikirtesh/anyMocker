@@ -19,37 +19,51 @@ public class RequestProcessorFactory {
     @Value("${processors.path}")
     private String processorsPath;
     private static Map<String, ClosureProcessor> processors= new HashMap<>();;
-    private GroovyClassLoader groovyClassLoader = new GroovyClassLoader(this.getClass().getClassLoader());
+    private static class ProcessorHolder {
+        final ClosureProcessor processor;
+        final GroovyClassLoader classLoader;
+        ProcessorHolder(ClosureProcessor processor, GroovyClassLoader classLoader) {
+            this.processor = processor;
+            this.classLoader = classLoader;
+        }
+    }
+    private static final Map<String, ProcessorHolder> processorMap = new HashMap<>();
+    private static final int RELOAD_THRESHOLD = 50;
 
     @PostConstruct
     void init(){
         processors.clear();
     }
     public ClosureProcessor getProcessor(final String strProcessor) {
-        if(RequestProcessorFactory.processors.containsKey(strProcessor)){
-            return RequestProcessorFactory.processors.get(strProcessor);
+        ProcessorHolder holder = processorMap.get(strProcessor);
+        if (holder != null) {
+            return holder.processor;
         }
         this.updateProcessor(strProcessor);
-        return RequestProcessorFactory.processors.get(strProcessor);
+        holder = processorMap.get(strProcessor);
+        return holder != null ? holder.processor : null;
     }
 
-    public void updateProcessor(final String strProcessor) {
+     public void updateProcessor(final String strProcessor) {
         final File file = new File(this.processorsPath + "/" + strProcessor + ".groovy");
-        RequestProcessorFactory.log.info("adding / Resetting processor from file:" + file.getPath());
-        if(!file.exists())
-            RequestProcessorFactory.log.error("No Processor file found with ["+strProcessor+".groovy] ");
-        else
-            try {
-                final Class<?> groovyClass = groovyClassLoader.parseClass(file);
-                final Object closureOwner = groovyClass.newInstance();
-                final ClosureProcessor processor = getClosureProcessor(closureOwner);
-                RequestProcessorFactory.processors.remove(strProcessor);
-                RequestProcessorFactory.processors.put(strProcessor, processor);
-            }catch (final Exception e){
-                //e.printStackTrace();
-                log.error(e.getMessage(),e);
-                throw new RuntimeException(e);
-            }
+        log.info("adding / Resetting processor from file:" + file.getPath());
+        if (!file.exists()) {
+            log.error("No Processor file found with [" + strProcessor + ".groovy] ");
+            return;
+        }
+        try {
+            // Remove old processor and class loader
+            processorMap.remove(strProcessor);
+            // Create a new class loader for this processor
+            GroovyClassLoader loader = new GroovyClassLoader(this.getClass().getClassLoader());
+            final Class<?> groovyClass = loader.parseClass(file);
+            final Object closureOwner = groovyClass.newInstance();
+            final ClosureProcessor processor = getClosureProcessor(closureOwner);
+            processorMap.put(strProcessor, new ProcessorHolder(processor, loader));
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     private static ClosureProcessor getClosureProcessor(Object closureOwner) {
