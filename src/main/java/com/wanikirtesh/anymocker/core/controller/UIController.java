@@ -98,6 +98,11 @@ public class UIController {
         return "fragment/tree";
     }
 
+    @RequestMapping(method = RequestMethod.GET,path = "/MOCKER/MANAGE/HELP")
+    private String getHelp(Model model){
+        return "fragment/help";
+    }
+
     private Set<String> getSpecifications(List<Request> requestList) {
         return requestList.stream().filter(r -> !r.getSpec().isBlank()).map(Request::getSpec).collect(Collectors.toSet());
     }

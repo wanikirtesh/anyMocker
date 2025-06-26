@@ -72,9 +72,15 @@
     </div>
   </div>
 
-  <div style="margin-bottom: 25px">
+  <div>
     <a href="#" data-frole="log" class="list-group-item list-group-item-action" id="btnLog">
       <i class="bi bi-card-text cpu-icon"></i> <span>Logs</span>
+    </a>
+  </div>
+
+  <div style="margin-bottom: 25px">
+    <a href="#" data-frole="log" class="list-group-item list-group-item-action" id="btnHelp">
+      <i class="bi bi-question-circle cpu-icon"></i> <span>Help</span>
     </a>
   </div>
   <div class="small" style="text-align: center" th:text="${#dates.format(buildProperties.getTime(),'dd MMM yyyy hh:mm')}"></div>
@@ -185,6 +191,9 @@
 
       document.querySelector("#btnLog").addEventListener("click",e=>{
         showLogs();
+      })
+      document.querySelector("#btnHelp").addEventListener("click",e=>{
+        showHelp();
       })
     }
     initTree();

@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.openapi4j.core.exception.DecodeException;
 import org.openapi4j.core.exception.ResolutionException;
 import org.openapi4j.core.model.OAIContext;
-import org.openapi4j.core.model.reference.Reference;
 import org.openapi4j.core.validation.ValidationException;
 import org.openapi4j.operation.validator.model.Request;
 import org.openapi4j.operation.validator.model.impl.Body;

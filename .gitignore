@@ -61,3 +61,4 @@ crawler.json
 /service
 *.json
 /specs/
+/PMSINBOUND/

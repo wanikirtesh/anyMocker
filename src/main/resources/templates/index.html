@@ -296,7 +296,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         let logcon = document.querySelector("#logContainer .card-body");
         let logContainer = document.getElementById('logger');
-        const MAX_LOGS = 50000;
+        const MAX_LOGS = 5000;
         let logBuffer = [];
         function trimLogs() {
             while (logContainer.children.length > MAX_LOGS) {
@@ -653,6 +653,19 @@
         document.querySelector("#logContainer").style.display = "flex"
     }
     function closeLogs(){
+        document.querySelector("#main-content").style.display = "flex"
+        document.querySelector("#logContainer").style.display = "none"
+    }
+
+    function showHelp(){
+        fetch('/MOCKER/MANAGE/HELP').then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching file: ${response.status}`);
+            }
+            return response.text();
+        }).then(content => {
+            document.querySelector("#main-content").innerHTML = content;
+        })
         document.querySelector("#main-content").style.display = "flex"
         document.querySelector("#logContainer").style.display = "none"
     }

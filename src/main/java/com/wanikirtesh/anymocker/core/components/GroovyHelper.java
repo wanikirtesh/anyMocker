@@ -120,7 +120,7 @@ public class GroovyHelper {
             throw(new RuntimeException(e));
         }
     }
-    public static  Map<String, Path> collectFiles(final Path path) {
+    public static  Map<String, String> collectFiles(final Path path) {
         try {
             return Files.list(path)
                     .collect(Collectors.toMap(
@@ -135,11 +135,11 @@ public class GroovyHelper {
     private static String readFileName(final Path filePath) {
         return filePath.getFileName().toString().replaceAll(".json", "");
     }
-    private static Path readFullFileName(final Path filePath){
-        return filePath;
+    private static String readFullFileName(final Path filePath){
+        return filePath.toString();
     }
 
-    public static Map<String, Map<String, Path>> collectNestedFiles(final Path path) {
+    public static Map<String, Map<String, String>> collectNestedFiles(final Path path) {
         try {
             return Files.list(path)
                     .collect(Collectors.toMap(
@@ -147,7 +147,7 @@ public class GroovyHelper {
                             GroovyHelper::collectFiles)
                     );
         } catch (final IOException e) {
-            GroovyHelper.log.error("No Fixtures available at Path:{}", path, e);
+            log.error("No Fixtures available at Path:{}", path, e);
             return null;
         }
     }

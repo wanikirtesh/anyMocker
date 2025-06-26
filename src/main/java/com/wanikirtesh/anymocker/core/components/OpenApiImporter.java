@@ -18,10 +18,10 @@ public class OpenApiImporter {
             Map<String, Object> paths = (Map<String, Object>) openApiSpec.get("paths");
             if (paths != null) {
                 for (Map.Entry<String, Object> pathEntry : paths.entrySet()) {
-                    String path = pathEntry.getKey();
+                    String path = pathEntry.getKey().trim();
                     Map<String, Object> methods = (Map<String, Object>) pathEntry.getValue();
                     for (Map.Entry<String, Object> methodEntry : methods.entrySet()) {
-                        String httpMethod = methodEntry.getKey().toUpperCase();
+                        String httpMethod = methodEntry.getKey().toUpperCase().trim();
                         Map<String, Object> methodDetails = (Map<String, Object>) methodEntry.getValue();
                         Request request = new Request();
                         request.setUrl(path);
@@ -29,7 +29,7 @@ public class OpenApiImporter {
                         if (methodDetails.containsKey("summary")) {
                             request.setName((String) methodDetails.get("summary"));
                         } else {
-                            request.setName(httpMethod + " " + path);
+                            request.setName(httpMethod + " " + path.replace("/","_").replace("{","").replace("}",""));
                         }
                         if (methodDetails.containsKey("parameters")) {
                             List<Map<String, Object>> parameters = (List<Map<String, Object>>) methodDetails.get("parameters");
